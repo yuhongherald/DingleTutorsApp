@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
         notificationImage.setImageResource(R.drawable.notification);
         notifications.addView(notificationImage);
         topPanel.addView(notifications);
-
+        // just some comment
         // for centre panel
         LinearLayout centrePanel = (LinearLayout) findViewById(R.id.centrePanel);
         LinearLayout buttons = new LinearLayout(this);
