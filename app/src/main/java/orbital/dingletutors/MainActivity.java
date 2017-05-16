@@ -68,5 +68,6 @@ public class MainActivity extends AppCompatActivity {
         FragmentTransaction t = getSupportFragmentManager().beginTransaction();
         t.replace(R.id.bottomPanel, calendar.getFragment());
         t.commit();
+
     }
 }
