@@ -30,6 +30,10 @@ public class CalendarActivity implements BaseActivity {
         // have to color days that have notifications. Should we:
         // 1 color only when month is displayed
         // 2 color everything on init
+        // we can try coloring everything first and see if it has any significant impact on performance
+        // but if it is easier to color one month at a time then we should just do that
+
+
 
     }
 
