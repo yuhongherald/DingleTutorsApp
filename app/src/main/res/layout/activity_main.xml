@@ -7,34 +7,25 @@
     android:layout_height="match_parent"
     android:weightSum="100"
     tools:context="orbital.dingletutors.MainActivity">
-    <!--This is the top bar-->
-    <LinearLayout
-        android:id="@+id/topPanel"
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="10"
-        android:weightSum="100">
 
-    </LinearLayout>
-    <!--This is for buttons and notifications-->
-    <LinearLayout
-        android:id="@+id/centrePanel"
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="30">
+    <!--<LinearLayout-->
+        <!--android:id="@+id/topPanel"-->
+        <!--android:orientation="horizontal"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="0dp"-->
+        <!--android:layout_weight="10"-->
+        <!--android:weightSum="100">-->
 
-    </LinearLayout>
-    <LinearLayout
-        android:id="@+id/bottomPanel"
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="60">
-        <!--Put specialized view here-->
-    </LinearLayout>
+    <!--</LinearLayout>-->
 
 
-
+    <android.support.v4.view.ViewPager
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/viewPager"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        />
 </LinearLayout>
+
+

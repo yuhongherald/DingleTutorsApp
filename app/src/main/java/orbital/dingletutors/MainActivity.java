@@ -1,73 +1,66 @@
 package orbital.dingletutors;
 
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.ImageButton;
+import android.widget.Toast;
 
-import com.roomorama.caldroid.CaldroidFragment;
-
-import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
 
-    LinearLayout bottomPanel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // for top panel
-        LinearLayout topPanel = (LinearLayout) findViewById(R.id.topPanel);
-        ImageView logo = new ImageView(this);
-        logo.setLayoutParams(new LinearLayout.LayoutParams(
-                0, LinearLayout.LayoutParams.MATCH_PARENT, 30f
-        ));
+//        Modification of the Action bar so space isnt wasted
+        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+        getSupportActionBar().setDisplayShowCustomEnabled(true);
+        getSupportActionBar().setCustomView(R.layout.custom_action_bar_layout);
+        View view =getSupportActionBar().getCustomView();
 
-        logo.setImageResource(R.drawable.dingle);
-        topPanel.addView(logo);
-        View topBlank = new View(this);
-        topBlank.setLayoutParams(new LinearLayout.LayoutParams(
-                0, LinearLayout.LayoutParams.MATCH_PARENT, 50f
-        ));
-        topPanel.addView(topBlank);
-        LinearLayout notifications = new LinearLayout(this);
-        // have to add image and number of notifications into grids
-        notifications.setLayoutParams(new LinearLayout.LayoutParams(
-                0, LinearLayout.LayoutParams.MATCH_PARENT, 20f
-        ));
-        ImageView notificationImage = new ImageView(this);
-        notificationImage.setLayoutParams(new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT
-        ));
-        notificationImage.setImageResource(R.drawable.notification);
-        notifications.addView(notificationImage);
-        topPanel.addView(notifications);
-        // just some comment
-        // for centre panel
-        LinearLayout centrePanel = (LinearLayout) findViewById(R.id.centrePanel);
-        LinearLayout buttons = new LinearLayout(this);
-        buttons.setLayoutParams(new LinearLayout.LayoutParams(
-                0, LinearLayout.LayoutParams.MATCH_PARENT, 30f
-        ));
-        centrePanel.addView(buttons);
-        LinearLayout noticeBoard = new LinearLayout(this);
-        noticeBoard.setLayoutParams(new LinearLayout.LayoutParams(
-                0, LinearLayout.LayoutParams.MATCH_PARENT, 70f
-        ));
-        centrePanel.addView(noticeBoard);
+        // onClickListener for the notification button
+        // can change to what we want when decided
+        ImageButton notificationBtn = (ImageButton) view.findViewById(R.id.notificationBtn);
+        notificationBtn.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                Toast.makeText(getApplicationContext(), "Notification button is clicked", Toast.LENGTH_LONG).show();
+            }
+        });
 
-        // for bottomPanel (we change this as needed)
-        bottomPanel = (LinearLayout) findViewById(R.id.bottomPanel);
-        BaseActivity calendar = new CalendarActivity(this);
+        ViewPager pager = (ViewPager) findViewById(R.id.viewPager);
+        pager.setAdapter(new CustomPagerAdapter(getSupportFragmentManager()));
+    }
 
-        FragmentTransaction t = getSupportFragmentManager().beginTransaction();
-        t.replace(R.id.bottomPanel, calendar.getFragment());
-        t.commit();
+    private class CustomPagerAdapter extends FragmentPagerAdapter {
 
+        public CustomPagerAdapter(FragmentManager manager){
+            super(manager);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            switch(position) {
+                case 0:
+                    return CalendarFragment.newInstance();
+                case 1:
+                    return RandomFragment.newInstance("Hi");
+                default:
+                    return RandomFragment.newInstance("bye");
+            }
+        }
+
+        @Override
+        public int getCount() {
+            return 2;
+        }
     }
 }
