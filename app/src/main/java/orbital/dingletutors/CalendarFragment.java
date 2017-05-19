@@ -36,6 +36,8 @@ public class CalendarFragment extends Fragment {
         t.replace(R.id.calendar, caldroidFragment);
         t.commit();
 
+        // time to get hashmap from file
+
         final SimpleDateFormat formatter = new SimpleDateFormat("dd MMM yyyy");
         final CaldroidListener listener = new CaldroidListener() {
 
@@ -54,9 +56,13 @@ public class CalendarFragment extends Fragment {
 
             @Override
             public void onLongClickDate(Date date, View view) {
+                // i think we should put this same as select date
+                onSelectDate(date, view);
+                /*
                 Toast.makeText(getActivity().getApplicationContext(),
                         "Long click " + formatter.format(date),
                         Toast.LENGTH_SHORT).show();
+                */
             }
 
             @Override
