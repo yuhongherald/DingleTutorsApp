@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.roomorama.caldroid.CaldroidFragment;
@@ -30,6 +31,8 @@ public class CalendarFragment extends Fragment {
         Calendar calendar = Calendar.getInstance();
         args.putInt("month", calendar.get(Calendar.MONTH) + 1);
         args.putInt("year", calendar.get(Calendar.YEAR));
+        args.putInt(CaldroidFragment.START_DAY_OF_WEEK, CaldroidFragment.MONDAY);
+        args.putBoolean(CaldroidFragment.SIX_WEEKS_IN_CALENDAR, false);
         caldroidFragment.setArguments(args);
 
         FragmentTransaction t = getChildFragmentManager().beginTransaction();
@@ -56,13 +59,10 @@ public class CalendarFragment extends Fragment {
 
             @Override
             public void onLongClickDate(Date date, View view) {
-                // i think we should put this same as select date
+                // Same as normal select date
+                // We can change this to add event directly in the future when we have the functionality later on if you want
                 onSelectDate(date, view);
-                /*
-                Toast.makeText(getActivity().getApplicationContext(),
-                        "Long click " + formatter.format(date),
-                        Toast.LENGTH_SHORT).show();
-                */
+
             }
 
             @Override
@@ -74,6 +74,22 @@ public class CalendarFragment extends Fragment {
 
         };
         caldroidFragment.setCaldroidListener(listener);
+
+        // defining what happens when we click the new lesson button
+        Button newLessonBtn = (Button) v.findViewById(R.id.newLessonBtn);
+        newLessonBtn.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                NewLessonFragment newLesson = new NewLessonFragment();
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                // putting animation for fragment transaction
+                transaction.setCustomAnimations(R.anim.slide_in_up, android.R.anim.fade_out,
+                        android.R.anim.fade_in, R.anim.slide_out_down);
+                transaction.replace(R.id.calendar_container,newLesson) // carry out the transaction
+                        .addToBackStack(null) // add to backstack
+                        .commit();
+            }
+        });
         return v;
     }
 

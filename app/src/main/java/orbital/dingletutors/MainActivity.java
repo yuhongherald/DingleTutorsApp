@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Toast;
+import android.support.design.widget.TabLayout;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -27,6 +28,12 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setCustomView(R.layout.custom_action_bar_layout);
         View view =getSupportActionBar().getCustomView();
 
+        // tabs for each page
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
+        tabLayout.addTab(tabLayout.newTab().setText("Calendar"));
+        tabLayout.addTab(tabLayout.newTab().setText("Random Tab"));
+        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+
         // onClickListener for the notification button
         // can change to what we want when decided
         ImageButton notificationBtn = (ImageButton) view.findViewById(R.id.notificationBtn);
@@ -37,24 +44,40 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        ViewPager pager = (ViewPager) findViewById(R.id.viewPager);
+        final ViewPager pager = (ViewPager) findViewById(R.id.viewPager);
         pager.setAdapter(new CustomPagerAdapter(getSupportFragmentManager()));
 
-        // Adding the buttons
-        LinearLayout buttonPanel = (LinearLayout) findViewById(R.id.buttonPanel);
-        ButtonCollection collection = new ButtonCollection(buttonPanel, this);
+        pager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener(){
+            @Override
+            public void onTabSelected(TabLayout.Tab tab){
+                pager.setCurrentItem(tab.getPosition());
+            }
 
-        collection.addButton(pager, "Calendar", 0);
-        collection.addButton(pager, "Next", 1);
-        collection.finalizeButtons();
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+
+        // Adding the buttons
+//        LinearLayout buttonPanel = (LinearLayout) findViewById(R.id.buttonPanel);
+//        ButtonCollection collection = new ButtonCollection(buttonPanel, this);
+//
+//        collection.addButton(pager, "Calendar", 0);
+//        collection.addButton(pager, "Next", 1);
+//        collection.finalizeButtons();
 
     }
 
     private class CustomPagerAdapter extends FragmentPagerAdapter {
 
-        public CustomPagerAdapter(FragmentManager manager){
-            super(manager);
-        }
+        private CustomPagerAdapter(FragmentManager manager){ super(manager); }
 
         @Override
         public Fragment getItem(int position) {
