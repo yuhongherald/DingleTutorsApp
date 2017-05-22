@@ -4,6 +4,8 @@ package orbital.dingletutors;
  * Created by Muruges on 17/5/2017.
  */
 
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -19,6 +21,8 @@ import com.roomorama.caldroid.CaldroidListener;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Map;
+import java.util.Set;
 
 
 public class CalendarFragment extends Fragment {
@@ -55,6 +59,15 @@ public class CalendarFragment extends Fragment {
                 String text = "month: " + month + " year: " + year;
                 Toast.makeText(getActivity().getApplicationContext(), text,
                         Toast.LENGTH_SHORT).show();
+                MonthMap selectedMonth = CalendarMap.map.get(month + "-" + year);
+                if (selectedMonth != null) {
+                    ColorDrawable green = new ColorDrawable(Color.GREEN);
+                    // time to mark each days on the calendar
+                    Set<Map.Entry<Date, DayMap>> set = selectedMonth.entrySet();
+                    for (Map.Entry<Date, DayMap> day : set) {
+                        caldroidFragment.setBackgroundDrawableForDate(green, day.getKey());
+                    }
+                }
             }
 
             @Override
@@ -70,6 +83,8 @@ public class CalendarFragment extends Fragment {
                 Toast.makeText(getActivity().getApplicationContext(),
                         "Caldroid view is created",
                         Toast.LENGTH_SHORT).show();
+                caldroidFragment.setMinDate(Calendar.getInstance().getTime());
+                // now we have to get the current month and load up all the notifications
             }
 
         };

@@ -7,11 +7,15 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 import android.support.design.widget.TabLayout;
+
+import java.io.File;
+import java.util.Calendar;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -64,6 +68,22 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
+        try {
+            CalendarMap.mapDir = new File(getFilesDir(), "/map");
+            CalendarMap.mapDir.mkdirs();
+            CalendarMap.map = CalendarMap.init("notifications.map");
+
+            // for testing
+            MonthMap testMonth = new MonthMap();
+            testMonth.put(Calendar.getInstance().getTime(), new DayMap());
+            CalendarMap.map.put("5-2017", testMonth);
+            // this is for test save only
+            CalendarMap.map.save();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         // Adding the buttons
 //        LinearLayout buttonPanel = (LinearLayout) findViewById(R.id.buttonPanel);
