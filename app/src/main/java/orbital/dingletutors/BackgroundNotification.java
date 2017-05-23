@@ -42,7 +42,8 @@ public class BackgroundNotification extends BroadcastReceiver {
         calendar.setTimeInMillis(System.currentTimeMillis());
         AlarmManager alarm = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         //alarm.cancel(pendingIntent);
-        alarm.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 1000*60, pendingIntent);
+        // somehow this thing is not very precise
+        alarm.setRepeating(AlarmManager.RTC, calendar.getTimeInMillis(), 1000*60, pendingIntent);
 //        updater = new MinuteUpdater();
 //        updater.run();
     }
