@@ -1,5 +1,6 @@
 package orbital.dingletutors;
 
+import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -19,7 +20,18 @@ import java.util.Calendar;
 
 
 public class MainActivity extends AppCompatActivity {
+    public static boolean active = false;
 
+    @Override
+    public void onStop() {
+        try {
+            CalendarMap.map.save();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        super.onStop();
+        active = false;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,11 +82,17 @@ public class MainActivity extends AppCompatActivity {
         });
 
         try {
-            CalendarMap.mapDir = new File(getFilesDir(), "/map");
-            CalendarMap.mapDir.mkdirs();
-            CalendarMap.map = CalendarMap.init("notifications.map");
-
+            if (!BackgroundNotification.initialized) {
+                Log.v("BackgroundNotification", "not initialized");
+                (new BackgroundNotification()).onReceive(this, new Intent().setAction("android.intent.action.BOOT_COMPLETED"));
+            }
+            while (CalendarMap.isInitializing || CalendarMap.map == null) {
+                Thread.sleep(10);
+            }
             // for testing
+            if (CalendarMap.map.get("5-2017") != null) {
+                Log.v("CalendarMap", "Retrieved stored month");
+            }
             MonthMap testMonth = new MonthMap();
             testMonth.put(Calendar.getInstance().getTime(), new DayMap());
             CalendarMap.map.put("5-2017", testMonth);
@@ -85,6 +103,8 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
+        // mark activity is running
+        active = true;
         // Adding the buttons
 //        LinearLayout buttonPanel = (LinearLayout) findViewById(R.id.buttonPanel);
 //        ButtonCollection collection = new ButtonCollection(buttonPanel, this);

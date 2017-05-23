@@ -26,16 +26,62 @@ public class CalendarMap extends HashMap<String, MonthMap> {
     // used to hold the CalendarMap if needed
     public static CalendarMap map;
     public static File mapDir;
+    public static boolean isInitializing = false;
+    private static boolean updating = false;
     // may have to change between sd and phone memory
 //    public static final String data = Environment.getDataDirectory().getPath();
 //    public static final String root = "/DingleTutors/";
 
-
-    String fileName;
+    public String fileName;
 
     public CalendarMap(String fileName) {
         super();
         this.fileName = fileName;
+    }
+
+    @Override
+    public MonthMap put(String key, MonthMap value) {
+        while (updating) {
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        updating = true;
+        MonthMap temp = super.put(key, value);
+        updating = false;
+        return temp;
+    }
+
+    @Override
+    public MonthMap get(Object key) {
+        while (updating) {
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        updating = true;
+        MonthMap temp = super.get(key);
+        updating = false;
+        return temp;
+    }
+
+    @Override
+    public MonthMap remove(Object key) {
+        while (updating) {
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        updating = true;
+        MonthMap temp = super.remove(key);
+        updating = false;
+        return temp;
     }
 
     public static CalendarMap init(String fileName) throws Exception {
