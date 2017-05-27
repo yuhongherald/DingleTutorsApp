@@ -13,11 +13,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.Toast;
 
 import com.roomorama.caldroid.CaldroidFragment;
 import com.roomorama.caldroid.CaldroidListener;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -26,9 +29,11 @@ import java.util.Set;
 
 
 public class CalendarFragment extends Fragment {
+    MonthMap selectedMonth;
+    DayMap selectedDay;
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.calendar, container, false);
+    public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
+        final View v = inflater.inflate(R.layout.calendar, container, false);
 
         final CaldroidFragment caldroidFragment = new CaldroidFragment();
         Bundle args = new Bundle();
@@ -52,6 +57,19 @@ public class CalendarFragment extends Fragment {
             public void onSelectDate(Date date, View view) {
                 Toast.makeText(getActivity().getApplicationContext(), formatter.format(date),
                         Toast.LENGTH_SHORT).show();
+                if (selectedDay != null && selectedDay.isEmpty()) {
+                    selectedMonth.remove(selectedDay.key);
+                }
+                selectedDay = selectedMonth.get(formatter.format(date));
+                if (selectedDay == null) {
+                    selectedDay = new DayMap(formatter.format(date));
+                    selectedMonth.put(selectedDay.key, selectedDay);
+                }
+                // I create a popup window and supply it with DayMap
+                Popup popup = new Popup(getActivity(), getView(), selectedDay,
+                        formatter.format(date), R.id.view_lesson);
+                popup.updateList();
+                popup.showPopup();
             }
 
             @Override
@@ -59,14 +77,24 @@ public class CalendarFragment extends Fragment {
                 String text = "month: " + month + " year: " + year;
                 Toast.makeText(getActivity().getApplicationContext(), text,
                         Toast.LENGTH_SHORT).show();
-                MonthMap selectedMonth = CalendarMap.map.get(month + "-" + year);
+                if (selectedMonth != null && selectedMonth.isEmpty()) {
+                    CalendarMap.map.remove(selectedMonth.key);
+                }
+                selectedMonth = CalendarMap.map.get(month + "-" + year);
                 if (selectedMonth != null) {
                     ColorDrawable green = new ColorDrawable(Color.GREEN);
                     // time to mark each days on the calendar
-                    Set<Map.Entry<Date, DayMap>> set = selectedMonth.entrySet();
-                    for (Map.Entry<Date, DayMap> day : set) {
-                        caldroidFragment.setBackgroundDrawableForDate(green, day.getKey());
+                    Set<Map.Entry<String, DayMap>> set = selectedMonth.entrySet();
+                    for (Map.Entry<String, DayMap> day : set) {
+                        try {
+                            caldroidFragment.setBackgroundDrawableForDate(green, formatter.parse(day.getKey()));
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
                     }
+                } else {
+                    selectedMonth = new MonthMap(month + "-" + year);
+                    CalendarMap.map.put(selectedMonth.key, selectedMonth);
                 }
             }
 
@@ -84,6 +112,7 @@ public class CalendarFragment extends Fragment {
                         "Caldroid view is created",
                         Toast.LENGTH_SHORT).show();
                 caldroidFragment.setMinDate(Calendar.getInstance().getTime());
+                selectedMonth = CalendarMap.map.get(caldroidFragment.getMonth() + "-" + caldroidFragment.getYear());
                 // now we have to get the current month and load up all the notifications
             }
 

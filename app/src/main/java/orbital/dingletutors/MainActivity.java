@@ -16,7 +16,9 @@ import android.widget.Toast;
 import android.support.design.widget.TabLayout;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -90,12 +92,14 @@ public class MainActivity extends AppCompatActivity {
                 Thread.sleep(10);
             }
             // for testing
-            if (CalendarMap.map.get("5-2017") != null) {
+            if (CalendarMap.map.get("5-2017") != null && !CalendarMap.map.isEmpty()) {
                 Log.v("CalendarMap", "Retrieved stored month");
             }
-            MonthMap testMonth = new MonthMap();
-            testMonth.put(Calendar.getInstance().getTime(), new DayMap());
-            CalendarMap.map.put("5-2017", testMonth);
+            MonthMap testMonth = new MonthMap("5-2017");
+            final SimpleDateFormat formatter = new SimpleDateFormat("dd MMM yyyy");
+            String dayKey = formatter.format(Calendar.getInstance().getTime());
+            testMonth.put(dayKey, new DayMap(dayKey));
+            CalendarMap.map.put(testMonth.key, testMonth);
             // this is for test save only
             CalendarMap.map.save();
 

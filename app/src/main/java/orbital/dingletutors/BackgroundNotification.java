@@ -11,7 +11,7 @@ import java.io.File;
 import java.util.Calendar;
 
 /**
- * Created by scooby214 on 22/5/2017.
+ * Created by Herald on 22/5/2017.
  */
 
 public class BackgroundNotification extends BroadcastReceiver {
@@ -44,7 +44,5 @@ public class BackgroundNotification extends BroadcastReceiver {
         //alarm.cancel(pendingIntent);
         // somehow this thing is not very precise
         alarm.setRepeating(AlarmManager.RTC, calendar.getTimeInMillis(), 1000*60, pendingIntent);
-//        updater = new MinuteUpdater();
-//        updater.run();
     }
 }

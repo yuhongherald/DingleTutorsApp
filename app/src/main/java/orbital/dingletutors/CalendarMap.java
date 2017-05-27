@@ -27,7 +27,7 @@ public class CalendarMap extends HashMap<String, MonthMap> {
     public static CalendarMap map;
     public static File mapDir;
     public static boolean isInitializing = false;
-    private static boolean updating = false;
+    public static boolean updating = false;
     // may have to change between sd and phone memory
 //    public static final String data = Environment.getDataDirectory().getPath();
 //    public static final String root = "/DingleTutors/";
