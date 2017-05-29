@@ -48,7 +48,7 @@ public class Popup {
         this.listMember = listMember;
         this.context = context;
         this.anchorView = anchorView;
-
+        
         // use container as a viewgroup or null
         //View popupView = getActivity().getLayoutInflater().inflate(R.layout.popup, null);
         popupView = ((LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE))
