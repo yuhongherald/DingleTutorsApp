@@ -9,6 +9,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +32,7 @@ import java.util.Set;
 public class CalendarFragment extends Fragment {
     MonthMap selectedMonth;
     DayMap selectedDay;
+    Popup popup;
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
         final View v = inflater.inflate(R.layout.calendar, container, false);
@@ -58,15 +60,21 @@ public class CalendarFragment extends Fragment {
                 Toast.makeText(getActivity().getApplicationContext(), formatter.format(date),
                         Toast.LENGTH_SHORT).show();
                 if (selectedDay != null && selectedDay.isEmpty()) {
-                    selectedMonth.remove(selectedDay.key);
+                    if (selectedMonth.remove(selectedDay.key) == null) {
+                        Log.v("SelectDate", "Invalid key mapping when tried to remove.");
+                    } else {
+                        Log.v("SelectDate", "Deleting previous day mapping");
+
+                    }
                 }
                 selectedDay = selectedMonth.get(formatter.format(date));
                 if (selectedDay == null) {
                     selectedDay = new DayMap(formatter.format(date));
                     selectedMonth.put(selectedDay.key, selectedDay);
+                    Log.v("SelectDate", "New day created and added to map.");
                 }
                 // I create a popup window and supply it with DayMap
-                Popup popup = new Popup(getActivity(), getView(), selectedDay,
+                popup = new Popup(getActivity(), getView(), selectedDay,
                         formatter.format(date), R.id.view_lesson);
                 popup.updateList();
                 popup.showPopup();

@@ -66,6 +66,7 @@ public class Popup {
         location = new int[2];
         anchorView.getLocationOnScreen(location);
         initialized = true;
+        Log.v("Popup", "created");
     }
 
     public void updateList() {
@@ -96,6 +97,7 @@ public class Popup {
             }
             list.addView(layout);
         }
+        Log.v("Popup", "updated");
     }
 
     // can access treemap directly to add/remove elements so not bothered
@@ -103,5 +105,6 @@ public class Popup {
     public void showPopup() {
         popupWindow.showAtLocation(anchorView, Gravity.NO_GRAVITY,
                 location[0] + anchorView.getWidth() / 2, location[1] + anchorView.getHeight() / 2);
+        Log.v("Popup", "shown");
     }
 }
