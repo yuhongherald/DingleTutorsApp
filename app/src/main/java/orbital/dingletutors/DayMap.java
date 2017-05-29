@@ -9,14 +9,14 @@ import java.util.TreeMap;
  * Created by Herald on 22/5/2017.
  */
 
-public class DayMap extends TreeMap<String, Bundle> {
+public class DayMap extends TreeMap<Integer, Bundle> {
     public String key; // dd MMM YYYY format
     public DayMap(String key) {
         this.key = key;
     }
 
     @Override
-    public Bundle put(String key, Bundle value) {
+    public Bundle put(Integer key, Bundle value) {
         while (CalendarMap.updating) {
             try {
                 Thread.sleep(10);

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -27,9 +28,9 @@ import java.util.TreeMap;
  * currently only using getCharSequence
  */
 
-public class Popup {
+public class Popup<Key> {
 
-    TreeMap<String, Bundle> map;
+    TreeMap<Key, Bundle> map;
     String title;
     int listMember;
 
@@ -41,8 +42,8 @@ public class Popup {
     int[] location;
     boolean initialized;
 
-    Popup(Context context, View anchorView, TreeMap<String, Bundle> map,
-          String title, int listMember) {
+    Popup(Context context, View anchorView, TreeMap<Key, Bundle> map,
+          String title, int listMember, View.OnClickListener buttonListener) {
         this.map = map;
         this.title = title;
         this.listMember = listMember;
@@ -53,14 +54,19 @@ public class Popup {
         //View popupView = getActivity().getLayoutInflater().inflate(R.layout.popup, null);
         popupView = ((LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE))
                 .inflate(R.layout.popup, null);
+        popupView.setBackgroundColor(ContextCompat.getColor(context, R.color.popup));
+        popupView.findViewById(R.id.add_button).setOnClickListener(buttonListener);
+
         popupWindow = new PopupWindow(popupView,
-                (int) (ViewGroup.LayoutParams.MATCH_PARENT*0.8f),
-                (int) (ViewGroup.LayoutParams.MATCH_PARENT*0.8f));
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
         // popupWindow.setContentView(popupView);
         TextView tv = (TextView) popupView.findViewById(R.id.title);
         tv.setText(title);
 
         popupWindow.setFocusable(true);
+        ColorDrawable background = new ColorDrawable();
+        background.setColor(ContextCompat.getColor(context, R.color.popup));
         popupWindow.setBackgroundDrawable(new ColorDrawable());
 
         location = new int[2];
@@ -78,10 +84,12 @@ public class Popup {
         // assuming there's not many lessons on 1 day
         ListView list = (ListView) popupView.findViewById(R.id.centrePanel);
         list.removeAllViewsInLayout();
-        for (Map.Entry<String, Bundle> pair : map.entrySet()) {
+        for (Map.Entry<Key, Bundle> pair : map.entrySet()) {
             Bundle b = pair.getValue();
             RelativeLayout layout = (RelativeLayout) ((LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE))
                     .inflate(listMember, null);
+            // use set tag and get tag to attach objects to a view
+
             for (int i = 0; i < layout.getChildCount(); i++) {
                 View v = layout.getChildAt(i);
                 if (v instanceof TextView) {
@@ -104,7 +112,7 @@ public class Popup {
 
     public void showPopup() {
         popupWindow.showAtLocation(anchorView, Gravity.NO_GRAVITY,
-                location[0] + anchorView.getWidth() / 2, location[1] + anchorView.getHeight() / 2);
+                location[0], location[1] + anchorView.getHeight() / 10);
         Log.v("Popup", "shown");
     }
 }

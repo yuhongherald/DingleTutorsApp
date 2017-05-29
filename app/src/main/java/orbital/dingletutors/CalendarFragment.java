@@ -32,7 +32,7 @@ import java.util.Set;
 public class CalendarFragment extends Fragment {
     MonthMap selectedMonth;
     DayMap selectedDay;
-    Popup popup;
+    Popup<Integer> popup;
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
         final View v = inflater.inflate(R.layout.calendar, container, false);
@@ -74,8 +74,15 @@ public class CalendarFragment extends Fragment {
                     Log.v("SelectDate", "New day created and added to map.");
                 }
                 // I create a popup window and supply it with DayMap
-                popup = new Popup(getActivity(), getView(), selectedDay,
-                        formatter.format(date), R.id.view_lesson);
+                // and the list element format
+                // and the button on click listener
+                popup = new Popup<Integer>(getActivity(), getView(), selectedDay,
+                        formatter.format(date), R.layout.view_lesson, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        MainActivity.addLesson(v);
+                    }
+                });
                 popup.updateList();
                 popup.showPopup();
             }

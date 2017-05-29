@@ -19,6 +19,7 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.TreeMap;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -140,4 +141,22 @@ public class MainActivity extends AppCompatActivity {
             return 2;
         }
     }
+
+    // Button methods for XML to access
+    public static void addLesson(View v) {
+        Log.v("Button", "Add lesson");
+        // create a new popup
+        // Popup<String> p = new Popup<String>(v.getContext(), v, null, "Add new lesson", R.layout.add_lesson, null);
+    }
+
+    public void editLesson(View v) {
+        Log.v("Button", "Edit lesson");
+        // v.getTag(Tags.data);
+    }
+
+    public void removeLesson(View v) {
+        Log.v("Button", "Remove lesson");
+        // ((TreeMap<String, Bundle>) v.getTag(Tags.parent)).remove((String) v.getTag(Tags.key));
+    }
+
 }

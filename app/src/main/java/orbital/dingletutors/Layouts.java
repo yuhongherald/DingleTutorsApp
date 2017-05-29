@@ -5,7 +5,7 @@ import android.view.LayoutInflater;
 import android.widget.RelativeLayout;
 
 /**
- * Created by Herald on 27/5/2017.
+ * Created by Herald on 27/5/2017. Not used anymore.
  */
 
 public class Layouts {
