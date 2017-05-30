@@ -6,25 +6,60 @@
     android:background="@android:color/holo_orange_dark"
     android:id="@+id/calendar_container">
 
-    <LinearLayout
-        android:orientation="horizontal"
+    <!--<LinearLayout-->
+        <!--android:orientation="horizontal"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:id="@+id/centrePanel">-->
+        <!--<Button-->
+            <!--android:layout_width="fill_parent"-->
+            <!--android:layout_weight="1"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:id="@+id/newLessonBtn"-->
+            <!--android:text="New Lesson"/>-->
+        <!--&lt;!&ndash;This second btn can remove if unnecessary&ndash;&gt;-->
+        <!--<Button-->
+            <!--android:layout_weight="1"-->
+            <!--android:layout_width="fill_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:id="@+id/viewLessonsBtn"-->
+            <!--android:text="View Lessons"/>-->
+    <!--</LinearLayout>-->
+    <RelativeLayout
+        android:id="@+id/topPanel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/centrePanel">
-        <Button
-            android:layout_width="fill_parent"
-            android:layout_weight="1"
+        android:background="@color/popup">
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/newLessonBtn"
-            android:text="New Lesson"/>
-        <!--This second btn can remove if unnecessary-->
+            android:text="default title\n hi"
+            android:textSize="32dp"
+            android:layout_margin="8dp"
+            android:textColor="@color/white"
+            android:id="@+id/title"
+            android:layout_alignParentLeft="true"
+            android:minLines="2"/>
         <Button
-            android:layout_weight="1"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/viewLessonsBtn"
-            android:text="View Lessons"/>
-    </LinearLayout>
+            android:layout_width="62dp"
+            android:layout_height="62dp"
+            android:id="@+id/add_button"
+            android:layout_margin="8dp"
+            android:text="+"
+            android:textSize="33dp"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/list_lessons"/>
+        <ImageButton
+            android:layout_width="62dp"
+            android:layout_height="62dp"
+            android:src="@drawable/view"
+            android:id="@+id/list_lessons"
+            android:layout_margin="8dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:scaleType="fitXY"/>
+        
+    </RelativeLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

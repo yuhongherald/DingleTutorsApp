@@ -32,7 +32,6 @@ public class RandomFragment extends Fragment {
         RandomFragment f = new RandomFragment();
         Bundle b = new Bundle();
         b.putString("msg", text);
-
         f.setArguments(b);
 
         return f;

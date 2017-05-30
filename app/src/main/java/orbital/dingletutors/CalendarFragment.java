@@ -14,8 +14,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.roomorama.caldroid.CaldroidFragment;
@@ -38,21 +40,29 @@ public class CalendarFragment extends Fragment {
         final View v = inflater.inflate(R.layout.calendar, container, false);
 
         final CaldroidFragment caldroidFragment = new CaldroidFragment();
+        final SimpleDateFormat formatter = new SimpleDateFormat("dd MMM yyyy,\nEEEE");
         Bundle args = new Bundle();
         Calendar calendar = Calendar.getInstance();
         args.putInt("month", calendar.get(Calendar.MONTH) + 1);
         args.putInt("year", calendar.get(Calendar.YEAR));
         args.putInt(CaldroidFragment.START_DAY_OF_WEEK, CaldroidFragment.MONDAY);
-        args.putBoolean(CaldroidFragment.SIX_WEEKS_IN_CALENDAR, false);
+        args.putBoolean(CaldroidFragment.SIX_WEEKS_IN_CALENDAR, true);
         caldroidFragment.setArguments(args);
+        caldroidFragment.setMinDate(calendar.getTime());
 
-        FragmentTransaction t = getChildFragmentManager().beginTransaction();
+        // setting the initial date in text view
+        final TextView tv = (TextView) v.findViewById(R.id.title);
+        Date date = calendar.getTime();
+        tv.setText(formatter.format(date));
+        caldroidFragment.refreshView();
+
+        final FragmentTransaction t = getFragmentManager().beginTransaction();
         t.replace(R.id.calendar, caldroidFragment);
         t.commit();
 
         // time to get hashmap from file
 
-        final SimpleDateFormat formatter = new SimpleDateFormat("dd MMM yyyy");
+
         final CaldroidListener listener = new CaldroidListener() {
 
             @Override
@@ -76,22 +86,23 @@ public class CalendarFragment extends Fragment {
                 // I create a popup window and supply it with DayMap
                 // and the list element format
                 // and the button on click listener
-                popup = new Popup<Integer>(getActivity(), getView(), selectedDay,
-                        formatter.format(date), R.layout.view_lesson, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        MainActivity.addLesson(v);
-                    }
-                });
-                popup.updateList();
-                popup.showPopup();
+//                popup = new Popup<Integer>(getActivity(), getView(), selectedDay,
+//                        formatter.format(date), R.layout.view_lesson, new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        MainActivity.addLesson(v);
+//                    }
+//                });
+//                popup.updateList();
+//                popup.showPopup();
+                tv.setText(formatter.format(date));
             }
 
             @Override
             public void onChangeMonth(int month, int year) {
                 String text = "month: " + month + " year: " + year;
-                Toast.makeText(getActivity().getApplicationContext(), text,
-                        Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getActivity().getApplicationContext(), text,
+//                        Toast.LENGTH_SHORT).show();
                 if (selectedMonth != null && selectedMonth.isEmpty()) {
                     CalendarMap.map.remove(selectedMonth.key);
                 }
@@ -123,11 +134,10 @@ public class CalendarFragment extends Fragment {
 
             @Override
             public void onCaldroidViewCreated() {
-                Toast.makeText(getActivity().getApplicationContext(),
-                        "Caldroid view is created",
-                        Toast.LENGTH_SHORT).show();
-                caldroidFragment.setMinDate(Calendar.getInstance().getTime());
-                selectedMonth = CalendarMap.map.get(caldroidFragment.getMonth() + "-" + caldroidFragment.getYear());
+//                Toast.makeText(getActivity().getApplicationContext(),
+//                        "Caldroid view is created",
+//                        Toast.LENGTH_SHORT).show();
+
                 // now we have to get the current month and load up all the notifications
             }
 
@@ -135,7 +145,7 @@ public class CalendarFragment extends Fragment {
         caldroidFragment.setCaldroidListener(listener);
 
         // defining what happens when we click the new lesson button
-        Button newLessonBtn = (Button) v.findViewById(R.id.newLessonBtn);
+        Button newLessonBtn = (Button) v.findViewById(R.id.add_button);
         newLessonBtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
@@ -149,6 +159,21 @@ public class CalendarFragment extends Fragment {
                         .commit();
             }
         });
+        ImageButton viewLessonBtn = (ImageButton) v.findViewById(R.id.list_lessons);
+        viewLessonBtn.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                LessonListFragment viewLesson = LessonListFragment.newInstance(selectedDay);
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                // putting animation for fragment transaction
+                transaction.setCustomAnimations(R.anim.slide_in_up, android.R.anim.fade_out,
+                        android.R.anim.fade_in, R.anim.slide_out_down);
+                transaction.replace(R.id.calendar,viewLesson) // carry out the transaction
+                        .addToBackStack(null) // add to backstack
+                        .commit();
+            }
+        });
+
         return v;
     }
 
