@@ -27,20 +27,22 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Map;
 import java.util.Set;
 
 
 public class CalendarFragment extends Fragment {
-    MonthMap selectedMonth;
-    DayMap selectedDay;
-    Popup<Integer> popup;
+    final CaldroidFragment caldroidFragment = new CaldroidFragment();
+    final SimpleDateFormat formatter = new SimpleDateFormat("dd MMM yyyy");
+    final ColorDrawable green = new ColorDrawable(Color.GREEN);
+    final ColorDrawable white = new ColorDrawable(Color.WHITE);
+    public static MonthMap selectedMonth;
+    public static DayMap selectedDay;
+    public static Lesson selectedLesson;
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
         final View v = inflater.inflate(R.layout.calendar, container, false);
-
-        final CaldroidFragment caldroidFragment = new CaldroidFragment();
-        final SimpleDateFormat formatter = new SimpleDateFormat("dd MMM yyyy,\nEEEE");
         Bundle args = new Bundle();
         Calendar calendar = Calendar.getInstance();
         args.putInt("month", calendar.get(Calendar.MONTH) + 1);
@@ -69,46 +71,24 @@ public class CalendarFragment extends Fragment {
             public void onSelectDate(Date date, View view) {
                 Toast.makeText(getActivity().getApplicationContext(), formatter.format(date),
                         Toast.LENGTH_SHORT).show();
-                if (selectedDay != null && selectedDay.isEmpty()) {
-                    if (selectedMonth.remove(selectedDay.key) == null) {
-                        Log.v("SelectDate", "Invalid key mapping when tried to remove.");
-                    } else {
-                        Log.v("SelectDate", "Deleting previous day mapping");
-
-                    }
-                }
+                deleteDay();
                 selectedDay = selectedMonth.get(formatter.format(date));
                 if (selectedDay == null) {
-                    selectedDay = new DayMap(formatter.format(date));
-                    selectedMonth.put(selectedDay.key, selectedDay);
-                    Log.v("SelectDate", "New day created and added to map.");
+                    selectedDay = new DayMap(formatter.format(date), selectedMonth);
                 }
-                // I create a popup window and supply it with DayMap
-                // and the list element format
-                // and the button on click listener
-//                popup = new Popup<Integer>(getActivity(), getView(), selectedDay,
-//                        formatter.format(date), R.layout.view_lesson, new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        MainActivity.addLesson(v);
-//                    }
-//                });
-//                popup.updateList();
-//                popup.showPopup();
+
                 tv.setText(formatter.format(date));
             }
 
             @Override
             public void onChangeMonth(int month, int year) {
+                boundDates(month, year);
                 String text = "month: " + month + " year: " + year;
 //                Toast.makeText(getActivity().getApplicationContext(), text,
 //                        Toast.LENGTH_SHORT).show();
-                if (selectedMonth != null && selectedMonth.isEmpty()) {
-                    CalendarMap.map.remove(selectedMonth.key);
-                }
+                deleteMonth();
                 selectedMonth = CalendarMap.map.get(month + "-" + year);
                 if (selectedMonth != null) {
-                    ColorDrawable green = new ColorDrawable(Color.GREEN);
                     // time to mark each days on the calendar
                     Set<Map.Entry<String, DayMap>> set = selectedMonth.entrySet();
                     for (Map.Entry<String, DayMap> day : set) {
@@ -119,8 +99,7 @@ public class CalendarFragment extends Fragment {
                         }
                     }
                 } else {
-                    selectedMonth = new MonthMap(month + "-" + year);
-                    CalendarMap.map.put(selectedMonth.key, selectedMonth);
+                    selectedMonth = new MonthMap(month + "-" + year, CalendarMap.map);
                 }
             }
 
@@ -143,6 +122,10 @@ public class CalendarFragment extends Fragment {
 
         };
         caldroidFragment.setCaldroidListener(listener);
+        // initialize selected month and day
+        Calendar cal = Calendar.getInstance();
+        listener.onChangeMonth(cal.get(Calendar.MONTH), cal.get(Calendar.YEAR));
+        listener.onSelectDate(cal.getTime(), v);
 
         // defining what happens when we click the new lesson button
         Button newLessonBtn = (Button) v.findViewById(R.id.add_button);
@@ -159,24 +142,66 @@ public class CalendarFragment extends Fragment {
                         .commit();
             }
         });
+
         ImageButton viewLessonBtn = (ImageButton) v.findViewById(R.id.list_lessons);
         viewLessonBtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
+                if (getFragmentManager().findFragmentByTag("viewLesson") != null) {
+                    Log.v("viewLesson", "exists");
+                    return;
+                }
                 LessonListFragment viewLesson = LessonListFragment.newInstance(selectedDay);
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
                 // putting animation for fragment transaction
                 transaction.setCustomAnimations(R.anim.slide_in_up, android.R.anim.fade_out,
                         android.R.anim.fade_in, R.anim.slide_out_down);
-                transaction.replace(R.id.calendar,viewLesson) // carry out the transaction
+                transaction.replace(R.id.calendar,viewLesson,"viewLesson") // carry out the transaction
                         .addToBackStack(null) // add to backstack
                         .commit();
             }
         });
 
+
         return v;
     }
 
+    public void deleteDay() {
+        if (selectedDay != null && selectedDay.isEmpty()) {
+            // uncolor the date on the calendar
+            try {
+                caldroidFragment.setBackgroundDrawableForDate(white, formatter.parse(selectedDay.key));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            selectedDay.delete();
+        }
+    }
+
+    public void deleteMonth() {
+        deleteDay();
+        if (selectedMonth != null && selectedMonth.isEmpty()) {
+            selectedMonth.delete();
+        }
+    }
+
+    public void boundDates(int month, int year) {
+        caldroidFragment.clearDisableDates();
+        Calendar cal = Calendar.getInstance();
+        Date currentDate = cal.getTime();
+        cal.clear();
+        cal.set(Calendar.MONTH, month - 1);
+        cal.set(Calendar.YEAR, year);
+        cal.set(Calendar.DAY_OF_MONTH, cal.getActualMinimum(Calendar.DAY_OF_MONTH));
+        Date monthStart = cal.getTime();
+        cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
+        Date monthEnd = cal.getTime();
+
+        // always take the later date
+        caldroidFragment.setMinDate(currentDate.before(monthStart) ? monthStart : currentDate);
+        caldroidFragment.setMaxDate(currentDate.before(monthEnd) ? monthEnd : currentDate);
+        caldroidFragment.refreshView();
+    }
 
     public static CalendarFragment newInstance() {
 

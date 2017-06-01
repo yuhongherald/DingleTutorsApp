@@ -9,14 +9,21 @@ import java.util.TreeMap;
  * Created by Herald on 22/5/2017.
  */
 
-public class DayMap extends TreeMap<Integer, Bundle> {
+public class DayMap extends TreeMap<Integer, Lesson> {
     public String key; // dd MMM YYYY format
-    public DayMap(String key) {
+    public MonthMap parent;
+    public DayMap(String key, MonthMap parent) {
         this.key = key;
+        this.parent = parent;
+        parent.put(key, this);
+    }
+
+    public boolean delete() {
+        return (this.parent.remove(this.key) != null);
     }
 
     @Override
-    public Bundle put(Integer key, Bundle value) {
+    public Lesson put(Integer key, Lesson value) {
         while (CalendarMap.updating) {
             try {
                 Thread.sleep(10);
@@ -25,13 +32,13 @@ public class DayMap extends TreeMap<Integer, Bundle> {
             }
         }
         CalendarMap.updating = true;
-        Bundle temp = super.put(key, value);
+        Lesson temp = super.put(key, value);
         CalendarMap.updating = false;
         return temp;
     }
 
     @Override
-    public Bundle get(Object key) {
+    public Lesson get(Object key) {
         while (CalendarMap.updating) {
             try {
                 Thread.sleep(10);
@@ -40,13 +47,13 @@ public class DayMap extends TreeMap<Integer, Bundle> {
             }
         }
         CalendarMap.updating = true;
-        Bundle temp = super.get(key);
+        Lesson temp = super.get(key);
         CalendarMap.updating = false;
         return temp;
     }
 
     @Override
-    public Bundle remove(Object key) {
+    public Lesson remove(Object key) {
         while (CalendarMap.updating) {
             try {
                 Thread.sleep(10);
@@ -55,7 +62,7 @@ public class DayMap extends TreeMap<Integer, Bundle> {
             }
         }
         CalendarMap.updating = true;
-        Bundle temp = super.remove(key);
+        Lesson temp = super.remove(key);
         CalendarMap.updating = false;
         return temp;
     }

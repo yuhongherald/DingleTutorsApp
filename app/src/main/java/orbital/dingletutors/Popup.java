@@ -82,7 +82,7 @@ public class Popup<Key> {
         }
         // the inefficient method: clear and put lessons again
         // assuming there's not many lessons on 1 day
-        ListView list = (ListView) popupView.findViewById(R.id.centrePanel);
+        ListView list = (ListView) popupView;
         list.removeAllViewsInLayout();
         for (Map.Entry<Key, Bundle> pair : map.entrySet()) {
             Bundle b = pair.getValue();
@@ -112,7 +112,7 @@ public class Popup<Key> {
 
     public void showPopup() {
         popupWindow.showAtLocation(anchorView, Gravity.NO_GRAVITY,
-                location[0], location[1] + anchorView.getHeight() / 10);
+                location[0], location[1]);
         Log.v("Popup", "shown");
     }
 }

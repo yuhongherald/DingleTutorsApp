@@ -9,8 +9,15 @@ import java.util.HashMap;
 
 public class MonthMap extends HashMap<String, DayMap> {
     public String key; // format x-xxxx, not padded with 0s
-    public MonthMap(String key) {
+    public CalendarMap parent;
+    public MonthMap(String key, CalendarMap parent) {
         this.key = key;
+        this.parent = parent;
+        parent.put(key, this);
+    }
+
+    public boolean delete() {
+        return (this.parent.remove(this.key) != null);
     }
 
     @Override

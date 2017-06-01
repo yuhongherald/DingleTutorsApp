@@ -3,13 +3,40 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/holo_green_dark" >
-
     <EditText
-        android:id="@+id/editText"
+        android:id="@+id/title"
+        android:textSize="36dp"
+        android:layout_margin="4dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
         android:inputType="textNoSuggestions"
-        android:hint="Enter something..."/>
+        android:hint="Enter class name"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"/>
+    <Button
+        android:id="@+id/class_preset"
+        android:text="Preset"
+        android:textSize="24dp"
+        android:layout_margin="4dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/title"
+        android:layout_alignParentLeft="true"/>
+    <Button
+        android:id="@+id/add_student"
+        android:text="Add student"
+        android:textSize="24dp"
+        android:layout_margin="4dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/title"
+        android:layout_toRightOf="@+id/class_preset"/>
+
+    <ListView
+        android:id="@+id/list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/class_preset">
+        <!--Will probably be filling with relativelayouts-->
+    </ListView>
 </RelativeLayout>

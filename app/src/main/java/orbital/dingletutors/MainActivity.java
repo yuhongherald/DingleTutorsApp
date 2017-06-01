@@ -29,6 +29,8 @@ public class MainActivity extends AppCompatActivity {
     public void onStop() {
         try {
             CalendarMap.map.save();
+            ClassPresetMap.map.save();
+            StudentPresetMap.map.save();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -85,6 +87,15 @@ public class MainActivity extends AppCompatActivity {
         });
 
         try {
+            // init class and students presets
+            ClassPresetMap.mapDir = new File(getFilesDir(), "/map");
+            ClassPresetMap.mapDir.mkdirs();
+            ClassPresetMap.map = ClassPresetMap.init("classes.map");
+            StudentPresetMap.mapDir = new File(getFilesDir(), "/map");
+            StudentPresetMap.mapDir.mkdirs();
+            StudentPresetMap.map = StudentPresetMap.init("students.map");
+
+
             if (!BackgroundNotification.initialized) {
                 Log.v("BackgroundNotification", "not initialized");
                 (new BackgroundNotification()).onReceive(this, new Intent().setAction("android.intent.action.BOOT_COMPLETED"));
@@ -96,10 +107,10 @@ public class MainActivity extends AppCompatActivity {
             if (CalendarMap.map.get("5-2017") != null && !CalendarMap.map.isEmpty()) {
                 Log.v("CalendarMap", "Retrieved stored month");
             }
-            MonthMap testMonth = new MonthMap("5-2017");
+            MonthMap testMonth = new MonthMap("6-2017", CalendarMap.map);
             final SimpleDateFormat formatter = new SimpleDateFormat("dd MMM yyyy");
             String dayKey = formatter.format(Calendar.getInstance().getTime());
-            testMonth.put(dayKey, new DayMap(dayKey));
+            testMonth.put(dayKey, new DayMap(dayKey, testMonth));
             CalendarMap.map.put(testMonth.key, testMonth);
             // this is for test save only
             CalendarMap.map.save();
@@ -147,6 +158,21 @@ public class MainActivity extends AppCompatActivity {
         Log.v("Button", "Add lesson");
         // create a new popup
         // Popup<String> p = new Popup<String>(v.getContext(), v, null, "Add new lesson", R.layout.add_lesson, null);
+    }
+
+    public void viewLessons(View v) {
+        // I create a popup window and supply it with DayMap
+        // and the list element format
+        // and the button on click listener
+//        Popup popup = new Popup<Integer>(this, v, CalendarFragment.selectedDay,
+//                "view lessons", R.layout.view_lesson, new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                MainActivity.addLesson(v);
+//            }
+//        });
+//        popup.updateList();
+//        popup.showPopup();
     }
 
     public void editLesson(View v) {
