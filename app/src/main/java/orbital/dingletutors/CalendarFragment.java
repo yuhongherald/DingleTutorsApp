@@ -138,7 +138,7 @@ public class CalendarFragment extends Fragment {
                 transaction.setCustomAnimations(R.anim.slide_in_up, android.R.anim.fade_out,
                         android.R.anim.fade_in, R.anim.slide_out_down);
                 transaction.replace(R.id.calendar_container,newLesson) // carry out the transaction
-                        .addToBackStack(null) // add to backstack
+                        .addToBackStack("newLesson") // add to backstack
                         .commit();
             }
         });
@@ -157,7 +157,7 @@ public class CalendarFragment extends Fragment {
                 transaction.setCustomAnimations(R.anim.slide_in_up, android.R.anim.fade_out,
                         android.R.anim.fade_in, R.anim.slide_out_down);
                 transaction.replace(R.id.calendar,viewLesson,"viewLesson") // carry out the transaction
-                        .addToBackStack(null) // add to backstack
+                        .addToBackStack("viewLesson") // add to backstack
                         .commit();
             }
         });

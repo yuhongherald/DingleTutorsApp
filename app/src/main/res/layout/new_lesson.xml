@@ -14,14 +14,26 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"/>
     <EditText
-        android:id="@+id/time"
+        android:id="@+id/hours"
         android:textSize="20dp"
         android:layout_margin="4dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:inputType="time"
-        android:hint="Time"
+        android:inputType="number"
+        android:maxLength="2"
+        android:hint="hrs"
         android:layout_toRightOf="@+id/title"
+        android:layout_alignParentTop="true"/>
+    <EditText
+        android:id="@+id/minutes"
+        android:textSize="20dp"
+        android:layout_margin="4dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:maxLength="2"
+        android:hint="min"
+        android:layout_toRightOf="@+id/hours"
         android:layout_alignParentTop="true"/>
     <Spinner
         android:id="@+id/level"
@@ -29,7 +41,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:prompt="@string/level"
-        android:layout_toRightOf="@+id/time"
+        android:layout_toRightOf="@+id/minutes"
         android:layout_alignParentTop="true"></Spinner>
     <Button
         android:id="@+id/load_class"
@@ -76,12 +88,10 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/load_class"
         android:layout_toRightOf="@+id/add_student"/>
-
-    <ListView
-        android:id="@+id/list"
+    <include
+        layout="@layout/linear_scrollable"
+        android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/add_student">
-        <!--Will probably be filling with relativelayouts-->
-    </ListView>
+        android:layout_below="@id/add_student"/>
 </RelativeLayout>

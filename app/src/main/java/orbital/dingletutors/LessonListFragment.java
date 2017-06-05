@@ -31,7 +31,7 @@ public class LessonListFragment extends Fragment{
         // static reference
 
         // for testing listview
-        Lesson temp = new Lesson(0, 0, "test", 0, CalendarFragment.selectedDay);
+        Lesson temp = new Lesson("00", "00", "test", 0, CalendarFragment.selectedDay);
         updateList(list);
         temp.delete();
 //        ArrayList<TextView> list = new ArrayList<TextView>();
@@ -63,7 +63,7 @@ public class LessonListFragment extends Fragment{
             layout = (RelativeLayout) getActivity().getLayoutInflater()
                     .inflate(R.layout.view_lesson, null);
             final Lesson lesson = entry.getValue();
-            ((TextView) layout.findViewById(R.id.time)).setText(lesson.displayTime);
+            ((TextView) layout.findViewById(R.id.time)).setText(lesson.hours + ":" + lesson.minutes);
             ((TextView) layout.findViewById(R.id.name)).setText(lesson.name);
             ((TextView) layout.findViewById(R.id.level)).setText(lesson.levels[lesson.level]);
             ((TextView) layout.findViewById(R.id.size)).setText(Integer.toString(lesson.size()));

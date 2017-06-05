@@ -18,29 +18,50 @@ public class Lesson extends TreeMap<String, Student> {
     public DayMap parent;
     public int time; // in minutes, also the key
 
-    public String displayTime; // in xx:yy 24h
+    public String hours;
+    public String minutes;
     public String name;
     public int level;
 
-    Lesson(int hours, int minutes, String name, int level, DayMap parent) {
-        this.time = hours * 60 + minutes;
-        this.displayTime = hours + ":" + minutes;
+    Lesson(String hours, String minutes, String name, int level, DayMap parent) {
+        if (hours != null || minutes != null) {
+            this.time = Integer.parseInt(hours) * 60 + Integer.parseInt(minutes);
+            if (parent != null) {
+                if (parent.get(this.time) == null) {
+                    parent.put(this.time, this);
+                } else {
+                    Log.v("Lesson", "conflict");
+                }
+            }
+        }
+        this.hours = hours;
+        this.minutes = minutes;
         this.name = name;
         this.level = level;
         this.parent = parent;
-        if (parent != null) {
-            if (parent.get(this.time) == null) {
-                parent.put(this.time, this);
-            } else {
-                Log.v("Lesson", "conflict");
-            }
-        } else {
-            this.displayTime = null;
-        }
     }
 
     public boolean delete() {
         return (this.parent != null && this.parent.remove(this.time) != null);
+    }
+
+    public String remap(String hours, String minutes, String name, int level) {
+        this.delete();
+        if (hours != null || minutes != null) {
+            this.time = Integer.parseInt(hours) * 60 + Integer.parseInt(minutes);
+            Lesson temp = parent.get(this.time);
+            if (temp == null) {
+                parent.put(this.time, this);
+            } else {
+                Log.v("Lesson", "conflict");
+                return temp.name;
+            }
+        }
+        this.hours = hours;
+        this.minutes = minutes;
+        this.name = name;
+        this.level = level;
+        return null;
     }
 
     @Override
