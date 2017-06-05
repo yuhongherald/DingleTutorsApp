@@ -13,14 +13,14 @@ import java.util.TreeMap;
 
 public class Lesson extends TreeMap<String, Student> {
     public static final String[] indexes = {"time", "displayTime", "name", "level"};
-    public static final String[] levels = {"default"};
+    public static final String[] levels = {"default", "another one", "try me"};
 
-    public final DayMap parent;
-    public final int time; // in minutes, also the key
+    public DayMap parent;
+    public int time; // in minutes, also the key
 
-    public final String displayTime; // in xx:yy 24h
-    public final String name;
-    public final int level;
+    public String displayTime; // in xx:yy 24h
+    public String name;
+    public int level;
 
     Lesson(int hours, int minutes, String name, int level, DayMap parent) {
         this.time = hours * 60 + minutes;
@@ -28,15 +28,19 @@ public class Lesson extends TreeMap<String, Student> {
         this.name = name;
         this.level = level;
         this.parent = parent;
-        if (parent.get(this.time) == null) {
-            parent.put(this.time, this);
+        if (parent != null) {
+            if (parent.get(this.time) == null) {
+                parent.put(this.time, this);
+            } else {
+                Log.v("Lesson", "conflict");
+            }
         } else {
-            Log.v("Lesson", "conflict");
+            this.displayTime = null;
         }
     }
 
     public boolean delete() {
-        return (this.parent.remove(this) != null);
+        return (this.parent != null && this.parent.remove(this.time) != null);
     }
 
     @Override

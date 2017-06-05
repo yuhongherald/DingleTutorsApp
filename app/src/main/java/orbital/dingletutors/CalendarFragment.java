@@ -132,7 +132,7 @@ public class CalendarFragment extends Fragment {
         newLessonBtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-                NewLessonFragment newLesson = new NewLessonFragment();
+                NewLessonFragment newLesson = NewLessonFragment.newInstance(null);
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
                 // putting animation for fragment transaction
                 transaction.setCustomAnimations(R.anim.slide_in_up, android.R.anim.fade_out,

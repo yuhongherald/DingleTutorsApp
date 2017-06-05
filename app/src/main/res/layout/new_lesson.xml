@@ -5,38 +5,83 @@
     android:background="@android:color/holo_green_dark" >
     <EditText
         android:id="@+id/title"
-        android:textSize="36dp"
+        android:textSize="20dp"
         android:layout_margin="4dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:inputType="textNoSuggestions"
-        android:hint="Enter class name"
+        android:hint="Class name"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"/>
-    <Button
-        android:id="@+id/class_preset"
-        android:text="Preset"
-        android:textSize="24dp"
+    <EditText
+        android:id="@+id/time"
+        android:textSize="20dp"
         android:layout_margin="4dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/title"
+        android:inputType="time"
+        android:hint="Time"
+        android:layout_toRightOf="@+id/title"
+        android:layout_alignParentTop="true"/>
+    <Spinner
+        android:id="@+id/level"
+        android:layout_margin="4dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:prompt="@string/level"
+        android:layout_toRightOf="@+id/time"
+        android:layout_alignParentTop="true"></Spinner>
+    <Button
+        android:id="@+id/load_class"
+        android:text="Load"
+        android:textSize="20dp"
+        android:layout_margin="4dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/level"
         android:layout_alignParentLeft="true"/>
+    <Button
+        android:id="@+id/save"
+        android:text="Save"
+        android:textSize="20dp"
+        android:layout_margin="4dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/level"
+        android:layout_toRightOf="@+id/load_class"/>
+    <Button
+        android:id="@+id/cancel"
+        android:text="Cancel"
+        android:textSize="20dp"
+        android:layout_margin="4dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/level"
+        android:layout_toRightOf="@+id/save"/>
     <Button
         android:id="@+id/add_student"
         android:text="Add student"
-        android:textSize="24dp"
+        android:textSize="20dp"
         android:layout_margin="4dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/title"
-        android:layout_toRightOf="@+id/class_preset"/>
+        android:layout_below="@+id/load_class"
+        android:layout_alignParentLeft="true"/>
+    <Button
+        android:id="@+id/load_student"
+        android:text="Load student"
+        android:textSize="20dp"
+        android:layout_margin="4dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/load_class"
+        android:layout_toRightOf="@+id/add_student"/>
 
     <ListView
         android:id="@+id/list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/class_preset">
+        android:layout_below="@+id/add_student">
         <!--Will probably be filling with relativelayouts-->
     </ListView>
 </RelativeLayout>

@@ -3,20 +3,17 @@ package orbital.dingletutors;
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -53,7 +50,7 @@ public class Popup<Key> {
         // use container as a viewgroup or null
         //View popupView = getActivity().getLayoutInflater().inflate(R.layout.popup, null);
         popupView = ((LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE))
-                .inflate(R.layout.popup, null);
+                .inflate(R.layout.linear_scrollable, null);
         popupView.setBackgroundColor(ContextCompat.getColor(context, R.color.popup));
         popupView.findViewById(R.id.add_button).setOnClickListener(buttonListener);
 

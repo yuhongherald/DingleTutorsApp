@@ -1,18 +1,21 @@
 package orbital.dingletutors;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.Collections;
+import org.w3c.dom.Text;
+
 import java.util.Map;
 import java.util.Set;
 
@@ -21,13 +24,16 @@ import java.util.Set;
  */
 
 public class LessonListFragment extends Fragment{
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.popup, container, false);
+        View v = inflater.inflate(R.layout.linear_scrollable, container, false);
+        LinearLayout list = (LinearLayout) v.findViewById(R.id.list);
         // static reference
-        updateList((ListView) v);
 
+        // for testing listview
+        Lesson temp = new Lesson(0, 0, "test", 0, CalendarFragment.selectedDay);
+        updateList(list);
+        temp.delete();
 //        ArrayList<TextView> list = new ArrayList<TextView>();
 //        list.add( (TextView) v.findViewById(R.id.lesson1) );
 //        list.add( (TextView) v.findViewById(R.id.lesson2) );
@@ -43,31 +49,46 @@ public class LessonListFragment extends Fragment{
         return v;
     }
 
-    public void updateList(ListView v) {
+    public void updateList(final LinearLayout list) {
         if (CalendarFragment.selectedDay == null) {
             Log.v("LessonFragment", "selectedDay not initialized");
             return;
         }
-        v.removeAllViewsInLayout(); // the most inefficient way to sort the views
+        list.removeAllViewsInLayout(); // the most inefficient way to sort the views
         // if an entry is edited it will be deleted and placed back in
+
         Set<Map.Entry<Integer, Lesson>> set = CalendarFragment.selectedDay.entrySet();
         RelativeLayout layout;
-        Lesson lesson;
         for (Map.Entry<Integer, Lesson> entry : set) {
             layout = (RelativeLayout) getActivity().getLayoutInflater()
                     .inflate(R.layout.view_lesson, null);
-            lesson = entry.getValue();
+            final Lesson lesson = entry.getValue();
             ((TextView) layout.findViewById(R.id.time)).setText(lesson.displayTime);
             ((TextView) layout.findViewById(R.id.name)).setText(lesson.name);
             ((TextView) layout.findViewById(R.id.level)).setText(lesson.levels[lesson.level]);
-            ((TextView) layout.findViewById(R.id.size)).setText(lesson.size());
-            layout.setOnClickListener(new View.OnClickListener() {
+            ((TextView) layout.findViewById(R.id.size)).setText(Integer.toString(lesson.size()));
+            ((Button) layout.findViewById(R.id.edit)).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    NewLessonFragment newLesson = NewLessonFragment.newInstance(lesson);
+                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                    // putting animation for fragment transaction
+                    transaction.setCustomAnimations(R.anim.slide_in_up, android.R.anim.fade_out,
+                            android.R.anim.fade_in, R.anim.slide_out_down);
+                    transaction.replace(R.id.calendar_container,newLesson) // carry out the transaction
+                            .addToBackStack(null) // add to backstack
+                            .commit();
                 }
             });
-            v.addView(layout);
+            ((Button) layout.findViewById(R.id.remove)).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    lesson.delete();
+                    updateList(list);
+                }
+            });
+
+            list.addView(layout);
         }
     }
 

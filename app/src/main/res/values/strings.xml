@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">DingleTutors</string>
+    <string name="level">Level</string>
 </resources>

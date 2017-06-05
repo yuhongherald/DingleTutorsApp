@@ -152,37 +152,4 @@ public class MainActivity extends AppCompatActivity {
             return 2;
         }
     }
-
-    // Button methods for XML to access
-    public static void addLesson(View v) {
-        Log.v("Button", "Add lesson");
-        // create a new popup
-        // Popup<String> p = new Popup<String>(v.getContext(), v, null, "Add new lesson", R.layout.add_lesson, null);
-    }
-
-    public void viewLessons(View v) {
-        // I create a popup window and supply it with DayMap
-        // and the list element format
-        // and the button on click listener
-//        Popup popup = new Popup<Integer>(this, v, CalendarFragment.selectedDay,
-//                "view lessons", R.layout.view_lesson, new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                MainActivity.addLesson(v);
-//            }
-//        });
-//        popup.updateList();
-//        popup.showPopup();
-    }
-
-    public void editLesson(View v) {
-        Log.v("Button", "Edit lesson");
-        // v.getTag(Tags.data);
-    }
-
-    public void removeLesson(View v) {
-        Log.v("Button", "Remove lesson");
-        // ((TreeMap<String, Bundle>) v.getTag(Tags.parent)).remove((String) v.getTag(Tags.key));
-    }
-
 }
