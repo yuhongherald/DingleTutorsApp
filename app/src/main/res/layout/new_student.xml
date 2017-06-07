@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/holo_green_dark">
+    <EditText
+        android:id="@+id/name"
+        android:textSize="20dp"
+        android:layout_margin="4dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textNoSuggestions"
+        android:hint="Student Name"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"/>
+    <EditText
+        android:id="@+id/client"
+        android:textSize="20dp"
+        android:layout_margin="4dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textNoSuggestions"
+        android:hint="Client Name"
+        android:layout_toRightOf="@+id/name"
+        android:layout_alignParentTop="true"/>
+    <EditText
+        android:id="@+id/number"
+        android:textSize="20dp"
+        android:layout_margin="4dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="phone"
+        android:hint="Client No"
+        android:layout_toRightOf="@+id/client"
+        android:layout_alignParentTop="true"/>
+    <Button
+        android:id="@+id/save"
+        android:text="Save"
+        android:textSize="20dp"
+        android:layout_margin="4dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/name"
+        android:layout_alignParentLeft="true"/>
+    <Button
+        android:id="@+id/cancel"
+        android:text="Cancel"
+        android:textSize="20dp"
+        android:layout_margin="4dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/name"
+        android:layout_toRightOf="@+id/save"/>
+</RelativeLayout>

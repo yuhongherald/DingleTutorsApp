@@ -26,7 +26,7 @@ import java.util.Set;
  */
 
 public class NewLessonFragment extends Fragment {
-
+    RelativeLayout newStudent;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final Fragment fragment = this;
@@ -51,27 +51,8 @@ public class NewLessonFragment extends Fragment {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerLevel.setAdapter(adapter);
 
-        LinearLayout list = (LinearLayout) v.findViewById(R.id.list);
-        RelativeLayout layout;
-        Student student;
-        Set<Map.Entry<String, Student>> set = CalendarFragment.selectedLesson.entrySet();
-        list.removeAllViewsInLayout();
-        for (Map.Entry<String, Student> entry : set) {
-            layout = (RelativeLayout) inflater.inflate(R.layout.view_student, container);
-            student = entry.getValue();
-            ((TextView) layout.findViewById(R.id.name)).setText(student.studentName);
-            ((TextView) layout.findViewById(R.id.client)).setText(student.clientName);
-            ((TextView) layout.findViewById(R.id.number)).setText(student.clientNo);
-            // Need to set button events later
-            ((Button) layout.findViewById(R.id.edit)).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                }
-            });
-
-            list.addView(layout);
-        }
+        final LinearLayout list = (LinearLayout) v.findViewById(R.id.list);
+        updateList(list);
 
         // Setting buttons
 
@@ -85,7 +66,7 @@ public class NewLessonFragment extends Fragment {
                     return;
                 }
                 String hours = editHours.getText().toString();
-                String minutes = editMinutes.getEditableText().toString();
+                String minutes = editMinutes.getText().toString();
                 if (hours.length() == 0 || minutes.length() == 0) {
                     Toast.makeText(getActivity(), "Please input a time.", Toast.LENGTH_SHORT).show();
                     return;
@@ -106,26 +87,141 @@ public class NewLessonFragment extends Fragment {
                     Toast.makeText(getActivity(), "Lesson in conflict with: " + result, Toast.LENGTH_SHORT).show();
                     return;
                 }
-
-                //
                 // we close this popup
-                FragmentManager manager = getActivity().getSupportFragmentManager();
-                if (manager.getBackStackEntryAt(manager.getBackStackEntryCount() - 1).getName() != "newLesson") {
-                    Log.v("NewLesson", "not n top of stack");
+                close();
+            }
+        });
+        ((Button) v.findViewById(R.id.cancel)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                close();
+            }
+        });
+        ((Button) v.findViewById(R.id.add_student)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addStudent(new Student(null, null, null, CalendarFragment.selectedLesson), 0, list);
+            }
+        });
+        return v;
+    }
+
+    @Override
+    public void onDestroyView() {
+        if (CalendarFragment.thisFragment != null) {
+            // recolor here
+            Log.v("Calendar", "recoloring");
+            CalendarFragment.thisFragment.deleteDay();
+        }
+        super.onDestroyView();
+    }
+
+    public void close() {
+        // not sure why the tag check for backstack is not working properly
+        FragmentManager manager = getActivity().getSupportFragmentManager();
+        FragmentTransaction trans = manager.beginTransaction();
+        trans.remove(this);
+        trans.commit();
+        manager.popBackStack();
+        // and we updatelist if lesson_list is on top
+        LessonListFragment currentFragment = (LessonListFragment) manager.findFragmentByTag("viewLesson");
+        if (currentFragment != null) {
+            Log.v("ViewLesson", "updating");
+            currentFragment.updateList((LinearLayout) currentFragment.getView().findViewById(R.id.list));
+        }
+    }
+
+    public void updateList(final LinearLayout list) {
+        RelativeLayout layout;
+        Set<Map.Entry<String, Student>> set = CalendarFragment.selectedLesson.entrySet();
+        list.removeAllViewsInLayout();
+        int count = 0;
+        for (Map.Entry<String, Student> entry : set) {
+            count++;
+            layout = (RelativeLayout) getActivity().getLayoutInflater()
+                    .inflate(R.layout.view_student, null);
+            final Student student = entry.getValue();
+            TextView editName = (TextView) layout.findViewById(R.id.name);
+            TextView editClient = (TextView) layout.findViewById(R.id.client);
+            TextView editNumber = (TextView) layout.findViewById(R.id.number);
+            if (student.studentName != null) {
+                editName.setText(student.studentName);
+            }
+            if (student.clientName != null) {
+                editClient.setText(student.clientName);
+            }
+            if (student.clientNo != null) {
+                editNumber.setText(student.clientNo);
+            }
+            // Need to set button events later
+            final int finalCount = count;
+            ((Button) layout.findViewById(R.id.edit)).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    addStudent(student, finalCount, list);
                 }
-                FragmentTransaction trans = manager.beginTransaction();
-                trans.remove(fragment);
-                trans.commit();
-                manager.popBackStack();
-                // and we updatelist if lesson_list is on top
-                if (manager.getBackStackEntryAt(manager.getBackStackEntryCount() - 1).getName() != "viewLesson") {
-                    LessonListFragment currentFragment = (LessonListFragment) manager.findFragmentByTag("viewLesson");
-                    currentFragment.updateList((LinearLayout) currentFragment.getView().findViewById(R.id.list));
+            });
+            ((Button) layout.findViewById(R.id.cancel)).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    student.delete();
+                    updateList(list);
                 }
+            });
+            list.addView(layout);
+        }
+    }
+
+    public void addStudent(final Student student, int index, final LinearLayout list) {
+        if (newStudent != null) {
+            list.removeView(newStudent);
+        }
+        newStudent = (RelativeLayout) getActivity().getLayoutInflater()
+                .inflate(R.layout.new_student, null);
+        final EditText editName = (EditText) newStudent.findViewById(R.id.name);
+        final EditText editClient = (EditText) newStudent.findViewById(R.id.client);
+        final EditText editNumber = (EditText) newStudent.findViewById(R.id.number);
+        if (student.studentName != null) {
+            editName.setText(student.studentName);
+        }
+        if (student.clientName != null) {
+            editClient.setText(student.clientName);
+        }
+        if (student.clientNo != null) {
+            editNumber.setText(student.clientNo);
+        }
+
+        ((Button) newStudent.findViewById(R.id.save)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String name = editName.getText().toString();
+                String client = editClient.getText().toString();
+                String number = editNumber.getText().toString();
+                if (name.length() == 0) {
+                    Toast.makeText(getActivity(), "Please input student's name.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (number.length() == 0) {
+                    Toast.makeText(getActivity(), "Please input a mobile number.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (!student.remap(name, client, number)) {
+                    Toast.makeText(getActivity(), "Exact student already exists.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                list.removeView(newStudent);
+                updateList(list);
             }
         });
 
-        return v;
+        ((Button) newStudent.findViewById(R.id.cancel)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                list.removeView(newStudent);
+            }
+        });
+
+        list.addView(newStudent, index);
     }
 
     public static NewLessonFragment newInstance(Lesson lesson) {

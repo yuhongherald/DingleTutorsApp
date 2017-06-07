@@ -12,6 +12,7 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -21,35 +22,48 @@ import java.util.Date;
 
 // Calculates remaining time to next minute and sleeps for that long
 public class MinuteUpdater extends BroadcastReceiver {
-
+    public static ArrayList<Lesson> queue = new ArrayList<Lesson>();
+    public static boolean updating = false;
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.v("MinuteUpdater","called");
-        createNotification(context, null);
+        //createNotification(context, null);
         if (CalendarMap.map != null) {
-            String date = new SimpleDateFormat("mmHHddMMYYYY").format(Calendar.getInstance().getTime());
+            Date rawDate = Calendar.getInstance().getTime();
+            String date = new SimpleDateFormat("mmHHddMMYYYY").format(rawDate);
             MonthMap month = CalendarMap.map.get(Integer.parseInt(date.substring(6, 8)) + "-" +
                                                  Integer.parseInt(date.substring(8, 12)));
             if (month != null) {
-                DayMap day = month.get(date.substring(4, 6));
+                DayMap day = month.get(CalendarFragment.formatter.format(rawDate));
                 if (day != null) {
-                    Object event = day.get(date.substring(2, 4) + ":" + date.substring(0, 2));
-                    if (event != null) {
+                    Log.v("Day", "lesson present");
+                    // have to set advanced reminder here
+                    Lesson lesson = day.get(Integer.parseInt(date.substring(2, 4)) * 60 +
+                                            Integer.parseInt(date.substring(0, 2)));
+                    if (lesson != null) {
                         // use methods defined to supply notification with info
-                        // createNotification(context, event);
+                        Log.v("Lesson", "added to queue");
+                        lesson.countdown = 0;
+                        queue.add(lesson);
                     }
                 }
             }
         }
-        Log.v("MinuteUpdater","no updates");
+        for (Lesson lesson : queue) {
+            createNotification(context, lesson, lesson.countdown);
+            if (lesson.countdown > 0) {
+                lesson.countdown--;
+            }
+        }
+        // Log.v("MinuteUpdater","no updates");
     }
 
-    private void createNotification(Context context, Object event) {
+    private void createNotification(Context context, Lesson lesson, int minutes) {
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(context)
-                        .setSmallIcon(R.drawable.dingle)
-                        .setContentTitle("My notification")
-                        .setContentText("Hello World!");
+                        .setSmallIcon(R.drawable.dingle) // have to change this probably
+                        .setContentTitle(lesson.name)
+                        .setContentText("Your lesson is in " + minutes + " minutes!");
         Intent resultIntent = new Intent(context, MainActivity.class);
         resultIntent.setAction("android.intent.action.MAIN");
         PendingIntent resultPendingIntent =
@@ -57,7 +71,7 @@ public class MinuteUpdater extends BroadcastReceiver {
                         context,
                         0,
                         resultIntent,
-                        PendingIntent.FLAG_UPDATE_CURRENT
+                        PendingIntent.FLAG_UPDATE_CURRENT // not sure what flag to put here
                 );
         mBuilder.setContentIntent(resultPendingIntent);
         NotificationManager mNotifyMgr =

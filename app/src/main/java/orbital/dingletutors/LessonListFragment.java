@@ -49,6 +49,16 @@ public class LessonListFragment extends Fragment{
         return v;
     }
 
+    @Override
+    public void onDestroyView() {
+        if (CalendarFragment.thisFragment != null) {
+            // recolor here
+            Log.v("Calendar", "recoloring");
+            CalendarFragment.thisFragment.deleteDay();
+        }
+        super.onDestroyView();
+    }
+
     public void updateList(final LinearLayout list) {
         if (CalendarFragment.selectedDay == null) {
             Log.v("LessonFragment", "selectedDay not initialized");

@@ -1,6 +1,7 @@
 package orbital.dingletutors;
 
 import android.os.Bundle;
+import android.util.Log;
 
 import java.util.Date;
 import java.util.TreeMap;
@@ -15,6 +16,12 @@ public class DayMap extends TreeMap<Integer, Lesson> {
     public DayMap(String key, MonthMap parent) {
         this.key = key;
         this.parent = parent;
+        DayMap temp = parent.get(key);
+        if (temp != null) {
+            Log.v("DayMap", "copying from existing");
+            this.putAll(temp);
+            temp.delete();
+        }
         parent.put(key, this);
     }
 

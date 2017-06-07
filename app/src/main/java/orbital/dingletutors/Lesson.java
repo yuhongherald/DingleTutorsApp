@@ -23,17 +23,18 @@ public class Lesson extends TreeMap<String, Student> {
     public String name;
     public int level;
 
-    Lesson(String hours, String minutes, String name, int level, DayMap parent) {
-        if (hours != null || minutes != null) {
+    public int countdown; // used for minuteupdater
+
+    Lesson(String hours, String minutes, String name, int level, @NonNull DayMap parent) {
+        if (hours != null && minutes != null) {
             this.time = Integer.parseInt(hours) * 60 + Integer.parseInt(minutes);
-            if (parent != null) {
-                if (parent.get(this.time) == null) {
-                    parent.put(this.time, this);
-                } else {
-                    Log.v("Lesson", "conflict");
-                }
+            if (parent.get(this.time) == null) {
+                parent.put(this.time, this);
+            } else {
+                Log.v("Lesson", "conflict");
             }
         }
+        this.time = 0;
         this.hours = hours;
         this.minutes = minutes;
         this.name = name;
@@ -42,20 +43,18 @@ public class Lesson extends TreeMap<String, Student> {
     }
 
     public boolean delete() {
-        return (this.parent != null && this.parent.remove(this.time) != null);
+        return this.parent.remove(this.time) != null;
     }
 
-    public String remap(String hours, String minutes, String name, int level) {
+    public String remap(@NonNull String hours,@NonNull String minutes,@NonNull String name, int level) {
         this.delete();
-        if (hours != null || minutes != null) {
-            this.time = Integer.parseInt(hours) * 60 + Integer.parseInt(minutes);
-            Lesson temp = parent.get(this.time);
-            if (temp == null) {
-                parent.put(this.time, this);
-            } else {
-                Log.v("Lesson", "conflict");
-                return temp.name;
-            }
+        this.time = Integer.parseInt(hours) * 60 + Integer.parseInt(minutes);
+        Lesson temp = parent.get(this.time);
+        if (temp == null) {
+            parent.put(this.time, this);
+        } else {
+            Log.v("Lesson", "conflict");
+            return temp.name;
         }
         this.hours = hours;
         this.minutes = minutes;

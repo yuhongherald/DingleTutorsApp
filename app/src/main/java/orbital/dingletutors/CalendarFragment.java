@@ -33,15 +33,17 @@ import java.util.Set;
 
 
 public class CalendarFragment extends Fragment {
+    public static CalendarFragment thisFragment;
     final CaldroidFragment caldroidFragment = new CaldroidFragment();
-    final SimpleDateFormat formatter = new SimpleDateFormat("dd MMM yyyy");
-    final ColorDrawable green = new ColorDrawable(Color.GREEN);
-    final ColorDrawable white = new ColorDrawable(Color.WHITE);
+    public final static SimpleDateFormat formatter = new SimpleDateFormat("dd MMM yyyy");
+    public final static ColorDrawable green = new ColorDrawable(Color.GREEN);
+    public final static ColorDrawable white = new ColorDrawable(Color.WHITE);
     public static MonthMap selectedMonth;
     public static DayMap selectedDay;
     public static Lesson selectedLesson;
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
+        thisFragment = this;
         final View v = inflater.inflate(R.layout.calendar, container, false);
         Bundle args = new Bundle();
         Calendar calendar = Calendar.getInstance();
@@ -74,6 +76,7 @@ public class CalendarFragment extends Fragment {
                 deleteDay();
                 selectedDay = selectedMonth.get(formatter.format(date));
                 if (selectedDay == null) {
+                    Log.v("selectDate", "no existing date");
                     selectedDay = new DayMap(formatter.format(date), selectedMonth);
                 }
 
@@ -91,9 +94,13 @@ public class CalendarFragment extends Fragment {
                 if (selectedMonth != null) {
                     // time to mark each days on the calendar
                     Set<Map.Entry<String, DayMap>> set = selectedMonth.entrySet();
+                    // might want to hard recolor everything to white
+
                     for (Map.Entry<String, DayMap> day : set) {
                         try {
-                            caldroidFragment.setBackgroundDrawableForDate(green, formatter.parse(day.getKey()));
+                            if (!day.getValue().isEmpty()) {
+                                caldroidFragment.setBackgroundDrawableForDate(green, formatter.parse(day.getKey()));
+                            }
                         } catch (ParseException e) {
                             e.printStackTrace();
                         }
@@ -124,7 +131,7 @@ public class CalendarFragment extends Fragment {
         caldroidFragment.setCaldroidListener(listener);
         // initialize selected month and day
         Calendar cal = Calendar.getInstance();
-        listener.onChangeMonth(cal.get(Calendar.MONTH), cal.get(Calendar.YEAR));
+        listener.onChangeMonth(cal.get(Calendar.MONTH) + 1, cal.get(Calendar.YEAR));
         listener.onSelectDate(cal.getTime(), v);
 
         // defining what happens when we click the new lesson button
@@ -166,8 +173,19 @@ public class CalendarFragment extends Fragment {
         return v;
     }
 
+    @Override
+    public void onDestroyView() {
+        thisFragment = null;
+        super.onDestroyView();
+    }
+
+    // mor like update day now
     public void deleteDay() {
-        if (selectedDay != null && selectedDay.isEmpty()) {
+        if (selectedDay == null) {
+            Log.v("deleteDay", "no day selected");
+            return;
+        }
+        if (selectedDay.isEmpty()) {
             // uncolor the date on the calendar
             try {
                 caldroidFragment.setBackgroundDrawableForDate(white, formatter.parse(selectedDay.key));
@@ -175,7 +193,14 @@ public class CalendarFragment extends Fragment {
                 e.printStackTrace();
             }
             selectedDay.delete();
+        } else {
+            try {
+                caldroidFragment.setBackgroundDrawableForDate(green, formatter.parse(selectedDay.key));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
         }
+        caldroidFragment.refreshView();
     }
 
     public void deleteMonth() {

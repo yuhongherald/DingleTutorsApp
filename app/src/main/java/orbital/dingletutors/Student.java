@@ -7,22 +7,36 @@ import android.support.annotation.NonNull;
  */
 
 public class Student {
-    public final String studentName; // also the key
+    public String studentName; // also the key
     public Lesson parent;
-    public final String clientName;
-    public final String clientNo;
+    public String clientName;
+    public String clientNo;
 
-    public Student(String studentName, String clientName, String clientNo, Lesson parent) {
+    public Student(String studentName, String clientName, String clientNo, @NonNull Lesson parent) {
         this.studentName = studentName;
         this.clientName = clientName;
         this.clientNo = clientNo;
         this.parent = parent;
         // trying to make it unique, hope it does not affect sorting too badly
-        parent.put(studentName + clientName + clientNo, this);
+        if (studentName != null && clientName != null && clientNo != null) {
+            parent.put(studentName + clientName + clientNo, this);
+        }
+    }
+
+    public boolean remap(@NonNull String studentName,@NonNull String clientName,@NonNull String clientNo) {
+        if (this.parent.get(studentName+clientName+clientNo) != null) {
+            return false;
+        }
+        delete();
+        this.studentName = studentName;
+        this.clientName = clientName;
+        this.clientNo = clientNo;
+        this.parent.put(studentName+clientName+clientNo, this);
+        return true;
     }
 
     public boolean delete() {
         // non-unique keys so I try something different
-        return this.parent.remove(this) != null;
+        return this.studentName != null && this.clientName != null && this.clientNo != null && this.parent.remove(this) != null;
     }
 }
