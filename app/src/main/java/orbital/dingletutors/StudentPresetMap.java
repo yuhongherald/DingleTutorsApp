@@ -27,7 +27,7 @@ public class StudentPresetMap extends ArrayList<Student> {
     public String fileName;
 
     public StudentPresetMap(String fileName) {
-        super();
+        //super();
         this.fileName = fileName;
     }
 

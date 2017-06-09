@@ -31,9 +31,9 @@ public class LessonListFragment extends Fragment{
         // static reference
 
         // for testing listview
-        Lesson temp = new Lesson("00", "00", "test", 0, CalendarFragment.selectedDay);
+        //Lesson temp = new Lesson("00", "00", "test", 0, CalendarFragment.selectedDay);
         updateList(list);
-        temp.delete();
+        //temp.delete();
 //        ArrayList<TextView> list = new ArrayList<TextView>();
 //        list.add( (TextView) v.findViewById(R.id.lesson1) );
 //        list.add( (TextView) v.findViewById(R.id.lesson2) );
@@ -80,13 +80,17 @@ public class LessonListFragment extends Fragment{
             ((Button) layout.findViewById(R.id.edit)).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    if (getFragmentManager().findFragmentByTag("newLesson") != null) {
+                        Log.v("newLesson", "exists");
+                        return;
+                    }
                     NewLessonFragment newLesson = NewLessonFragment.newInstance(lesson);
                     FragmentTransaction transaction = getFragmentManager().beginTransaction();
                     // putting animation for fragment transaction
                     transaction.setCustomAnimations(R.anim.slide_in_up, android.R.anim.fade_out,
                             android.R.anim.fade_in, R.anim.slide_out_down);
                     transaction.replace(R.id.calendar_container,newLesson) // carry out the transaction
-                            .addToBackStack(null) // add to backstack
+                            .addToBackStack("newLesson") // add to backstack
                             .commit();
                 }
             });

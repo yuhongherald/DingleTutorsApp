@@ -1,45 +1,39 @@
 package orbital.dingletutors;
 
-import android.content.Context;
-import android.os.Environment;
 import android.util.Log;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InvalidClassException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.HashMap;
-import java.util.Map;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
- * Created by Herald on 19/5/2017.
+ * Created by Herald on 9/6/2017.
  */
 
-public class CalendarMap extends HashMap<String, MonthMap> {
-    // Key is month and year, value is a Hashmap for the month
-    // For month Hashmaps, key is day, value is TreeMap
-    // For day Treemap, key is start time, value is data associated
-
-    // used to hold the CalendarMap if needed
+public class MinuteQueue extends ArrayList<Lesson> {
     public static File mapDir;
-    public static boolean isInitializing = false;
+    // public static boolean isInitializing = false; // share with CalendarMap?
     public static boolean updating = false;
-    // may have to change between sd and phone memory
-//    public static final String data = Environment.getDataDirectory().getPath();
-//    public static final String root = "/DingleTutors/";
 
     public String fileName;
+    public Date lastUpdated;
+    public long advMinutes;
 
-    public CalendarMap(String fileName) {
-        //super();
+    public MinuteQueue(String fileName) {
         this.fileName = fileName;
+        this.lastUpdated = Calendar.getInstance().getTime();
+        advMinutes = 30;
     }
 
     @Override
-    public MonthMap put(String key, MonthMap value) {
+    public boolean add(Lesson lesson) {
         while (updating) {
             try {
                 Thread.sleep(10);
@@ -48,13 +42,17 @@ public class CalendarMap extends HashMap<String, MonthMap> {
             }
         }
         updating = true;
-        MonthMap temp = super.put(key, value);
+        if (super.contains(lesson)) {
+            updating = false;
+            return false;
+        }
+        boolean temp = super.add(lesson);
         updating = false;
         return temp;
     }
 
     @Override
-    public MonthMap get(Object key) {
+    public Lesson get(int index) {
         while (updating) {
             try {
                 Thread.sleep(10);
@@ -63,13 +61,13 @@ public class CalendarMap extends HashMap<String, MonthMap> {
             }
         }
         updating = true;
-        MonthMap temp = super.get(key);
+        Lesson temp = super.get(index);
         updating = false;
         return temp;
     }
 
     @Override
-    public MonthMap remove(Object key) {
+    public boolean remove(Object lesson) {
         while (updating) {
             try {
                 Thread.sleep(10);
@@ -78,35 +76,35 @@ public class CalendarMap extends HashMap<String, MonthMap> {
             }
         }
         updating = true;
-        MonthMap temp = super.remove(key);
+        boolean temp = super.remove(lesson);
         updating = false;
         return temp;
     }
 
-    public static CalendarMap init(String fileName) throws Exception {
+    public static MinuteQueue init(String fileName) throws Exception {
         File f = new File(mapDir, fileName);
         if(f.exists() && !f.isDirectory()) {
-            Log.v("CalendarMap", "directory found");
+            Log.v("MinuteQueue", "directory found");
             FileInputStream fileInputStream  = new FileInputStream(f);
             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
-            CalendarMap map;
+            MinuteQueue map;
             try {
-                map = (CalendarMap) objectInputStream.readObject();
+                map = (MinuteQueue) objectInputStream.readObject();
             } catch(InvalidClassException e) {
                 // this happens when an old map is stored, data will be lost using current imp
-                Log.v("CalendarMap", "incompatible map");
+                Log.v("MinuteQueue", "incompatible map");
                 objectInputStream.close();
-                return new CalendarMap(fileName);
+                return new MinuteQueue(fileName);
             }
             objectInputStream.close();
             return map;
         } else {
-            Log.v("CalendarMap", "directory not found");
-            return new CalendarMap(fileName);
+            Log.v("MinuteQueue", "directory not found");
+            return new MinuteQueue(fileName);
         }
     }
 
-    // for deleting the file when hashmap is empty
+    // for deleting the file when treemap is empty
     public void delete() {
 
     }

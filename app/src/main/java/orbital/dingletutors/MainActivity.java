@@ -11,15 +11,12 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 import android.support.design.widget.TabLayout;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.TreeMap;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -28,8 +25,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onStop() {
         try {
-            CalendarMap.map.save();
-            ClassPresetMap.map.save();
+            MinuteUpdater.calendarMap.save();
+            LessonPresetMap.map.save();
             StudentPresetMap.map.save();
         } catch (Exception e) {
             e.printStackTrace();
@@ -45,9 +42,9 @@ public class MainActivity extends AppCompatActivity {
 
         // init class and students presets
         try {
-            ClassPresetMap.mapDir = new File(getFilesDir(), "/map");
-            ClassPresetMap.mapDir.mkdirs();
-            ClassPresetMap.map = ClassPresetMap.init("classes.map");
+            LessonPresetMap.mapDir = new File(getFilesDir(), "/map");
+            LessonPresetMap.mapDir.mkdirs();
+            LessonPresetMap.map = LessonPresetMap.init("lessons.map");
             StudentPresetMap.mapDir = new File(getFilesDir(), "/map");
             StudentPresetMap.mapDir.mkdirs();
             StudentPresetMap.map = StudentPresetMap.init("students.map");
@@ -56,13 +53,13 @@ public class MainActivity extends AppCompatActivity {
                 Log.v("BackgroundNotification", "not initialized");
                 (new BackgroundNotification()).onReceive(this, new Intent().setAction("android.intent.action.BOOT_COMPLETED"));
             }
-            while (CalendarMap.isInitializing || CalendarMap.map == null) {
+            while (CalendarMap.isInitializing || MinuteUpdater.calendarMap == null) {
                 Thread.sleep(10);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        test();
+        // test();
 
 //        Modification of the Action bar so space isnt wasted
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
@@ -144,17 +141,17 @@ public class MainActivity extends AppCompatActivity {
     public void test() {
         try {
             // for testing
-            if (CalendarMap.map.get("6-2017") != null && !CalendarMap.map.isEmpty()) {
+            if (MinuteUpdater.calendarMap.get("6-2017") != null && !MinuteUpdater.calendarMap.isEmpty()) {
                 Log.v("CalendarMap", "Retrieved stored month");
             }
             // to remove all the stuff we have been adding
-            CalendarMap.map.clear();
-            MonthMap testMonth = new MonthMap("6-2017", CalendarMap.map);
-            final SimpleDateFormat formatter = new SimpleDateFormat("dd MMM yyyy");
-            DayMap testDay = new DayMap(formatter.format(Calendar.getInstance().getTime()), testMonth);
-            Lesson temp = new Lesson("01", "00", "test", 0, testDay);
+//            CalendarMap.map.clear();
+//            MonthMap testMonth = new MonthMap("6-2017", CalendarMap.map);
+//            final SimpleDateFormat formatter = new SimpleDateFormat("dd MMM yyyy");
+//            DayMap testDay = new DayMap(formatter.format(Calendar.getInstance().getTime()), testMonth);
+//            Lesson temp = new Lesson("01", "00", "test", 0, testDay);
             // this is for test save only
-            CalendarMap.map.save();
+            MinuteUpdater.calendarMap.save();
 
         } catch (Exception e) {
             e.printStackTrace();

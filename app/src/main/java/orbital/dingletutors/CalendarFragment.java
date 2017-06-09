@@ -71,8 +71,8 @@ public class CalendarFragment extends Fragment {
 
             @Override
             public void onSelectDate(Date date, View view) {
-                Toast.makeText(getActivity().getApplicationContext(), formatter.format(date),
-                        Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getActivity().getApplicationContext(), formatter.format(date),
+//                        Toast.LENGTH_SHORT).show();
                 deleteDay();
                 selectedDay = selectedMonth.get(formatter.format(date));
                 if (selectedDay == null) {
@@ -90,7 +90,7 @@ public class CalendarFragment extends Fragment {
 //                Toast.makeText(getActivity().getApplicationContext(), text,
 //                        Toast.LENGTH_SHORT).show();
                 deleteMonth();
-                selectedMonth = CalendarMap.map.get(month + "-" + year);
+                selectedMonth = MinuteUpdater.calendarMap.get(month + "-" + year);
                 if (selectedMonth != null) {
                     // time to mark each days on the calendar
                     Set<Map.Entry<String, DayMap>> set = selectedMonth.entrySet();
@@ -106,7 +106,7 @@ public class CalendarFragment extends Fragment {
                         }
                     }
                 } else {
-                    selectedMonth = new MonthMap(month + "-" + year, CalendarMap.map);
+                    selectedMonth = new MonthMap(month + "-" + year, MinuteUpdater.calendarMap);
                 }
             }
 
@@ -139,6 +139,10 @@ public class CalendarFragment extends Fragment {
         newLessonBtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
+                if (getFragmentManager().findFragmentByTag("newLesson") != null) {
+                    Log.v("newLesson", "exists");
+                    return;
+                }
                 NewLessonFragment newLesson = NewLessonFragment.newInstance(null);
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
                 // putting animation for fragment transaction

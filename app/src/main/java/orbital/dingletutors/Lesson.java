@@ -3,8 +3,11 @@ package orbital.dingletutors;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.TreeMap;
 
 /**
@@ -22,8 +25,6 @@ public class Lesson extends TreeMap<String, Student> {
     public String minutes;
     public String name;
     public int level;
-
-    public int countdown; // used for minuteupdater
 
     Lesson(String hours, String minutes, String name, int level, @NonNull DayMap parent) {
         if (hours != null && minutes != null) {
@@ -61,6 +62,19 @@ public class Lesson extends TreeMap<String, Student> {
         this.name = name;
         this.level = level;
         return null;
+    }
+
+    public long minutesBefore() {
+        // we need a date for the lesson
+        Date lessonDate = null;
+        try {
+            lessonDate = CalendarFragment.formatter.parse(this.parent.key);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        long diff = lessonDate.getTime() + (this.time * 60 * 1000) - Calendar.getInstance().getTime().getTime();
+        long diffMinutes = diff / 60 / 1000;
+        return diffMinutes;
     }
 
     @Override

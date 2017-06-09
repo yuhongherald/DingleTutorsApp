@@ -24,11 +24,14 @@ public class BackgroundNotification extends BroadcastReceiver {
         }
         initialized = true;
         Log.v("BroadcastReceiver", "Initialized");
+        MinuteQueue.mapDir = new File(context.getFilesDir(), "/map");
+        MinuteQueue.mapDir.mkdirs();
         CalendarMap.mapDir = new File(context.getFilesDir(), "/map");
         CalendarMap.mapDir.mkdirs();
         CalendarMap.isInitializing = true;
         try {
-            CalendarMap.map = CalendarMap.init("notifications.map");
+            MinuteUpdater.minuteQueue = MinuteQueue.init("queue.map");
+            MinuteUpdater.calendarMap = CalendarMap.init("notifications.map");
         } catch (Exception e) {
             e.printStackTrace();
         }
