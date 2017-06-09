@@ -9,8 +9,11 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.PopupWindow;
 import android.widget.Toast;
 import android.support.design.widget.TabLayout;
 
@@ -40,32 +43,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // init class and students presets
-        try {
-            LessonPresetMap.mapDir = new File(getFilesDir(), "/map");
-            LessonPresetMap.mapDir.mkdirs();
-            LessonPresetMap.map = LessonPresetMap.init("lessons.map");
-            StudentPresetMap.mapDir = new File(getFilesDir(), "/map");
-            StudentPresetMap.mapDir.mkdirs();
-            StudentPresetMap.map = StudentPresetMap.init("students.map");
-
-            if (!BackgroundNotification.initialized) {
-                Log.v("BackgroundNotification", "not initialized");
-                (new BackgroundNotification()).onReceive(this, new Intent().setAction("android.intent.action.BOOT_COMPLETED"));
-            }
-            while (CalendarMap.isInitializing || MinuteUpdater.calendarMap == null) {
-                Thread.sleep(10);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        load();
         // test();
 
 //        Modification of the Action bar so space isnt wasted
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setDisplayShowCustomEnabled(true);
         getSupportActionBar().setCustomView(R.layout.custom_action_bar_layout);
-        View view =getSupportActionBar().getCustomView();
+        final View view =getSupportActionBar().getCustomView();
 
         // tabs for each page
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
@@ -75,6 +60,14 @@ public class MainActivity extends AppCompatActivity {
 
         // onClickListener for the notification button
         // can change to what we want when decided
+        Button checkinBtn =(Button) view.findViewById(R.id.checkinBtn);
+        checkinBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Popup popup = new PopupCheckIn(getApplicationContext(), view, view.getWidth() / 2, view.getWidth() / 2, 0);
+                popup.show();
+            }
+        });
         ImageButton notificationBtn = (ImageButton) view.findViewById(R.id.notificationBtn);
         notificationBtn.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -135,6 +128,28 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public int getCount() {
             return 2;
+        }
+    }
+
+    public void load() {
+        // init class and students presets
+        try {
+            LessonPresetMap.mapDir = new File(getFilesDir(), "/map");
+            LessonPresetMap.mapDir.mkdirs();
+            LessonPresetMap.map = LessonPresetMap.init("lessons.map");
+            StudentPresetMap.mapDir = new File(getFilesDir(), "/map");
+            StudentPresetMap.mapDir.mkdirs();
+            StudentPresetMap.map = StudentPresetMap.init("students.map");
+
+            if (!BackgroundNotification.initialized) {
+                Log.v("BackgroundNotification", "not initialized");
+                (new BackgroundNotification()).onReceive(this, new Intent().setAction("android.intent.action.BOOT_COMPLETED"));
+            }
+            while (CalendarMap.isInitializing || MinuteUpdater.calendarMap == null) {
+                Thread.sleep(10);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

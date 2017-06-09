@@ -13,7 +13,6 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="#fff"
         android:textStyle="bold" />
-
     <ImageView
         android:id="@+id/logo"
         android:layout_width="65dp"
@@ -22,7 +21,17 @@
         android:layout_centerVertical="true"
         android:layout_marginLeft="8dp"
         android:src="@drawable/dingle" />
-
+    <Button
+        android:id="@+id/checkinBtn"
+        android:text="Check in"
+        android:textAllCaps="false"
+        android:textSize="12dp"
+        android:textColor="#fff"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@+id/notificationBtn"
+        android:layout_centerVertical="true"
+        android:background="@null" />
     <ImageButton
         android:id="@+id/notificationBtn"
         android:layout_width="wrap_content"

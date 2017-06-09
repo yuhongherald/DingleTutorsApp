@@ -18,6 +18,8 @@ import java.util.Date;
  */
 
 public class MinuteQueue extends ArrayList<Lesson> {
+
+    private static final long serialVersionUID = 2L;
     public static File mapDir;
     // public static boolean isInitializing = false; // share with CalendarMap?
     public static boolean updating = false;
