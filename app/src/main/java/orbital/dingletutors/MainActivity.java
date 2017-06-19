@@ -1,6 +1,9 @@
 package orbital.dingletutors;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -14,6 +17,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.PopupWindow;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.support.design.widget.TabLayout;
 
@@ -24,13 +28,45 @@ import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
     public static boolean active = false;
+    private Popup popup;
+    private TextView notificationCount;
+
+    private BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (notificationCount != null) {
+                notificationCount.setText(Integer.toString(MinuteUpdater.minuteQueue.size()));
+            }
+            if (popup != null && popup.isVisible()) {
+                popup.updateList();
+            }
+        }
+    };
+
+    @Override
+    protected void onResume() {
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("orbital.dingletutors.UPDATE_MAIN");
+        registerReceiver(receiver, filter);
+        super.onResume();
+        MinuteUpdater.mainAppRunning = true;
+    }
+
+    @Override
+    protected void onPause() {
+        unregisterReceiver(receiver);
+        super.onPause();
+        MinuteUpdater.mainAppRunning = false;
+    }
 
     @Override
     public void onStop() {
         try {
+            MinuteUpdater.mainAppRunning = false;
             MinuteUpdater.calendarMap.save();
             LessonPresetMap.map.save();
             StudentPresetMap.map.save();
+            LessonHistoryMap.map.save();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -52,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setCustomView(R.layout.custom_action_bar_layout);
         final View view =getSupportActionBar().getCustomView();
 
+        notificationCount = (TextView) view.findViewById(R.id.notificationCount);
         // tabs for each page
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
         tabLayout.addTab(tabLayout.newTab().setText("Calendar"));
@@ -64,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
         checkinBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Popup popup = new PopupCheckIn(getApplicationContext(), view, view.getWidth() / 2, view.getWidth() / 2, 0);
+                Popup popup = new PopupCheckIn(getApplicationContext(), view, view.getWidth() * 3 / 4, view.getWidth() * 3 / 4, 0);
                 popup.show();
             }
         });
@@ -72,7 +109,8 @@ public class MainActivity extends AppCompatActivity {
         notificationBtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                Toast.makeText(getApplicationContext(), "Notification button is clicked", Toast.LENGTH_LONG).show();
+                popup = new PopupNotification(getApplicationContext(), view, view.getWidth() * 3 / 4, view.getWidth() * 3 / 4, 0);
+                popup.show();
             }
         });
 
@@ -140,6 +178,9 @@ public class MainActivity extends AppCompatActivity {
             StudentPresetMap.mapDir = new File(getFilesDir(), "/map");
             StudentPresetMap.mapDir.mkdirs();
             StudentPresetMap.map = StudentPresetMap.init("students.map");
+            LessonHistoryMap.mapDir = new File(getFilesDir(), "/map");
+            LessonHistoryMap.mapDir.mkdirs();
+            LessonHistoryMap.map = LessonHistoryMap.init("history.map");
 
             if (!BackgroundNotification.initialized) {
                 Log.v("BackgroundNotification", "not initialized");

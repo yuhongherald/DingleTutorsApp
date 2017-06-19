@@ -9,6 +9,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
@@ -45,8 +46,13 @@ public abstract class Popup {
         this.y = y;
         popupView = ((LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE))
                 .inflate(R.layout.popup, null);
-        popupView.setBackgroundColor(ContextCompat.getColor(context, R.color.popup));
-
+//        popupView.setBackgroundColor(ContextCompat.getColor(context, R.color.popup));
+        ((Button) popupView.findViewById(R.id.remove)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                hide();
+            }
+        });
         popupWindow = new PopupWindow(popupView,
                 width,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -54,7 +60,8 @@ public abstract class Popup {
 //        popupWindow.setFocusable(true);
 //        ColorDrawable background = new ColorDrawable();
 //        background.setAlpha(0xFF);
-//        popupWindow.setBackgroundDrawable(new ColorDrawable());
+        popupWindow.setBackgroundDrawable(new ColorDrawable());
+        popupWindow.setOutsideTouchable(true);
 
     }
     public abstract void updateList();

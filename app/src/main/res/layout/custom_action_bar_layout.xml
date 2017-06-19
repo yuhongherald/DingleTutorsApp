@@ -29,9 +29,17 @@
         android:textColor="#fff"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toLeftOf="@+id/notificationBtn"
+        android:layout_toLeftOf="@+id/notificationCount"
         android:layout_centerVertical="true"
         android:background="@null" />
+    <TextView
+        android:id="@+id/notificationCount"
+        android:text="0"
+        android:textSize="12dp"
+        android:textColor="#fff"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@+id/notificationBtn"/>
     <ImageButton
         android:id="@+id/notificationBtn"
         android:layout_width="wrap_content"

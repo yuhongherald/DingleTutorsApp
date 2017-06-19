@@ -24,6 +24,7 @@ import java.util.Set;
 
 // Calculates remaining time to next minute and sleeps for that long
 public class MinuteUpdater extends BroadcastReceiver {
+    public static boolean mainAppRunning = false;
     public static CalendarMap calendarMap;
     public static MinuteQueue minuteQueue;
     @Override
@@ -63,7 +64,7 @@ public class MinuteUpdater extends BroadcastReceiver {
         // Log.v("MinuteUpdater","no updates");
     }
 
-    private void checkDate(Date rawDate) {
+    private static void checkDate(Date rawDate) {
         String date = new SimpleDateFormat("mmHHddMMYYYY").format(rawDate);
         MonthMap month = calendarMap.get(Integer.parseInt(date.substring(6, 8)) + "-" +
                                              Integer.parseInt(date.substring(8, 12)));
@@ -94,6 +95,12 @@ public class MinuteUpdater extends BroadcastReceiver {
     }
 
     private void createNotification(Context context, Lesson lesson, long minutes, int lessons) {
+        if (mainAppRunning) {
+            Intent i = new Intent();
+            i.setAction("orbital.dingletutors.UPDATE_MAIN");
+            context.sendBroadcast(i);
+            return;
+        }
         String message = "";
         if (minutes < 0) {
             minutes = - minutes;

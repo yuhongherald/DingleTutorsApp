@@ -1,5 +1,7 @@
 package orbital.dingletutors;
 
+import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 
 import java.io.File;
@@ -81,6 +83,30 @@ public class MinuteQueue extends ArrayList<Lesson> {
         boolean temp = super.remove(lesson);
         updating = false;
         return temp;
+    }
+
+    public boolean remove(Context context, Lesson lesson) {
+        boolean result = remove(lesson);
+        Intent i = new Intent();
+        i.setAction("orbital.dingletutors.UPDATE_MAIN");
+        context.sendBroadcast(i);
+        return result;
+    }
+
+    public void clear(Context context) {
+        while (updating) {
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        updating = true;
+        super.clear();
+        updating = false;
+        Intent i = new Intent();
+        i.setAction("orbital.dingletutors.UPDATE_MAIN");
+        context.sendBroadcast(i);
     }
 
     public static MinuteQueue init(String fileName) throws Exception {
