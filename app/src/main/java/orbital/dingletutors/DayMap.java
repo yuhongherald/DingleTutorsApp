@@ -13,9 +13,11 @@ import java.util.TreeMap;
 public class DayMap extends TreeMap<Integer, Lesson> {
     public String key; // dd MMM YYYY format
     public MonthMap parent;
-    public DayMap(String key, MonthMap parent) {
+    public Date date;
+    public DayMap(Date date, String key, MonthMap parent) {
         this.key = key;
         this.parent = parent;
+        this.date = date;
         DayMap temp = parent.get(key);
         if (temp != null) {
             Log.v("DayMap", "copying from existing");

@@ -75,8 +75,8 @@ public class LessonListFragment extends Fragment{
             final Lesson lesson = entry.getValue();
             ((TextView) layout.findViewById(R.id.time)).setText(lesson.hours + ":" + lesson.minutes);
             ((TextView) layout.findViewById(R.id.name)).setText(lesson.name);
-            ((TextView) layout.findViewById(R.id.level)).setText(lesson.levels[lesson.level]);
-            ((TextView) layout.findViewById(R.id.size)).setText(Integer.toString(lesson.size()));
+//            ((TextView) layout.findViewById(R.id.level)).setText(lesson.levels[lesson.level]);
+//            ((TextView) layout.findViewById(R.id.size)).setText(Integer.toString(lesson.size()));
             ((Button) layout.findViewById(R.id.edit)).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -97,7 +97,7 @@ public class LessonListFragment extends Fragment{
             ((Button) layout.findViewById(R.id.remove)).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    lesson.delete();
+//                    lesson.delete();
                     updateList(list);
                 }
             });

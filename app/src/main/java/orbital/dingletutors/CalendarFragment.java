@@ -77,7 +77,7 @@ public class CalendarFragment extends Fragment {
                 selectedDay = selectedMonth.get(formatter.format(date));
                 if (selectedDay == null) {
                     Log.v("selectDate", "no existing date");
-                    selectedDay = new DayMap(formatter.format(date), selectedMonth);
+                    selectedDay = new DayMap(date, formatter.format(date), selectedMonth);
                 }
 
                 tv.setText(formatter.format(date));
