@@ -25,9 +25,12 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -36,7 +39,7 @@ import java.util.Set;
  */
 
 public class NewLessonFragment extends Fragment {
-    RelativeLayout newStudent;
+//    RelativeLayout newStudent;
     SimpleDateFormat timeformat = new SimpleDateFormat("h:mm a");
     Date currentDate;
     int currentHour;
@@ -48,11 +51,28 @@ public class NewLessonFragment extends Fragment {
     TextView duration;
     TextView studentName;
     TextView educationLevel;
+
+    List<Student> selectedStudents;
+    NewLessonFragment currentInstance;
+    public NewLessonFragment(){
+        super();
+        selectedStudents = new ArrayList<>();
+    }
+
+    private static HashMap<String, Integer> durationStringToInt;
+    static {
+        durationStringToInt = new HashMap<>(5, 1);
+        durationStringToInt.put("1 Hour", 60);
+        durationStringToInt.put("1.5 Hours", 90);
+        durationStringToInt.put("2 Hours", 120);
+        durationStringToInt.put("2.5 Hours", 150);
+        durationStringToInt.put("3 Hours", 180);
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final Fragment fragment = this;
         View v = inflater.inflate(R.layout.new_lesson, container, false);
-
+        currentInstance = this; // for access when choosing students
         currentDate = CalendarFragment.selectedDay.date;
         Calendar cal = Calendar.getInstance();
 
@@ -62,7 +82,6 @@ public class NewLessonFragment extends Fragment {
         startTime = (TextView) v.findViewById(R.id.startTimeVal);
         studentName = (TextView) v.findViewById(R.id.studentNameVal);
         educationLevel = (TextView) v.findViewById(R.id.levelVal);
-
 
 
 //        final EditText editHours = (EditText) v.findViewById(R.id.hours);
@@ -125,12 +144,24 @@ public class NewLessonFragment extends Fragment {
                 SingleChoiceDialog("subjectNames");
             }
         });
+        v.findViewById(R.id.studentName).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Choose_Student_Fragment chooseStudent = Choose_Student_Fragment.newInstance(currentInstance);
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                transaction.setCustomAnimations(R.anim.slide_in_up, android.R.anim.fade_out,
+                        android.R.anim.fade_in, R.anim.slide_out_down);
+                transaction.replace(R.id.new_lesson_container, chooseStudent) // carry out the transaction
+                        .addToBackStack("newLesson") // add to backstack
+                        .commit();
+            }
+        });
 
         ((Button) v.findViewById(R.id.saveLesson)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // check for invalid input
-//                String name = editTitle.getText().toString();
+//                String name = className.getText().toString();
 //                if (name.length()==0) {
 //                    Toast.makeText(getActivity(), "Please input a class name.", Toast.LENGTH_SHORT).show();
 //                    return;
@@ -147,16 +178,35 @@ public class NewLessonFragment extends Fragment {
 //                    Toast.makeText(getActivity(), "Please input a valid time.", Toast.LENGTH_SHORT).show();
 //                    return;
 //                }
-                // we save
-//                String result = CalendarFragment.selectedLesson.remap(
-//                        String.format("%02d", intHours),
-//                        String.format("%02d", intMinutes),
-//                        name,
-//                        spinnerLevel.getSelectedItemPosition());
-//                if(result != null) {
-//                    Toast.makeText(getActivity(), "Lesson in conflict with: " + result, Toast.LENGTH_SHORT).show();
-//                    return;
-//                }
+//                 we save
+                // for testing purposes use fake students
+                Student[] testArr = new Student[]{new Student("test", "test", "test")};
+                if (CalendarFragment.selectedLesson == null){
+                    CalendarFragment.selectedLesson = new Lesson(
+                            currentHour,
+                            currentMinute,
+                            durationStringToInt.get(duration.getText().toString()),
+                            className.getText().toString(),
+                            educationLevel.getText().toString(),
+                            testArr,
+                            CalendarFragment.selectedDay
+                    );
+                } else {
+                    String result = CalendarFragment.selectedLesson.remap(
+                            currentHour,
+                            currentMinute,
+                            durationStringToInt.get(duration.getText().toString()),
+                            className.getText().toString(),
+                            educationLevel.getText().toString(),
+                            testArr
+                    );
+
+                    if(result != null) {
+                        Toast.makeText(getActivity(), "Lesson in conflict with: " + result, Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                }
+
                 // we close this popup
                 getActivity().onBackPressed();
 //                close();
@@ -170,12 +220,7 @@ public class NewLessonFragment extends Fragment {
 
             }
         });
-//        ((Button) v.findViewById(R.id.add_student)).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                addStudent(new Student(null, null, null, CalendarFragment.selectedLesson), 0, list);
-//            }
-//        });
+
         return v;
     }
     private void showDatePicker(){
@@ -270,6 +315,9 @@ public class NewLessonFragment extends Fragment {
         alert.show();
     }
 
+    public void updateStudents(){
+        this.studentName.setText(selectedStudents.get(0).studentName);
+    }
 
     @Override
     public void onDestroyView() {
@@ -337,60 +385,13 @@ public class NewLessonFragment extends Fragment {
 //        }
 //    }
 
-//    public void addStudent(final Student student, int index, final LinearLayout list) {
-//        if (newStudent != null) {
-//            list.removeView(newStudent);
-//        }
-//        newStudent = (RelativeLayout) getActivity().getLayoutInflater()
-//                .inflate(R.layout.new_student, null);
-//        final EditText editName = (EditText) newStudent.findViewById(R.id.name);
-//        final EditText editClient = (EditText) newStudent.findViewById(R.id.client);
-//        final EditText editNumber = (EditText) newStudent.findViewById(R.id.number);
-//        if (student.studentName != null) {
-//            editName.setText(student.studentName);
-//        }
-//        if (student.clientName != null) {
-//            editClient.setText(student.clientName);
-//        }
-//        if (student.clientNo != null) {
-//            editNumber.setText(student.clientNo);
-//        }
-//
-//        ((Button) newStudent.findViewById(R.id.save)).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                String name = editName.getText().toString();
-//                String client = editClient.getText().toString();
-//                String number = editNumber.getText().toString();
-//                if (name.length() == 0) {
-//                    Toast.makeText(getActivity(), "Please input student's name.", Toast.LENGTH_SHORT).show();
-//                    return;
-//                }
-//                if (number.length() == 0) {
-//                    Toast.makeText(getActivity(), "Please input a mobile number.", Toast.LENGTH_SHORT).show();
-//                    return;
-//                }
-//                if (!student.remap(name, client, number)) {
-//                    Toast.makeText(getActivity(), "Exact student already exists.", Toast.LENGTH_SHORT).show();
-//                    return;
-//                }
-//                list.removeView(newStudent);
-//                updateList(list);
-//            }
-//        });
-//
-//        ((Button) newStudent.findViewById(R.id.cancel)).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                list.removeView(newStudent);
-//            }
-//        });
-//
-//        list.addView(newStudent, index);
-//    }
+    public void addStudent(Student student){
+
+    }
 
     public static NewLessonFragment newInstance(Lesson lesson) {
         NewLessonFragment f = new NewLessonFragment();
+
 //        if (lesson == null) {
 //            CalendarFragment.selectedLesson = new Lesson(null, null, null, 0, CalendarFragment.selectedDay);
 //        } else {

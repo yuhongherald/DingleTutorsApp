@@ -56,8 +56,8 @@ public class PopupCheckIn extends Popup {
                                 .inflate(R.layout.view_lesson_checkin, null);
                         ((TextView) layout.findViewById(R.id.time)).setText(lesson.hours + ":" + lesson.minutes);
                         ((TextView) layout.findViewById(R.id.name)).setText(lesson.name);
-                        ((TextView) layout.findViewById(R.id.level)).setText(lesson.levels[lesson.level]);
-                        ((TextView) layout.findViewById(R.id.size)).setText(Integer.toString(lesson.size()));
+                        ((TextView) layout.findViewById(R.id.level)).setText(lesson.level);
+                        ((TextView) layout.findViewById(R.id.size)).setText(lesson.students.length);
                         layout.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -66,13 +66,13 @@ public class PopupCheckIn extends Popup {
                                 }
                                 viewStudents = ((LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE))
                                         .inflate(R.layout.linear_scrollable, null);
-                                Set<Map.Entry<String, Student>> set = lesson.entrySet();
+//                                Set<Map.Entry<String, Student>> set = lesson.entrySet();
                                 LinearLayout newList = (LinearLayout) viewStudents.findViewById(R.id.list);
                                 RelativeLayout newLayout;
-                                for (Map.Entry<String, Student> entry : set) {
+                                for (Student student : lesson.students) {
                                     newLayout = (RelativeLayout)((LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE))
                                             .inflate(R.layout.view_student_checkin, null);
-                                    final Student student = entry.getValue();
+//                                    final Student student = entry.getValue();
                                     TextView editName = (TextView) newLayout.findViewById(R.id.name);
                                     TextView editClient = (TextView) newLayout.findViewById(R.id.client);
                                     TextView editNumber = (TextView) newLayout.findViewById(R.id.number);

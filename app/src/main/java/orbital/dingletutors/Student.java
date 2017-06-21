@@ -1,6 +1,9 @@
 package orbital.dingletutors;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
+
+import java.util.TreeMap;
 
 /**
  * Created by Herald on 31/5/2017.
@@ -11,16 +14,30 @@ public class Student {
     public Lesson parent;
     public String clientName;
     public String clientNo;
+    public String UID;
+    public static final TreeMap<String, Student> studentMap = new TreeMap<>();
 
     public Student(String studentName, String clientName, String clientNo) {
         this.studentName = studentName;
         this.clientName = clientName;
         this.clientNo = clientNo;
+        this.UID = studentName+clientName+clientNo;
+        studentMap.put(this.UID, this);
 //        this.parent = parent;
 //        // trying to make it unique, hope it does not affect sorting too badly
 //        if (studentName != null && clientName != null && clientNo != null) {
 //            parent.put(studentName + clientName + clientNo, this);
 //        }
+    }
+
+    public static void editStudent(String UID, String studentName, String clientName, String clientNo){
+        Student student = studentMap.get(UID);
+        if (student == null) {
+            Log.v("Add student", "Student doesn't exist!!");
+            return;
+        }
+        studentMap.remove(UID);
+        new Student(studentName, clientName, clientNo);
     }
 
     public boolean remap(@NonNull String studentName,@NonNull String clientName,@NonNull String clientNo) {
