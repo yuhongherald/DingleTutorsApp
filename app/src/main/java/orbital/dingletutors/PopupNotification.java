@@ -66,7 +66,7 @@ public class PopupNotification extends Popup {
                     ((TextView) layout.findViewById(R.id.time)).setText(lesson.hours + ":" + lesson.minutes);
                     ((TextView) layout.findViewById(R.id.name)).setText(lesson.name);
                     ((TextView) layout.findViewById(R.id.level)).setText(lesson.level);
-                    ((TextView) layout.findViewById(R.id.size)).setText(lesson.students.length);
+                    ((TextView) layout.findViewById(R.id.size)).setText(lesson.students.size());
                     layout.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {

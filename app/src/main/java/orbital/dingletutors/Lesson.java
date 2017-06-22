@@ -26,9 +26,9 @@ public class Lesson{
     public int duration;
     public String name;
     public String level;
-    public Student[] students;
+    public ArrayList<Student> students;
 
-    Lesson(int hours,int minutes, int duration, @NonNull String name, @NonNull String level, Student[] students, @NonNull DayMap parent) {
+    Lesson(int hours,int minutes, int duration, @NonNull String name, @NonNull String level, ArrayList<Student> students, @NonNull DayMap parent) {
         this.time = hours * 60 + minutes;
         if (parent.get(this.time) == null) {
             parent.put(this.time, this);
@@ -54,7 +54,7 @@ public class Lesson{
         return this.parent.remove(this.time) != null;
     }
 
-    public String remap(int hours,int minutes, int duration, @NonNull String name, @NonNull String level, Student[] students) {
+    public String remap(int hours,int minutes, int duration, @NonNull String name, @NonNull String level, ArrayList<Student> students) {
         this.delete();
         this.time = hours * 60 + minutes;
         Lesson temp = parent.get(this.time);

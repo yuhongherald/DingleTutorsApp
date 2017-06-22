@@ -3,6 +3,7 @@ package orbital.dingletutors;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.TreeMap;
 
 /**
@@ -16,6 +17,7 @@ public class Student {
     public String clientNo;
     public String UID;
     public static final TreeMap<String, Student> studentMap = new TreeMap<>();
+    public static final ArrayList<Student> studentList = new ArrayList<>();
 
     public Student(String studentName, String clientName, String clientNo) {
         this.studentName = studentName;
@@ -23,6 +25,8 @@ public class Student {
         this.clientNo = clientNo;
         this.UID = studentName+clientName+clientNo;
         studentMap.put(this.UID, this);
+        int addedPos = studentMap.headMap(this.UID).size();
+        studentList.add(addedPos, this);
 //        this.parent = parent;
 //        // trying to make it unique, hope it does not affect sorting too badly
 //        if (studentName != null && clientName != null && clientNo != null) {

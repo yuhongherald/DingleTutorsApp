@@ -52,7 +52,7 @@ public class NewLessonFragment extends Fragment {
     TextView studentName;
     TextView educationLevel;
 
-    List<Student> selectedStudents;
+    ArrayList<Student> selectedStudents;
     NewLessonFragment currentInstance;
     public NewLessonFragment(){
         super();
@@ -180,7 +180,10 @@ public class NewLessonFragment extends Fragment {
 //                }
 //                 we save
                 // for testing purposes use fake students
-                Student[] testArr = new Student[]{new Student("test", "test", "test")};
+                if (selectedStudents.isEmpty()){
+                    Toast.makeText(getActivity(), "No students selected yet", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 if (CalendarFragment.selectedLesson == null){
                     CalendarFragment.selectedLesson = new Lesson(
                             currentHour,
@@ -188,7 +191,7 @@ public class NewLessonFragment extends Fragment {
                             durationStringToInt.get(duration.getText().toString()),
                             className.getText().toString(),
                             educationLevel.getText().toString(),
-                            testArr,
+                            selectedStudents,
                             CalendarFragment.selectedDay
                     );
                 } else {
@@ -198,7 +201,7 @@ public class NewLessonFragment extends Fragment {
                             durationStringToInt.get(duration.getText().toString()),
                             className.getText().toString(),
                             educationLevel.getText().toString(),
-                            testArr
+                            selectedStudents
                     );
 
                     if(result != null) {
