@@ -1,5 +1,6 @@
 package orbital.dingletutors;
 
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import java.util.Date;
@@ -10,23 +11,25 @@ import java.util.HashMap;
  */
 
 public class MonthMap extends HashMap<String, DayMap> {
+    public static final long serialVersionUID = 1002L;
     public String key; // format x-xxxx, not padded with 0s
     public CalendarMap parent;
     public MonthMap(String key, CalendarMap parent) {
         this.key = key;
         this.parent = parent;
-        MonthMap temp = parent.get(key);
-        if (temp != null) {
-            Log.v("MonthMap", "copying from existing");
-            this.putAll(temp);
-            temp.delete();
-        }
         parent.put(key, this);
     }
 
-    public boolean delete() {
-        return (this.parent.remove(this.key) != null);
+    public static MonthMap init(String key, @NonNull CalendarMap parent) {
+        MonthMap temp = parent.get(key);
+        if (temp != null) {
+            return temp;
+        } else {
+            return new MonthMap(key, parent);
+        }
     }
+
+    public boolean delete() {return (this.parent.remove(this.key) != null);}
 
     @Override
     public DayMap put(String key, DayMap value) {

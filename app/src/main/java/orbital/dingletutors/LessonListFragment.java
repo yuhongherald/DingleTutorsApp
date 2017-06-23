@@ -2,6 +2,7 @@ package orbital.dingletutors;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -16,6 +17,7 @@ import android.widget.TextView;
 
 import org.w3c.dom.Text;
 
+import java.text.SimpleDateFormat;
 import java.util.Map;
 import java.util.Set;
 
@@ -24,6 +26,8 @@ import java.util.Set;
  */
 
 public class LessonListFragment extends Fragment{
+    MonthMap monthMap;
+    DayMap dayMap;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.linear_scrollable, container, false);
@@ -49,31 +53,31 @@ public class LessonListFragment extends Fragment{
         return v;
     }
 
-    @Override
-    public void onDestroyView() {
-        if (CalendarFragment.thisFragment != null) {
-            // recolor here
-            Log.v("Calendar", "recoloring");
-            CalendarFragment.thisFragment.deleteDay();
-        }
-        super.onDestroyView();
-    }
+//    @Override
+//    public void onDestroyView() {
+//        if (CalendarFragment.thisFragment != null) {
+//            // recolor here
+//            Log.v("Calendar", "recoloring");
+//            CalendarFragment.thisFragment.deleteDay();
+//        }
+//        super.onDestroyView();
+//    }
 
     public void updateList(final LinearLayout list) {
-        if (CalendarFragment.selectedDay == null) {
-            Log.v("LessonFragment", "selectedDay not initialized");
-            return;
-        }
         list.removeAllViewsInLayout(); // the most inefficient way to sort the views
         // if an entry is edited it will be deleted and placed back in
 
-        Set<Map.Entry<Integer, Lesson>> set = CalendarFragment.selectedDay.entrySet();
+        String stringDate = new SimpleDateFormat("mmHHddMMYYYY").format(CalendarFragment.currentDate);
+        monthMap = MonthMap.init(Integer.parseInt(stringDate.substring(6, 8)) + "-" +
+                Integer.parseInt(stringDate.substring(8, 12)), MinuteUpdater.calendarMap);
+        dayMap = DayMap.init(CalendarFragment.formatter.format(CalendarFragment.currentDate), monthMap);
+        Set<Map.Entry<Integer, Lesson>> set = dayMap.entrySet();
         RelativeLayout layout;
         for (Map.Entry<Integer, Lesson> entry : set) {
             layout = (RelativeLayout) getActivity().getLayoutInflater()
                     .inflate(R.layout.view_lesson, null);
             final Lesson lesson = entry.getValue();
-            ((TextView) layout.findViewById(R.id.time)).setText(lesson.hours + ":" + lesson.minutes);
+            ((TextView) layout.findViewById(R.id.time)).setText(lesson.displayTime);
             ((TextView) layout.findViewById(R.id.name)).setText(lesson.name);
 //            ((TextView) layout.findViewById(R.id.level)).setText(lesson.levels[lesson.level]);
 //            ((TextView) layout.findViewById(R.id.size)).setText(Integer.toString(lesson.size()));
@@ -97,13 +101,26 @@ public class LessonListFragment extends Fragment{
             ((Button) layout.findViewById(R.id.remove)).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-//                    lesson.delete();
+                    lesson.delete();
                     updateList(list);
                 }
             });
 
             list.addView(layout);
         }
+    }
+
+    @Override
+    public void onDestroyView() {
+        if (dayMap.isEmpty()) {
+            dayMap.delete();
+        }
+        if (CalendarFragment.thisFragment != null) {
+            // recolor here
+            Log.v("Calendar", "recoloring");
+            CalendarFragment.thisFragment.recolorDay(CalendarFragment.currentDate);
+        }
+        super.onDestroyView();
     }
 
     public static LessonListFragment newInstance(DayMap dayMap){

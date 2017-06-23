@@ -19,7 +19,7 @@ import java.util.TreeMap;
 
 public class StudentPresetMap extends ArrayList<Student> {
 
-    private static final long serialVersionUID = 3L;
+    private static final long serialVersionUID = 1007L;
     public static StudentPresetMap map;
     public static File mapDir;
     // may have to change between sd and phone memory

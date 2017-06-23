@@ -63,10 +63,10 @@ public class PopupNotification extends Popup {
                     final int index = count;
                     layout = (RelativeLayout)((LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE))
                             .inflate(R.layout.view_lesson_checkin, null);
-                    ((TextView) layout.findViewById(R.id.time)).setText(lesson.hours + ":" + lesson.minutes);
+                    ((TextView) layout.findViewById(R.id.time)).setText(lesson.displayTime);
                     ((TextView) layout.findViewById(R.id.name)).setText(lesson.name);
                     ((TextView) layout.findViewById(R.id.level)).setText(lesson.level);
-                    ((TextView) layout.findViewById(R.id.size)).setText(lesson.students.size());
+                    ((TextView) layout.findViewById(R.id.size)).setText(Integer.toString(lesson.students.size()));
                     layout.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {

@@ -10,6 +10,7 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -17,7 +18,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Created by user on 9/6/2017.
+ * Created by Herald on 9/6/2017.
  */
 
 public class PopupCheckIn extends Popup {
@@ -54,10 +55,10 @@ public class PopupCheckIn extends Popup {
                         final int index = count;
                         layout = (RelativeLayout)((LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE))
                                 .inflate(R.layout.view_lesson_checkin, null);
-                        ((TextView) layout.findViewById(R.id.time)).setText(lesson.hours + ":" + lesson.minutes);
+                        ((TextView) layout.findViewById(R.id.time)).setText(lesson.displayTime);
                         ((TextView) layout.findViewById(R.id.name)).setText(lesson.name);
                         ((TextView) layout.findViewById(R.id.level)).setText(lesson.level);
-                        ((TextView) layout.findViewById(R.id.size)).setText(lesson.students.size());
+                        ((TextView) layout.findViewById(R.id.size)).setText(Integer.toString(lesson.students.size()));
                         layout.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -95,7 +96,16 @@ public class PopupCheckIn extends Popup {
                             public void onClick(View v) {
                                 // add the lesson into history and remove it from calendar
                                 LessonHistoryMap.map.add(lesson);
+                                String tempDate = lesson.parent.key;
                                 lesson.delete();
+                                if (CalendarFragment.thisFragment != null) {
+                                    try {
+                                        CalendarFragment.thisFragment.recolorDay(
+                                                CalendarFragment.formatter.parse(tempDate));
+                                    } catch (ParseException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
                                 MinuteUpdater.minuteQueue.remove(context, lesson);
                                 hide();
                             }

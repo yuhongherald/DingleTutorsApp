@@ -16,7 +16,7 @@ import java.util.TreeMap;
 
 public class LessonPresetMap extends TreeMap<String, Lesson> {
 
-    private static final long serialVersionUID = 4L;
+    private static final long serialVersionUID = 1006L;
     public static LessonPresetMap map;
     public static File mapDir;
     // may have to change between sd and phone memory

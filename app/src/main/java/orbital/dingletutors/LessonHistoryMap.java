@@ -15,7 +15,7 @@ import java.util.ArrayList;
  */
 
 public class LessonHistoryMap extends ArrayList<Lesson> {
-    private static final long serialVersionUID = 5L;
+    private static final long serialVersionUID = 1008L;
     public static LessonHistoryMap map;
     public static File mapDir;
     // may have to change between sd and phone memory

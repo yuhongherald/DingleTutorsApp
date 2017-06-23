@@ -24,6 +24,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -40,6 +41,9 @@ import java.util.Set;
 
 public class NewLessonFragment extends Fragment {
 //    RelativeLayout newStudent;
+    Lesson lesson;
+    Date oldDate;
+
     SimpleDateFormat timeformat = new SimpleDateFormat("h:mm a");
     Date currentDate;
     int currentHour;
@@ -56,10 +60,10 @@ public class NewLessonFragment extends Fragment {
     NewLessonFragment currentInstance;
     public NewLessonFragment(){
         super();
-        selectedStudents = new ArrayList<>();
+        selectedStudents = new ArrayList<Student>();
     }
 
-    private static HashMap<String, Integer> durationStringToInt;
+    public static HashMap<String, Integer> durationStringToInt;
     static {
         durationStringToInt = new HashMap<>(5, 1);
         durationStringToInt.put("1 Hour", 60);
@@ -73,8 +77,15 @@ public class NewLessonFragment extends Fragment {
         final Fragment fragment = this;
         View v = inflater.inflate(R.layout.new_lesson, container, false);
         currentInstance = this; // for access when choosing students
-        currentDate = CalendarFragment.selectedDay.date;
-        Calendar cal = Calendar.getInstance();
+        currentDate = CalendarFragment.currentDate;
+        if (lesson != null) {
+            try {
+                oldDate = CalendarFragment.formatter.parse(lesson.parent.key);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        final Calendar cal = Calendar.getInstance();
 
         className = (TextView) v.findViewById(R.id.classNameVal);
         classDate = (TextView) v.findViewById(R.id.dateVal);
@@ -88,10 +99,11 @@ public class NewLessonFragment extends Fragment {
 //        final EditText editMinutes = (EditText) v.findViewById(R.id.minutes);
 //        final Spinner spinnerLevel = (Spinner) v.findViewById(R.id.level);
 
-        classDate.setText(CalendarFragment.selectedDay.key);
+        classDate.setText(CalendarFragment.formatter.format(currentDate));
         startTime.setText(timeformat.format(new Date()));
         currentHour = cal.get(Calendar.HOUR_OF_DAY);
         currentMinute = cal.get(Calendar.MINUTE);
+        updateStudents();
 
 //        if (CalendarFragment.selectedLesson.name != null) {
 //            className.setText(CalendarFragment.selectedLesson.name);
@@ -184,30 +196,32 @@ public class NewLessonFragment extends Fragment {
                     Toast.makeText(getActivity(), "No students selected yet", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if (CalendarFragment.selectedLesson == null){
-                    CalendarFragment.selectedLesson = new Lesson(
-                            currentHour,
-                            currentMinute,
-                            durationStringToInt.get(duration.getText().toString()),
-                            className.getText().toString(),
-                            educationLevel.getText().toString(),
-                            selectedStudents,
-                            CalendarFragment.selectedDay
-                    );
-                } else {
-                    String result = CalendarFragment.selectedLesson.remap(
-                            currentHour,
-                            currentMinute,
-                            durationStringToInt.get(duration.getText().toString()),
-                            className.getText().toString(),
-                            educationLevel.getText().toString(),
-                            selectedStudents
-                    );
+//                String result = lesson.remap(
+//                        currentHour,
+//                        currentMinute,
+//                        durationStringToInt.get(duration.getText().toString()),
+//                        className.getText().toString(),
+//                        educationLevel.getText().toString(),
+//                        selectedStudents
+//                );
+                cal.setTime(currentDate);
+                cal.set(Calendar.HOUR, currentHour);
+                cal.set(Calendar.MINUTE, currentMinute);
+                currentDate = cal.getTime();
+                Lesson newLesson = Lesson.remap(currentDate);
 
-                    if(result != null) {
-                        Toast.makeText(getActivity(), "Lesson in conflict with: " + result, Toast.LENGTH_SHORT).show();
-                        return;
+                if(newLesson != null && newLesson != lesson) {
+                    Toast.makeText(getActivity(), "Lesson in conflict with: " + newLesson.name, Toast.LENGTH_SHORT).show();
+                    return;
+                } else {
+                    if (lesson != null) {
+                        lesson.delete();
                     }
+                    newLesson = Lesson.init(currentDate);
+                    newLesson.duration = durationStringToInt.get(duration.getText().toString());
+                    newLesson.name = className.getText().toString();
+                    newLesson.level = educationLevel.getText().toString();
+                    newLesson.students = selectedStudents;
                 }
 
                 // we close this popup
@@ -267,10 +281,10 @@ public class NewLessonFragment extends Fragment {
         timefrag.setCallBack(ontime);
         timefrag.show(getFragmentManager(), "Time Picker");
     }
-    private String[] subjectNames = { "English", "Mathematics", "Science", "Mother Tongue"};
-    private String[] educationLevels = { "Primary 1", "Primary 2", "Primary 3", "Primary 4",
+    public static final String[] subjectNames = { "English", "Mathematics", "Science", "Mother Tongue"};
+    public static final String[] educationLevels = { "Primary 1", "Primary 2", "Primary 3", "Primary 4",
             "Primary 5", "Primary 6", "Secondary 1", "Secondary 2", "Secondary 3", "Secondary 4"};
-    private String[] durations = { "1 Hour", "1.5 Hours", "2 Hours", "2.5 Hours", "3 Hours"};
+    public static final String[] durations = { "1 Hour", "1.5 Hours", "2 Hours", "2.5 Hours", "3 Hours"};
 
     private void SingleChoiceDialog(String field){
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
@@ -319,15 +333,27 @@ public class NewLessonFragment extends Fragment {
     }
 
     public void updateStudents(){
-        this.studentName.setText(selectedStudents.get(0).studentName);
+        if (!selectedStudents.isEmpty()) {
+            this.studentName.setText(selectedStudents.get(0).studentName);
+        }
     }
 
     @Override
     public void onDestroyView() {
+        FragmentManager manager = getActivity().getSupportFragmentManager();
+        LessonListFragment currentFragment = (LessonListFragment) manager.findFragmentByTag("viewLesson");
+        if (currentFragment != null) {
+            Log.v("ViewLesson", "updating");
+            currentFragment.updateList((LinearLayout) currentFragment.getView().findViewById(R.id.list));
+        }
         if (CalendarFragment.thisFragment != null) {
             // recolor here
             Log.v("Calendar", "recoloring");
-            CalendarFragment.thisFragment.deleteDay();
+//            CalendarFragment.thisFragment.deleteDay();
+            if (oldDate != null) {
+                CalendarFragment.thisFragment.recolorDay(oldDate);
+            }
+            CalendarFragment.thisFragment.recolorDay(currentDate);
         }
         super.onDestroyView();
     }
@@ -335,10 +361,11 @@ public class NewLessonFragment extends Fragment {
 //    public void close() {
 //        // not sure why the tag check for backstack is not working properly
 //        FragmentManager manager = getActivity().getSupportFragmentManager();
-//        FragmentTransaction trans = manager.beginTransaction();
-//        trans.remove(this);
-//        trans.commit();
-//        manager.popBackStack();
+////        FragmentTransaction trans = manager.beginTransaction();
+////        trans.remove(this);
+////        trans.commit();
+////        manager.popBackStack();
+//        getActivity().onBackPressed();
 //        // and we updatelist if lesson_list is on top
 //        LessonListFragment currentFragment = (LessonListFragment) manager.findFragmentByTag("viewLesson");
 //        if (currentFragment != null) {
@@ -395,11 +422,12 @@ public class NewLessonFragment extends Fragment {
     public static NewLessonFragment newInstance(Lesson lesson) {
         NewLessonFragment f = new NewLessonFragment();
 
-//        if (lesson == null) {
-//            CalendarFragment.selectedLesson = new Lesson(null, null, null, 0, CalendarFragment.selectedDay);
-//        } else {
-//            CalendarFragment.selectedLesson = lesson;
-//        }
+        if (lesson == null) {
+            f.lesson = null;
+        } else {
+            f.lesson = lesson;
+            f.selectedStudents = lesson.students;
+        }
         return f;
     }
 }

@@ -3,6 +3,7 @@ package orbital.dingletutors;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.TreeMap;
 
@@ -10,12 +11,13 @@ import java.util.TreeMap;
  * Created by Herald on 31/5/2017.
  */
 
-public class Student {
+public class Student implements Serializable {
     public String studentName; // also the key
     public Lesson parent;
     public String clientName;
     public String clientNo;
     public String UID;
+    public static final long serialVersionUID = 1005L;
     public static final TreeMap<String, Student> studentMap = new TreeMap<>();
     public static final ArrayList<Student> studentList = new ArrayList<>();
 

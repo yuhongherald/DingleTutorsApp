@@ -20,6 +20,7 @@ public class BackgroundNotification extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         if (intent.getAction() != "android.intent.action.BOOT_COMPLETED") {
+//            Log.v("BackgroundNotification", intent.getAction());
             return;
         }
         initialized = true;

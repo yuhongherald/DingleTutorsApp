@@ -24,7 +24,7 @@ public class CalendarMap extends HashMap<String, MonthMap> {
     // For day Treemap, key is start time, value is data associated
 
     // used to hold the CalendarMap if needed
-    private static final long serialVersionUID = 1L;
+    public static final long serialVersionUID = 1001L;
     public static File mapDir;
     public static boolean isInitializing = false;
     public static boolean updating = false;
