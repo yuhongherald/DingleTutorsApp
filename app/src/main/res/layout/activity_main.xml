@@ -8,42 +8,6 @@
     android:weightSum="100"
     tools:context="orbital.dingletutors.MainActivity">
 
-    <!--<LinearLayout-->
-        <!--android:id="@+id/topPanel"-->
-        <!--android:orientation="horizontal"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="0dp"-->
-        <!--android:layout_weight="10"-->
-        <!--android:weightSum="100">-->
-
-    <!--</LinearLayout>-->
-    <!--<LinearLayout-->
-        <!--android:orientation="horizontal"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="0dp"-->
-        <!--android:layout_weight="40"-->
-        <!--android:weightSum="100"-->
-        <!--android:id="@+id/topPanel">-->
-        <!--<LinearLayout-->
-            <!--android:orientation="vertical"-->
-            <!--android:layout_width="0dp"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:layout_weight="30"-->
-            <!--android:weightSum="100"-->
-            <!--android:id="@+id/buttonPanel"-->
-            <!--/>-->
-        <!--<LinearLayout-->
-            <!--android:orientation="vertical"-->
-            <!--android:layout_width="0dp"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:layout_weight="70"-->
-            <!--android:weightSum="100"-->
-            <!--android:id="@+id/notificationsPanel">-->
-            <!--&lt;!&ndash;For notifications&ndash;&gt;-->
-        <!--</LinearLayout>-->
-
-    <!--</LinearLayout>-->
-
     <android.support.design.widget.TabLayout
         android:id="@+id/tab_layout"
         android:layout_width="match_parent"

@@ -16,23 +16,23 @@ import android.widget.TextView;
  * Created by Muruges on 17/5/2017.
  */
 
-public class RandomFragment extends Fragment {
+public class LessonHistoryFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.random_activity, container, false);
+        View v = inflater.inflate(R.layout.lesson_history, container, false);
 
-        TextView tv = (TextView) v.findViewById(R.id.tvRandomActivity);
-        tv.setText(getArguments().getString("msg"));
+//        TextView tv = (TextView) v.findViewById(R.id.tvLessonHistory);
+//        tv.setText(getArguments().getString("msg"));
 
         return v;
     }
 
-    public static RandomFragment newInstance(String text) {
+    public static LessonHistoryFragment newInstance() {
 
-        RandomFragment f = new RandomFragment();
-        Bundle b = new Bundle();
-        b.putString("msg", text);
-        f.setArguments(b);
+        LessonHistoryFragment f = new LessonHistoryFragment();
+//        Bundle b = new Bundle();
+//        b.putString("msg", text);
+//        f.setArguments(b);
 
         return f;
     }

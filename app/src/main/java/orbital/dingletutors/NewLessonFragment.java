@@ -13,13 +13,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.DatePicker;
-import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -31,9 +26,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Created by Muruges on 20/5/2017.
@@ -60,7 +52,7 @@ public class NewLessonFragment extends Fragment {
     NewLessonFragment currentInstance;
     public NewLessonFragment(){
         super();
-        selectedStudents = new ArrayList<Student>();
+        selectedStudents = new ArrayList<>();
     }
 
     public static HashMap<String, Integer> durationStringToInt;
@@ -74,7 +66,6 @@ public class NewLessonFragment extends Fragment {
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        final Fragment fragment = this;
         View v = inflater.inflate(R.layout.new_lesson, container, false);
         currentInstance = this; // for access when choosing students
         currentDate = CalendarFragment.currentDate;
@@ -94,33 +85,11 @@ public class NewLessonFragment extends Fragment {
         studentName = (TextView) v.findViewById(R.id.studentNameVal);
         educationLevel = (TextView) v.findViewById(R.id.levelVal);
 
-
-//        final EditText editHours = (EditText) v.findViewById(R.id.hours);
-//        final EditText editMinutes = (EditText) v.findViewById(R.id.minutes);
-//        final Spinner spinnerLevel = (Spinner) v.findViewById(R.id.level);
-
         classDate.setText(CalendarFragment.formatter.format(currentDate));
         startTime.setText(timeformat.format(new Date()));
         currentHour = cal.get(Calendar.HOUR_OF_DAY);
         currentMinute = cal.get(Calendar.MINUTE);
         updateStudents();
-
-//        if (CalendarFragment.selectedLesson.name != null) {
-//            className.setText(CalendarFragment.selectedLesson.name);
-//        }
-//        if (CalendarFragment.selectedLesson.hours != null) {
-//            editHours.setText(CalendarFragment.selectedLesson.hours);
-//        }
-//        if (CalendarFragment.selectedLesson.minutes != null) {
-//            editMinutes.setText(CalendarFragment.selectedLesson.minutes);
-//        }
-        // have to redo this
-//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, Lesson.levels);
-//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//        spinnerLevel.setAdapter(adapter);
-
-//        final LinearLayout list = (LinearLayout) v.findViewById(R.id.list);
-//        updateList(list);
 
         // Setting buttons
 
@@ -169,41 +138,14 @@ public class NewLessonFragment extends Fragment {
             }
         });
 
-        ((Button) v.findViewById(R.id.saveLesson)).setOnClickListener(new View.OnClickListener() {
+        v.findViewById(R.id.saveLesson).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // check for invalid input
-//                String name = className.getText().toString();
-//                if (name.length()==0) {
-//                    Toast.makeText(getActivity(), "Please input a class name.", Toast.LENGTH_SHORT).show();
-//                    return;
-//                }
-//                String hours = editHours.getText().toString();
-//                String minutes = editMinutes.getText().toString();
-//                if (hours.length() == 0 || minutes.length() == 0) {
-//                    Toast.makeText(getActivity(), "Please input a time.", Toast.LENGTH_SHORT).show();
-//                    return;
-//                }
-//                int intHours = Integer.parseInt(hours);
-//                int intMinutes = Integer.parseInt(minutes);
-//                if (intHours > 23 || intMinutes > 59) {
-//                    Toast.makeText(getActivity(), "Please input a valid time.", Toast.LENGTH_SHORT).show();
-//                    return;
-//                }
-//                 we save
-                // for testing purposes use fake students
                 if (selectedStudents.isEmpty()){
                     Toast.makeText(getActivity(), "No students selected yet", Toast.LENGTH_SHORT).show();
                     return;
                 }
-//                String result = lesson.remap(
-//                        currentHour,
-//                        currentMinute,
-//                        durationStringToInt.get(duration.getText().toString()),
-//                        className.getText().toString(),
-//                        educationLevel.getText().toString(),
-//                        selectedStudents
-//                );
+
                 cal.setTime(currentDate);
                 cal.set(Calendar.HOUR, currentHour);
                 cal.set(Calendar.MINUTE, currentMinute);
@@ -229,7 +171,7 @@ public class NewLessonFragment extends Fragment {
 //                close();
             }
         });
-        ((Button) v.findViewById(R.id.cancelLesson)).setOnClickListener(new View.OnClickListener() {
+        v.findViewById(R.id.cancelLesson).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 getActivity().onBackPressed();
@@ -356,67 +298,6 @@ public class NewLessonFragment extends Fragment {
             CalendarFragment.thisFragment.recolorDay(currentDate);
         }
         super.onDestroyView();
-    }
-
-//    public void close() {
-//        // not sure why the tag check for backstack is not working properly
-//        FragmentManager manager = getActivity().getSupportFragmentManager();
-////        FragmentTransaction trans = manager.beginTransaction();
-////        trans.remove(this);
-////        trans.commit();
-////        manager.popBackStack();
-//        getActivity().onBackPressed();
-//        // and we updatelist if lesson_list is on top
-//        LessonListFragment currentFragment = (LessonListFragment) manager.findFragmentByTag("viewLesson");
-//        if (currentFragment != null) {
-//            Log.v("ViewLesson", "updating");
-//            currentFragment.updateList((LinearLayout) currentFragment.getView().findViewById(R.id.list));
-//        }
-//    }
-
-//    public void updateList(final LinearLayout list) {
-//        RelativeLayout layout;
-//        Set<Map.Entry<String, Student>> set = CalendarFragment.selectedLesson.entrySet();
-//        list.removeAllViewsInLayout();
-//        int count = 0;
-//        for (Map.Entry<String, Student> entry : set) {
-//            count++;
-//            layout = (RelativeLayout) getActivity().getLayoutInflater()
-//                    .inflate(R.layout.view_student, null);
-//            final Student student = entry.getValue();
-//            TextView editName = (TextView) layout.findViewById(R.id.name);
-//            TextView editClient = (TextView) layout.findViewById(R.id.client);
-//            TextView editNumber = (TextView) layout.findViewById(R.id.number);
-//            if (student.studentName != null) {
-//                editName.setText(student.studentName);
-//            }
-//            if (student.clientName != null) {
-//                editClient.setText(student.clientName);
-//            }
-//            if (student.clientNo != null) {
-//                editNumber.setText(student.clientNo);
-//            }
-//            // Need to set button events later
-//            final int finalCount = count;
-//            ((Button) layout.findViewById(R.id.edit)).setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    addStudent(student, finalCount, list);
-//                }
-//            });
-//            ((Button) layout.findViewById(R.id.cancel)).setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    student.delete();
-//                    updateList(list);
-//                }
-//            });
-//            list.addView(layout);
-//        }
-//    }
-
-    public void addStudent(Student student){
-
     }
 
     public static NewLessonFragment newInstance(Lesson lesson) {

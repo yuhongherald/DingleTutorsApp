@@ -19,8 +19,6 @@ import java.util.TreeMap;
  */
 
 public class Lesson implements Serializable {
-//    public static final String[] indexes = {"time", "displayTime", "name", "level"};
-//    public static final String[] levels = {"default", "another one", "try me"};
 
     public static final long serialVersionUID = 1004L;
     public DayMap parent;
@@ -33,10 +31,10 @@ public class Lesson implements Serializable {
     public String name;
     public String level;
     public ArrayList<Student> students;
+    public String summaryReport;
 
     Lesson(int hours,int minutes, @NonNull DayMap parent) {
         this.time = hours * 60 + minutes;
-//        this.time = 0;
         this.hours = hours;
         this.minutes = minutes;
         this.displayTime = String.format("%02d", hours) + ":" + String.format("%02d", minutes);
@@ -49,7 +47,7 @@ public class Lesson implements Serializable {
 //        } catch (ParseException e) {
 //            e.printStackTrace();
 //        }
-        this.students = new ArrayList<Student>();
+        this.students = new ArrayList<>();
         parent.put(this.time, this);
     }
 
@@ -86,24 +84,7 @@ public class Lesson implements Serializable {
         Lesson lesson = dayMap.get(calendar.get(Calendar.HOUR) * 60 + calendar.get(Calendar.MINUTE));
         return lesson;
     }
-//    public String remap(int hours,int minutes, int duration, @NonNull String name, @NonNull String level, ArrayList<Student> students) {
-//        this.delete();
-//        this.time = hours * 60 + minutes;
-//        Lesson temp = parent.get(this.time);
-//        if (temp == null) {
-//            parent.put(this.time, this);
-//        } else {
-//            Log.v("Lesson", "conflict");
-//            return temp.name;
-//        }
-//        this.hours = hours;
-//        this.minutes = minutes;
-//        this.name = name;
-//        this.level = level;
-//        this.duration = duration;
-//        this.students = students;
-//        return null;
-//    }
+
 
     public long minutesBefore() {
         // we need a date for the lesson
@@ -118,49 +99,19 @@ public class Lesson implements Serializable {
         return diffMinutes;
     }
 
-//    @Override
-//    public Student put(String key, Student value) {
-//        while (CalendarMap.updating) {
-//            try {
-//                Thread.sleep(10);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//        CalendarMap.updating = true;
-//        Student temp = super.put(key, value);
-//        CalendarMap.updating = false;
-//        return temp;
-//    }
-//
-//    @Override
-//    public Student get(Object key) {
-//        while (CalendarMap.updating) {
-//            try {
-//                Thread.sleep(10);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//        CalendarMap.updating = true;
-//        Student temp = super.get(key);
-//        CalendarMap.updating = false;
-//        return temp;
-//    }
-//
-//    @Override
-//    public Student remove(Object key) {
-//        while (CalendarMap.updating) {
-//            try {
-//                Thread.sleep(10);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//        CalendarMap.updating = true;
-//        Student temp = super.remove(key);
-//        CalendarMap.updating = false;
-//        return temp;
-//    }
+    public void setSummaryReport(@NonNull String summaryReport){
+        this.summaryReport = summaryReport;
+    }
+
+    public String getSummaryReport(){
+        if (this.summaryReport == null){
+            Log.v("Summary report", "Summary report not filled in yet");
+        }
+        if (this.summaryReport.isEmpty()){
+            Log.v("Summary report", "Empty Summary report");
+            return "";
+        }
+        return this.summaryReport;
+    }
 
 }

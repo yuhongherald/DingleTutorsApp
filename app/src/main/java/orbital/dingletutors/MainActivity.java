@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
         // tabs for each page
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
         tabLayout.addTab(tabLayout.newTab().setText("Calendar"));
-        tabLayout.addTab(tabLayout.newTab().setText("Random Tab"));
+        tabLayout.addTab(tabLayout.newTab().setText("Lesson History"));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
         // onClickListener for the notification button
@@ -137,13 +137,6 @@ public class MainActivity extends AppCompatActivity {
 
         // mark activity is running
         active = true;
-        // Adding the buttons
-//        LinearLayout buttonPanel = (LinearLayout) findViewById(R.id.buttonPanel);
-//        ButtonCollection collection = new ButtonCollection(buttonPanel, this);
-//
-//        collection.addButton(pager, "Calendar", 0);
-//        collection.addButton(pager, "Next", 1);
-//        collection.finalizeButtons();
 
     }
 
@@ -157,9 +150,9 @@ public class MainActivity extends AppCompatActivity {
                 case 0:
                     return CalendarFragment.newInstance();
                 case 1:
-                    return RandomFragment.newInstance("Hi");
+                    return LessonHistoryFragment.newInstance();
                 default:
-                    return RandomFragment.newInstance("bye");
+                    return LessonHistoryFragment.newInstance();
             }
         }
 
