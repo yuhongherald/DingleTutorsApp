@@ -5,21 +5,27 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.support.design.widget.TabLayout;
+
+import com.mindorks.placeholderview.PlaceHolderView;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -30,6 +36,11 @@ public class MainActivity extends AppCompatActivity {
     public static boolean active = false;
     private Popup popup;
     private TextView notificationCount;
+
+    public String[] categoryTitles = new String[]{"Home", "Lesson History", "Notifications", "Students", "Finances"};
+    private PlaceHolderView mDrawerView;
+    private DrawerLayout mDrawer;
+    private DrawerCallBack mCallBack;
 
     private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
@@ -90,10 +101,24 @@ public class MainActivity extends AppCompatActivity {
 
         notificationCount = (TextView) view.findViewById(R.id.notificationCount);
         // tabs for each page
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
-        tabLayout.addTab(tabLayout.newTab().setText("Calendar"));
-        tabLayout.addTab(tabLayout.newTab().setText("Lesson History"));
-        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+//        TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
+//        tabLayout.addTab(tabLayout.newTab().setText("Calendar"));
+//        tabLayout.addTab(tabLayout.newTab().setText("Lesson History"));
+//        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+
+//        drawerLayout =  (DrawerLayout) findViewById(R.id.drawer_layout);
+//        drawerList = (ListView) findViewById(R.id.left_drawer);
+////
+//        drawerList.setAdapter(new ArrayAdapter<String>(getApplicationContext(), R.layout.drawer_list, categoryTitles));
+//        drawerList.setOnItemClickListener(new DrawerItemClickListener());
+
+        mDrawer = (DrawerLayout)findViewById(R.id.drawerLayout);
+        mDrawerView = (PlaceHolderView)findViewById(R.id.drawerView);
+        setupDrawer();
+        mCallBack = new DrawerCallBack();
+        DrawerMenuItem.setDrawerCallBack(mCallBack);
+        mCallBack.onHomeMenuSelected();
+
 
         // onClickListener for the notification button
         // can change to what we want when decided
@@ -114,53 +139,103 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        final ViewPager pager = (ViewPager) findViewById(R.id.viewPager);
-        pager.setAdapter(new CustomPagerAdapter(getSupportFragmentManager()));
-
-        pager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener(){
-            @Override
-            public void onTabSelected(TabLayout.Tab tab){
-                pager.setCurrentItem(tab.getPosition());
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
-        });
+//        final ViewPager pager = (ViewPager) findViewById(R.id.viewPager);
+//        pager.setAdapter(new CustomPagerAdapter(getSupportFragmentManager()));
+//
+//        pager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+//        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener(){
+//            @Override
+//            public void onTabSelected(TabLayout.Tab tab){
+//                pager.setCurrentItem(tab.getPosition());
+//            }
+//
+//            @Override
+//            public void onTabUnselected(TabLayout.Tab tab) {
+//
+//            }
+//
+//            @Override
+//            public void onTabReselected(TabLayout.Tab tab) {
+//
+//            }
+//        });
 
         // mark activity is running
         active = true;
 
     }
 
-    private class CustomPagerAdapter extends FragmentPagerAdapter {
+    private void setupDrawer(){
+        mDrawerView
+                .addView(new DrawerHeader())
+                .addView(new DrawerMenuItem(this.getApplicationContext(), DrawerMenuItem.DRAWER_MENU_ITEM_HOME))
+                .addView(new DrawerMenuItem(this.getApplicationContext(), DrawerMenuItem.DRAWER_MENU_ITEM_LESSON_HISTORY))
+                .addView(new DrawerMenuItem(this.getApplicationContext(), DrawerMenuItem.DRAWER_MENU_ITEM_NOTIFICATIONS))
+                .addView(new DrawerMenuItem(this.getApplicationContext(), DrawerMenuItem.DRAWER_MENU_ITEM_STUDENTS))
+                .addView(new DrawerMenuItem(this.getApplicationContext(), DrawerMenuItem.DRAWER_MENU_ITEM_FINANCES));
 
-        private CustomPagerAdapter(FragmentManager manager){ super(manager); }
 
-        @Override
-        public Fragment getItem(int position) {
-            switch(position) {
-                case 0:
-                    return CalendarFragment.newInstance();
-                case 1:
-                    return LessonHistoryFragment.newInstance();
-                default:
-                    return LessonHistoryFragment.newInstance();
-            }
+    }
+
+    private class DrawerCallBack implements DrawerMenuItem.IDrawerCallBack{
+
+        Fragment fragment;
+
+        public void doTransaction(Fragment fragment){
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.drawer_container, fragment)
+                .commit();
         }
 
         @Override
-        public int getCount() {
-            return 2;
+        public void onHomeMenuSelected() {
+            fragment = CalendarFragment.newInstance();
+            doTransaction(fragment);
+        }
+
+        @Override
+        public void onLessonHistoryMenuSelected() {
+            fragment = LessonHistoryFragment.newInstance();
+            doTransaction(fragment);
+        }
+
+        @Override
+        public void onNotificationsSelected() {
+            // add stuff
+        }
+
+        @Override
+        public void onStudentsSelected() {
+            // add stuff
+        }
+
+        @Override
+        public void onFinancesSelected() {
+            // add stuff
         }
     }
+
+//    private class CustomPagerAdapter extends FragmentPagerAdapter {
+//
+//        private CustomPagerAdapter(FragmentManager manager){ super(manager); }
+//
+//        @Override
+//        public Fragment getItem(int position) {
+//            switch(position) {
+//                case 0:
+//                    return CalendarFragment.newInstance();
+//                case 1:
+//                    return LessonHistoryFragment.newInstance();
+//                default:
+//                    return LessonHistoryFragment.newInstance();
+//            }
+//        }
+//
+//        @Override
+//        public int getCount() {
+//            return 2;
+//        }
+//    }
 
     public void load() {
         // init class and students presets
