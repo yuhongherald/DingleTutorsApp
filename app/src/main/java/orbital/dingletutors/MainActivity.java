@@ -5,25 +5,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ListView;
-import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.support.design.widget.TabLayout;
+
 
 import com.mindorks.placeholderview.PlaceHolderView;
 
@@ -100,17 +93,6 @@ public class MainActivity extends AppCompatActivity {
         final View view =getSupportActionBar().getCustomView();
 
         notificationCount = (TextView) view.findViewById(R.id.notificationCount);
-        // tabs for each page
-//        TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
-//        tabLayout.addTab(tabLayout.newTab().setText("Calendar"));
-//        tabLayout.addTab(tabLayout.newTab().setText("Lesson History"));
-//        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
-
-//        drawerLayout =  (DrawerLayout) findViewById(R.id.drawer_layout);
-//        drawerList = (ListView) findViewById(R.id.left_drawer);
-////
-//        drawerList.setAdapter(new ArrayAdapter<String>(getApplicationContext(), R.layout.drawer_list, categoryTitles));
-//        drawerList.setOnItemClickListener(new DrawerItemClickListener());
 
         mDrawer = (DrawerLayout)findViewById(R.id.drawerLayout);
         mDrawerView = (PlaceHolderView)findViewById(R.id.drawerView);
@@ -138,27 +120,6 @@ public class MainActivity extends AppCompatActivity {
                 popup.show();
             }
         });
-
-//        final ViewPager pager = (ViewPager) findViewById(R.id.viewPager);
-//        pager.setAdapter(new CustomPagerAdapter(getSupportFragmentManager()));
-//
-//        pager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-//        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener(){
-//            @Override
-//            public void onTabSelected(TabLayout.Tab tab){
-//                pager.setCurrentItem(tab.getPosition());
-//            }
-//
-//            @Override
-//            public void onTabUnselected(TabLayout.Tab tab) {
-//
-//            }
-//
-//            @Override
-//            public void onTabReselected(TabLayout.Tab tab) {
-//
-//            }
-//        });
 
         // mark activity is running
         active = true;
@@ -201,12 +162,14 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onNotificationsSelected() {
-            // add stuff
+            fragment = NotificationFragment.newInstance();
+            doTransaction(fragment);
         }
 
         @Override
         public void onStudentsSelected() {
-            // add stuff
+            fragment = ViewStudentFragment.newInstance();
+            doTransaction(fragment);
         }
 
         @Override
@@ -214,28 +177,6 @@ public class MainActivity extends AppCompatActivity {
             // add stuff
         }
     }
-
-//    private class CustomPagerAdapter extends FragmentPagerAdapter {
-//
-//        private CustomPagerAdapter(FragmentManager manager){ super(manager); }
-//
-//        @Override
-//        public Fragment getItem(int position) {
-//            switch(position) {
-//                case 0:
-//                    return CalendarFragment.newInstance();
-//                case 1:
-//                    return LessonHistoryFragment.newInstance();
-//                default:
-//                    return LessonHistoryFragment.newInstance();
-//            }
-//        }
-//
-//        @Override
-//        public int getCount() {
-//            return 2;
-//        }
-//    }
 
     public void load() {
         // init class and students presets

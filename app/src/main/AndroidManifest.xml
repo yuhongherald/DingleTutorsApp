@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="orbital.dingletutors">
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-    <uses-sdk tools:overrideLibrary="com.mindorks.placeholderview"/>
+    <uses-sdk tools:overrideLibrary="com.mindorks.placeholderview" />
 
     <application
         android:allowBackup="true"

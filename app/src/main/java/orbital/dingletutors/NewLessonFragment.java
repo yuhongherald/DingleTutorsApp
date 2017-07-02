@@ -36,7 +36,7 @@ public class NewLessonFragment extends Fragment {
     Lesson lesson;
     Date oldDate;
 
-    SimpleDateFormat timeformat = new SimpleDateFormat("h:mm a");
+    static SimpleDateFormat timeformat = new SimpleDateFormat("h:mm a");
     Date currentDate;
     int currentHour;
     int currentMinute;

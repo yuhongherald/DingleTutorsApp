@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="viewStart"
+        android:layout_gravity="start"
+        android:text="Upcoming Lesson"
+        android:textSize="24dp"
+        android:id="@+id/upcoming_tv"
+        android:layout_margin="7dp"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@android:color/black" />
+    <net.cachapa.expandablelayout.ExpandableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:el_expanded="false"
+        android:id="@+id/upcoming_expandable"
+        android:background="@android:color/darker_gray">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/upcoming_container">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Time"
+                android:id="@+id/upcoming_time"
+                android:layout_margin="7dp"
+                android:textSize="20dp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Level"
+                android:id="@+id/upcoming_level"
+                android:layout_margin="7dp"
+                android:textSize="20dp"
+                android:layout_toRightOf="@+id/upcoming_time"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Name"
+                android:id="@+id/upcoming_name"
+                android:layout_margin="7dp"
+                android:textSize="20dp"
+                android:layout_toRightOf="@+id/upcoming_level"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Size"
+                android:id="@+id/upcoming_size"
+                android:layout_margin="7dp"
+                android:textSize="20dp"
+                android:layout_toRightOf="@+id/upcoming_name"/>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@android:color/black"
+                android:layout_below="@+id/upcoming_size"/>
+        </RelativeLayout>
+
+    </net.cachapa.expandablelayout.ExpandableLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="viewStart"
+        android:layout_gravity="start"
+        android:text="Incomplete Summary Reports"
+        android:textSize="24dp"
+        android:layout_margin="7dp"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@android:color/black" />
+    <net.cachapa.expandablelayout.ExpandableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/darker_gray"
+        app:el_expanded="false">
+        <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/notifications_rv">
+
+        </android.support.v7.widget.RecyclerView>
+    </net.cachapa.expandablelayout.ExpandableLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="viewStart"
+        android:layout_gravity="start"
+        android:text="Lesson Requests"
+        android:textSize="24dp"
+        android:layout_margin="7dp"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@android:color/black" />
+    <net.cachapa.expandablelayout.ExpandableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/darker_gray"
+        app:el_expanded="false">
+        <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/lesson_requests_rv">
+
+        </android.support.v7.widget.RecyclerView>
+    </net.cachapa.expandablelayout.ExpandableLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="viewStart"
+        android:layout_gravity="start"
+        android:text="Pending Invoices"
+        android:textSize="24dp"
+        android:layout_margin="7dp"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@android:color/black" />
+    <net.cachapa.expandablelayout.ExpandableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/darker_gray"
+        app:el_expanded="false">
+        <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/invoices_rv">
+
+        </android.support.v7.widget.RecyclerView>
+    </net.cachapa.expandablelayout.ExpandableLayout>
+</LinearLayout>

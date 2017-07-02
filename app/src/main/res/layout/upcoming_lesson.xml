@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/display_upcoming_level"
+        android:text="level"
+        android:textSize="20dp"
+        android:padding="15dp"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/display_upcoming_name"
+        android:layout_toRightOf="@+id/display_upcoming_level"
+        android:text="name"
+        android:textSize="20dp"
+        android:padding="15dp"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/display_upcoming_date"
+        android:layout_below="@+id/display_upcoming_level"
+        android:text="date"
+        android:textSize="20dp"
+        android:padding="15dp"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/display_upcoming_time"
+        android:layout_below="@+id/display_upcoming_level"
+        android:layout_toRightOf="@+id/display_upcoming_date"
+        android:text="time"
+        android:textSize="20dp"
+        android:padding="15dp"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@android:color/black"
+        android:layout_below="@+id/display_upcoming_time"
+        android:id="@+id/upcoming_black1"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Students in lesson"
+        android:background="@color/caldroid_gray"
+        android:textSize="20dp"
+        android:padding="10dp"
+        android:id="@+id/lv_header"
+        android:layout_below="@+id/upcoming_black1"/>
+    <ListView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/display_list_students"
+        android:layout_below="@+id/lv_header">
+
+    </ListView>
+</RelativeLayout>

@@ -10,6 +10,8 @@ import com.mindorks.placeholderview.annotations.Layout;
 import com.mindorks.placeholderview.annotations.Resolve;
 import com.mindorks.placeholderview.annotations.View;
 
+import static android.view.View.VISIBLE;
+
 /**
  * Created by Muruges on 2/7/2017.
  */
@@ -32,6 +34,9 @@ public class DrawerMenuItem {
     @View(R.id.itemIcon)
     private ImageView itemIcon;
 
+    @View(R.id.notification_count)
+    public TextView notificationCount;
+
     public DrawerMenuItem(Context context, int menuPosition) {
         mContext = context;
         mMenuPosition = menuPosition;
@@ -50,6 +55,7 @@ public class DrawerMenuItem {
                 break;
             case DRAWER_MENU_ITEM_NOTIFICATIONS:
                 itemNameTxt.setText("Notifications");
+                notificationCount.setVisibility(VISIBLE);
                 itemIcon.setImageDrawable(mContext.getResources().getDrawable(R.drawable.ic_priority_high_black_20dp));
                 break;
             case DRAWER_MENU_ITEM_STUDENTS:
