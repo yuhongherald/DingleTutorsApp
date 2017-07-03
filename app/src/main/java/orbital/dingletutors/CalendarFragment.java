@@ -39,9 +39,7 @@ public class CalendarFragment extends Fragment {
     public final static SimpleDateFormat formatter = new SimpleDateFormat("dd MMM yyyy");
     public final static ColorDrawable green = new ColorDrawable(Color.GREEN);
     public final static ColorDrawable white = new ColorDrawable(Color.WHITE);
-//    public static MonthMap selectedMonth;
-//    public static DayMap selectedDay;
-//    public static Lesson selectedLesson;
+
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
         thisFragment = this;
@@ -72,14 +70,6 @@ public class CalendarFragment extends Fragment {
 
             @Override
             public void onSelectDate(Date date, View view) {
-//                Toast.makeText(getActivity().getApplicationContext(), formatter.format(date),
-//                        Toast.LENGTH_SHORT).show();
-                // deleteDay();
-//                selectedDay = selectedMonth.get(formatter.format(date));
-//                if (selectedDay == null) {
-//                    Log.v("selectDate", "no existing date");
-//                    selectedDay = new DayMap(date, formatter.format(date), selectedMonth);
-//                }
                 CalendarFragment.currentDate = date;
                 tv.setText(formatter.format(date));
             }
@@ -87,10 +77,8 @@ public class CalendarFragment extends Fragment {
             @Override
             public void onChangeMonth(int month, int year) {
                 boundDates(month, year);
-//                String text = "month: " + month + " year: " + year;
-//                Toast.makeText(getActivity().getApplicationContext(), text,
-//                        Toast.LENGTH_SHORT).show();
-//                deleteMonth();
+                // reset colors for irrelevant months
+                caldroidFragment.getBackgroundForDateTimeMap().clear();
                 MonthMap selectedMonth = MinuteUpdater.calendarMap.get(month + "-" + year);
                 if (selectedMonth != null) {
                     // time to mark each days on the calendar
@@ -107,8 +95,6 @@ public class CalendarFragment extends Fragment {
                         }
                     }
                     caldroidFragment.refreshView();
-                } else {
-//                    selectedMonth = new MonthMap(month + "-" + year, MinuteUpdater.calendarMap);
                 }
             }
 
@@ -202,37 +188,6 @@ public class CalendarFragment extends Fragment {
         }
         caldroidFragment.refreshView();
     }
-
-    // mor like update day now
-//    public void deleteDay() {
-//        if (selectedDay == null) {
-//            Log.v("deleteDay", "no day selected");
-//            return;
-//        }
-//        if (selectedDay.isEmpty()) {
-//            // uncolor the date on the calendar
-//            try {
-//                caldroidFragment.setBackgroundDrawableForDate(white, formatter.parse(selectedDay.key));
-//            } catch (ParseException e) {
-//                e.printStackTrace();
-//            }
-//            selectedDay.delete();
-//        } else {
-//            try {
-//                caldroidFragment.setBackgroundDrawableForDate(green, formatter.parse(selectedDay.key));
-//            } catch (ParseException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//        caldroidFragment.refreshView();
-//    }
-
-//    public void deleteMonth() {
-//        // deleteDay();
-//        if (selectedMonth != null && selectedMonth.isEmpty()) {
-//            selectedMonth.delete();
-//        }
-//    }
 
     public void boundDates(int month, int year) {
         caldroidFragment.clearDisableDates();

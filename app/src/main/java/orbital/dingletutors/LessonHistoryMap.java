@@ -17,7 +17,6 @@ import java.util.ArrayList;
 public class LessonHistoryMap extends ArrayList<Lesson> {
     private static final long serialVersionUID = 1008L;
     public static LessonHistoryMap map;
-    public static File mapDir;
     // may have to change between sd and phone memory
 //    public static final String data = Environment.getDataDirectory().getPath();
 //    public static final String root = "/DingleTutors/";
@@ -30,7 +29,7 @@ public class LessonHistoryMap extends ArrayList<Lesson> {
     }
 
     public static LessonHistoryMap init(String fileName) throws Exception {
-        File f = new File(mapDir, fileName);
+        File f = new File(MinuteUpdater.mapDir, fileName);
         if(f.exists() && !f.isDirectory()) {
             Log.v("LessonHistoryMap", "directory found");
             FileInputStream fileInputStream  = new FileInputStream(f);
@@ -60,7 +59,7 @@ public class LessonHistoryMap extends ArrayList<Lesson> {
     // either do autosave or save on app close
     public void save() throws Exception {
         // create a File object for the output file
-        File outputFile = new File(mapDir, this.fileName);
+        File outputFile = new File(MinuteUpdater.mapDir, this.fileName);
         // outputFile.mkdirs();
         outputFile.createNewFile();
         FileOutputStream fileOutputStream = new FileOutputStream(outputFile);

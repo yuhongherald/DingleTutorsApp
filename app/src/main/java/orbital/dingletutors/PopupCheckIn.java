@@ -106,7 +106,7 @@ public class PopupCheckIn extends Popup {
                                         e.printStackTrace();
                                     }
                                 }
-                                MinuteUpdater.minuteQueue.remove(context, lesson);
+                                MinuteUpdater.minuteQueue.remove(lesson);
                                 hide();
                             }
                         });

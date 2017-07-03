@@ -11,8 +11,8 @@ import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
@@ -27,10 +27,20 @@ public class MinuteUpdater extends BroadcastReceiver {
     public static boolean mainAppRunning = false;
     public static CalendarMap calendarMap;
     public static MinuteQueue minuteQueue;
+    public static Context context;
+    public static boolean isInitializing = false;
+
+    public static File mapDir;
+
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.v("MinuteUpdater","called");
         //createNotification(context, null);
+        if (calendarMap == null || minuteQueue == null || context == null) {
+            // my stuff keeps getting garbage collected, somehow this only needs to be done once
+            Log.v("MinuteUpdater", "retrieving garbage collected stuff");
+            loadMap(context);
+        }
         if (calendarMap != null) {
             // we calculate
             boolean loop = true;
@@ -62,6 +72,22 @@ public class MinuteUpdater extends BroadcastReceiver {
 //            createNotification(context, lesson, MinuteQueue.map.minutesBefore(lesson));
 //        }
         // Log.v("MinuteUpdater","no updates");
+    }
+
+    public static void loadMap(Context context) {
+        MinuteUpdater.context = context;
+        if (mapDir == null) {
+            mapDir = new File(context.getFilesDir(), "/map");
+            mapDir.mkdirs();
+        }
+        isInitializing = true;
+        try {
+            minuteQueue = MinuteQueue.init("queue.map");
+            calendarMap = CalendarMap.init("notifications.map");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        isInitializing = false;
     }
 
     private static void checkDate(Date rawDate) {
@@ -96,7 +122,7 @@ public class MinuteUpdater extends BroadcastReceiver {
 
     private void createNotification(Context context, Lesson lesson, long minutes, int lessons) {
         if (mainAppRunning) {
-            Intent i = new Intent();
+            Intent i = new Intent(context, MainActivity.class);
             i.setAction("orbital.dingletutors.UPDATE_MAIN");
             context.sendBroadcast(i);
             return;

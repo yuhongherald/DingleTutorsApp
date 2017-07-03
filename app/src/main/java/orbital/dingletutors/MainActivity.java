@@ -5,31 +5,20 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ListView;
-import android.widget.PopupWindow;
 import android.widget.TextView;
-import android.widget.Toast;
-import android.support.design.widget.TabLayout;
 
 import com.mindorks.placeholderview.PlaceHolderView;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -75,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             MinuteUpdater.mainAppRunning = false;
             MinuteUpdater.calendarMap.save();
+            MinuteUpdater.minuteQueue.save();
             LessonPresetMap.map.save();
             StudentPresetMap.map.save();
             LessonHistoryMap.map.save();
@@ -240,21 +230,19 @@ public class MainActivity extends AppCompatActivity {
     public void load() {
         // init class and students presets
         try {
-            LessonPresetMap.mapDir = new File(getFilesDir(), "/map");
-            LessonPresetMap.mapDir.mkdirs();
+            if (MinuteUpdater.mapDir == null) {
+                MinuteUpdater.mapDir = new File(getFilesDir(), "/map");
+                MinuteUpdater.mapDir.mkdirs();
+            }
             LessonPresetMap.map = LessonPresetMap.init("lessons.map");
-            StudentPresetMap.mapDir = new File(getFilesDir(), "/map");
-            StudentPresetMap.mapDir.mkdirs();
             StudentPresetMap.map = StudentPresetMap.init("students.map");
-            LessonHistoryMap.mapDir = new File(getFilesDir(), "/map");
-            LessonHistoryMap.mapDir.mkdirs();
             LessonHistoryMap.map = LessonHistoryMap.init("history.map");
 
             if (!BackgroundNotification.initialized) {
                 Log.v("BackgroundNotification", "not initialized");
                 (new BackgroundNotification()).onReceive(this, new Intent().setAction("android.intent.action.BOOT_COMPLETED"));
             }
-            while (CalendarMap.isInitializing || MinuteUpdater.calendarMap == null) {
+            while (MinuteUpdater.isInitializing || MinuteUpdater.calendarMap == null) {
                 Thread.sleep(10);
             }
         } catch (Exception e) {

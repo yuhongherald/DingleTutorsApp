@@ -68,6 +68,9 @@ public class Lesson implements Serializable {
 
     public boolean delete() {
         boolean result = this.parent.remove(this.time) != null;
+        if (MinuteUpdater.minuteQueue != null) {
+            MinuteUpdater.minuteQueue.remove(this);
+        }
         if (this.parent.isEmpty()) {
             this.parent.delete();
         }

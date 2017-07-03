@@ -9,7 +9,6 @@ import java.io.InvalidClassException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import java.util.TreeMap;
 
 /**
  * Created by Herald on 1/6/2017.
@@ -21,11 +20,6 @@ public class StudentPresetMap extends ArrayList<Student> {
 
     private static final long serialVersionUID = 1007L;
     public static StudentPresetMap map;
-    public static File mapDir;
-    // may have to change between sd and phone memory
-//    public static final String data = Environment.getDataDirectory().getPath();
-//    public static final String root = "/DingleTutors/";
-
     public String fileName;
 
     public StudentPresetMap(String fileName) {
@@ -34,7 +28,7 @@ public class StudentPresetMap extends ArrayList<Student> {
     }
 
     public static StudentPresetMap init(String fileName) throws Exception {
-        File f = new File(mapDir, fileName);
+        File f = new File(MinuteUpdater.mapDir, fileName);
         if(f.exists() && !f.isDirectory()) {
             Log.v("StudentPresetMap", "directory found");
             FileInputStream fileInputStream  = new FileInputStream(f);
@@ -64,7 +58,7 @@ public class StudentPresetMap extends ArrayList<Student> {
     // either do autosave or save on app close
     public void save() throws Exception {
         // create a File object for the output file
-        File outputFile = new File(mapDir, this.fileName);
+        File outputFile = new File(MinuteUpdater.mapDir, this.fileName);
         // outputFile.mkdirs();
         outputFile.createNewFile();
         FileOutputStream fileOutputStream = new FileOutputStream(outputFile);

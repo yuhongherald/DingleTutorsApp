@@ -1,36 +1,23 @@
 package orbital.dingletutors;
 
-import android.content.Context;
-import android.os.Environment;
 import android.util.Log;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InvalidClassException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by Herald on 19/5/2017.
  */
 
 public class CalendarMap extends HashMap<String, MonthMap> {
-    // Key is month and year, value is a Hashmap for the month
-    // For month Hashmaps, key is day, value is TreeMap
-    // For day Treemap, key is start time, value is data associated
 
-    // used to hold the CalendarMap if needed
     public static final long serialVersionUID = 1001L;
-    public static File mapDir;
-    public static boolean isInitializing = false;
     public static boolean updating = false;
-    // may have to change between sd and phone memory
-//    public static final String data = Environment.getDataDirectory().getPath();
-//    public static final String root = "/DingleTutors/";
 
     public String fileName;
 
@@ -85,7 +72,7 @@ public class CalendarMap extends HashMap<String, MonthMap> {
     }
 
     public static CalendarMap init(String fileName) throws Exception {
-        File f = new File(mapDir, fileName);
+        File f = new File(MinuteUpdater.mapDir, fileName);
         if(f.exists() && !f.isDirectory()) {
             Log.v("CalendarMap", "directory found");
             FileInputStream fileInputStream  = new FileInputStream(f);
@@ -115,7 +102,7 @@ public class CalendarMap extends HashMap<String, MonthMap> {
     // either do autosave or save on app close
     public void save() throws Exception {
         // create a File object for the output file
-        File outputFile = new File(mapDir, this.fileName);
+        File outputFile = new File(MinuteUpdater.mapDir, this.fileName);
         // outputFile.mkdirs();
         outputFile.createNewFile();
         FileOutputStream fileOutputStream = new FileOutputStream(outputFile);
