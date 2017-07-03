@@ -109,7 +109,7 @@ public class Choose_Student_Fragment extends Fragment{
                                 number.getText().toString()
                         );
                         alert.dismiss();
-                        adapter.notifyItemInserted(Student.studentMap.headMap(addedStudent.UID).size());
+                        adapter.notifyItemInserted(Student.studentMap.headMap(addedStudent).size());
                     }
                 });
             }

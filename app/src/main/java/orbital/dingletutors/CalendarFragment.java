@@ -39,6 +39,8 @@ public class CalendarFragment extends Fragment {
     public final static SimpleDateFormat formatter = new SimpleDateFormat("dd MMM yyyy");
     public final static ColorDrawable green = new ColorDrawable(Color.GREEN);
     public final static ColorDrawable white = new ColorDrawable(Color.WHITE);
+    public final static ColorDrawable cyan = new ColorDrawable(Color.CYAN);
+    public final static boolean showPastDates = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
@@ -202,8 +204,13 @@ public class CalendarFragment extends Fragment {
         Date monthEnd = cal.getTime();
 
         // always take the later date
-        caldroidFragment.setMinDate(currentDate.before(monthStart) ? monthStart : currentDate);
-        caldroidFragment.setMaxDate(currentDate.before(monthEnd) ? monthEnd : currentDate);
+        if (showPastDates) {
+            caldroidFragment.setMinDate(monthStart);
+            caldroidFragment.setMaxDate(monthEnd);
+        } else {
+            caldroidFragment.setMinDate(currentDate.before(monthStart) ? monthStart : currentDate);
+            caldroidFragment.setMaxDate(currentDate.before(monthEnd) ? monthEnd : currentDate);
+        }
         caldroidFragment.refreshView();
     }
 
