@@ -6,7 +6,6 @@ import android.util.Log;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.TreeMap;
 
 /**
  * Created by Herald on 31/5/2017.
@@ -18,17 +17,16 @@ public class Student implements Serializable, Comparable<Student> {
     public String clientNo;
 //    public String UID;
     public static final long serialVersionUID = 1005L;
-    public static final TreeMap<Student, Student> studentMap = new TreeMap<>();
-    public static final ArrayList<Student> studentList = new ArrayList<>();
 
     public Student(String studentName, String clientName, String clientNo) {
         this.studentName = studentName;
         this.clientName = clientName;
         this.clientNo = clientNo;
         // this.UID = studentName+clientName+clientNo;
-        studentMap.put(this, this);
-        int addedPos = studentMap.headMap(this).size();
-        studentList.add(addedPos, this);
+
+        MinuteUpdater.studentPresetMap.studentMap.put(this, 0);
+        int addedPos = MinuteUpdater.studentPresetMap.studentMap.headMap(this).size();
+        MinuteUpdater.studentPresetMap.studentList.add(addedPos, this);
 //        this.parent = parent;
 //        // trying to make it unique, hope it does not affect sorting too badly
 //        if (studentName != null && clientName != null && clientNo != null) {
@@ -37,11 +35,11 @@ public class Student implements Serializable, Comparable<Student> {
     }
 
     public static void editStudent(Student student, String studentName, String clientName, String clientNo){
-        if (!studentMap.containsKey(student)) {
+        if (!MinuteUpdater.studentPresetMap.studentMap.containsKey(student)) {
             Log.v("Add student", "Student doesn't exist!!");
             return;
         }
-        studentMap.remove(student);
+        MinuteUpdater.studentPresetMap.studentMap.remove(student);
         new Student(studentName, clientName, clientNo);
     }
 

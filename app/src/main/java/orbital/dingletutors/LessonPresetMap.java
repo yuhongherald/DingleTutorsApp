@@ -17,7 +17,6 @@ import java.util.TreeMap;
 public class LessonPresetMap extends TreeMap<String, Lesson> {
 
     private static final long serialVersionUID = 1006L;
-    public static LessonPresetMap map;
     // may have to change between sd and phone memory
 //    public static final String data = Environment.getDataDirectory().getPath();
 //    public static final String root = "/DingleTutors/";

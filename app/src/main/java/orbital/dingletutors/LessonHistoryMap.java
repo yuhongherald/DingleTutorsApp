@@ -16,7 +16,6 @@ import java.util.ArrayList;
 
 public class LessonHistoryMap extends ArrayList<Lesson> {
     private static final long serialVersionUID = 1008L;
-    public static LessonHistoryMap map;
     // may have to change between sd and phone memory
 //    public static final String data = Environment.getDataDirectory().getPath();
 //    public static final String root = "/DingleTutors/";

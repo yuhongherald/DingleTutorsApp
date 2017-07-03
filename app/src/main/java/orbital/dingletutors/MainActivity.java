@@ -65,9 +65,9 @@ public class MainActivity extends AppCompatActivity {
             MinuteUpdater.mainAppRunning = false;
             MinuteUpdater.calendarMap.save();
             MinuteUpdater.minuteQueue.save();
-            LessonPresetMap.map.save();
-            StudentPresetMap.map.save();
-            LessonHistoryMap.map.save();
+            MinuteUpdater.lessonPresetMap.save();
+            MinuteUpdater.studentPresetMap.save();
+            MinuteUpdater.lessonHistoryMap.save();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -234,9 +234,9 @@ public class MainActivity extends AppCompatActivity {
                 MinuteUpdater.mapDir = new File(getFilesDir(), "/map");
                 MinuteUpdater.mapDir.mkdirs();
             }
-            LessonPresetMap.map = LessonPresetMap.init("lessons.map");
-            StudentPresetMap.map = StudentPresetMap.init("students.map");
-            LessonHistoryMap.map = LessonHistoryMap.init("history.map");
+            MinuteUpdater.lessonPresetMap = LessonPresetMap.init("lessons.map");
+            MinuteUpdater.studentPresetMap = StudentPresetMap.init("students.map");
+            MinuteUpdater.lessonHistoryMap = LessonHistoryMap.init("history.map");
 
             if (!BackgroundNotification.initialized) {
                 Log.v("BackgroundNotification", "not initialized");

@@ -31,6 +31,9 @@ public class MinuteUpdater extends BroadcastReceiver {
     public static boolean isInitializing = false;
 
     public static File mapDir;
+    public static LessonPresetMap lessonPresetMap;
+    public static LessonHistoryMap lessonHistoryMap;
+    public static StudentPresetMap studentPresetMap;
 
     @Override
     public void onReceive(Context context, Intent intent) {

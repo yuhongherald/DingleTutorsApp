@@ -1,13 +1,11 @@
 package orbital.dingletutors;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import java.text.ParseException;
@@ -95,7 +93,7 @@ public class PopupCheckIn extends Popup {
                             @Override
                             public void onClick(View v) {
                                 // add the lesson into history and remove it from calendar
-                                LessonHistoryMap.map.add(lesson);
+                                MinuteUpdater.lessonHistoryMap.add(lesson);
                                 String tempDate = lesson.parent.key;
                                 lesson.delete();
                                 if (CalendarFragment.thisFragment != null) {

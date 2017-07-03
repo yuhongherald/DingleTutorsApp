@@ -9,13 +9,9 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
-
-import java.util.ArrayList;
 
 /**
  * Created by Muruges on 21/6/2017.
@@ -35,7 +31,7 @@ public class Choose_Student_Fragment extends Fragment{
         RecyclerView rv = (RecyclerView) v.findViewById(R.id.rv);
         LinearLayoutManager llm = new LinearLayoutManager(getContext());
         rv.setLayoutManager(llm);
-        final RVAdapter adapter = new RVAdapter(Student.studentList, new RVAdapter.OnItemClickListener(){
+        final RVAdapter adapter = new RVAdapter(MinuteUpdater.studentPresetMap.studentList, new RVAdapter.OnItemClickListener(){
 
             @Override
             public void onItemClick(Student student) {
@@ -109,7 +105,7 @@ public class Choose_Student_Fragment extends Fragment{
                                 number.getText().toString()
                         );
                         alert.dismiss();
-                        adapter.notifyItemInserted(Student.studentMap.headMap(addedStudent).size());
+                        adapter.notifyItemInserted(MinuteUpdater.studentPresetMap.studentMap.headMap(addedStudent).size());
                     }
                 });
             }

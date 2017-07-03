@@ -8,7 +8,9 @@ import java.io.FileOutputStream;
 import java.io.InvalidClassException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.TreeMap;
 
 /**
  * Created by Herald on 1/6/2017.
@@ -16,15 +18,19 @@ import java.util.ArrayList;
  * If not can duplicate tree to allow sort by name, client name or client no
  */
 
-public class StudentPresetMap extends ArrayList<Student> {
+public class StudentPresetMap implements Serializable {
 
-    private static final long serialVersionUID = 1007L;
-    public static StudentPresetMap map;
+    private static final long serialVersionUID = 7L;
     public String fileName;
+
+    public TreeMap<Student, Integer> studentMap;// int not used
+    public ArrayList<Student> studentList;
 
     public StudentPresetMap(String fileName) {
         //super();
         this.fileName = fileName;
+        this.studentMap = new TreeMap<>();
+        this.studentList = new ArrayList<>();
     }
 
     public static StudentPresetMap init(String fileName) throws Exception {
