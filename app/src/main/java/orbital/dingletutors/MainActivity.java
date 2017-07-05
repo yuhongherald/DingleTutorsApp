@@ -15,14 +15,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
-
 
 import com.mindorks.placeholderview.PlaceHolderView;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -68,9 +64,10 @@ public class MainActivity extends AppCompatActivity {
         try {
             MinuteUpdater.mainAppRunning = false;
             MinuteUpdater.calendarMap.save();
-            LessonPresetMap.map.save();
-            StudentPresetMap.map.save();
-            LessonHistoryMap.map.save();
+            MinuteUpdater.minuteQueue.save();
+            MinuteUpdater.lessonPresetMap.save();
+            MinuteUpdater.studentPresetMap.save();
+            MinuteUpdater.lessonHistoryMap.save();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -93,6 +90,17 @@ public class MainActivity extends AppCompatActivity {
         final View view =getSupportActionBar().getCustomView();
 
         notificationCount = (TextView) view.findViewById(R.id.notificationCount);
+        // tabs for each page
+//        TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
+//        tabLayout.addTab(tabLayout.newTab().setText("Calendar"));
+//        tabLayout.addTab(tabLayout.newTab().setText("Lesson History"));
+//        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+
+//        drawerLayout =  (DrawerLayout) findViewById(R.id.drawer_layout);
+//        drawerList = (ListView) findViewById(R.id.left_drawer);
+////
+//        drawerList.setAdapter(new ArrayAdapter<String>(getApplicationContext(), R.layout.drawer_list, categoryTitles));
+//        drawerList.setOnItemClickListener(new DrawerItemClickListener());
 
         mDrawer = (DrawerLayout)findViewById(R.id.drawerLayout);
         mDrawerView = (PlaceHolderView)findViewById(R.id.drawerView);
@@ -120,6 +128,27 @@ public class MainActivity extends AppCompatActivity {
                 popup.show();
             }
         });
+
+//        final ViewPager pager = (ViewPager) findViewById(R.id.viewPager);
+//        pager.setAdapter(new CustomPagerAdapter(getSupportFragmentManager()));
+//
+//        pager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+//        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener(){
+//            @Override
+//            public void onTabSelected(TabLayout.Tab tab){
+//                pager.setCurrentItem(tab.getPosition());
+//            }
+//
+//            @Override
+//            public void onTabUnselected(TabLayout.Tab tab) {
+//
+//            }
+//
+//            @Override
+//            public void onTabReselected(TabLayout.Tab tab) {
+//
+//            }
+//        });
 
         // mark activity is running
         active = true;
@@ -162,14 +191,12 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onNotificationsSelected() {
-            fragment = NotificationFragment.newInstance();
-            doTransaction(fragment);
+            // add stuff
         }
 
         @Override
         public void onStudentsSelected() {
-            fragment = ViewStudentFragment.newInstance();
-            doTransaction(fragment);
+            // add stuff
         }
 
         @Override
@@ -178,24 +205,44 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+//    private class CustomPagerAdapter extends FragmentPagerAdapter {
+//
+//        private CustomPagerAdapter(FragmentManager manager){ super(manager); }
+//
+//        @Override
+//        public Fragment getItem(int position) {
+//            switch(position) {
+//                case 0:
+//                    return CalendarFragment.newInstance();
+//                case 1:
+//                    return LessonHistoryFragment.newInstance();
+//                default:
+//                    return LessonHistoryFragment.newInstance();
+//            }
+//        }
+//
+//        @Override
+//        public int getCount() {
+//            return 2;
+//        }
+//    }
+
     public void load() {
         // init class and students presets
         try {
-            LessonPresetMap.mapDir = new File(getFilesDir(), "/map");
-            LessonPresetMap.mapDir.mkdirs();
-            LessonPresetMap.map = LessonPresetMap.init("lessons.map");
-            StudentPresetMap.mapDir = new File(getFilesDir(), "/map");
-            StudentPresetMap.mapDir.mkdirs();
-            StudentPresetMap.map = StudentPresetMap.init("students.map");
-            LessonHistoryMap.mapDir = new File(getFilesDir(), "/map");
-            LessonHistoryMap.mapDir.mkdirs();
-            LessonHistoryMap.map = LessonHistoryMap.init("history.map");
+            if (MinuteUpdater.mapDir == null) {
+                MinuteUpdater.mapDir = new File(getFilesDir(), "/map");
+                MinuteUpdater.mapDir.mkdirs();
+            }
+            MinuteUpdater.lessonPresetMap = LessonPresetMap.init("lessons.map");
+            MinuteUpdater.studentPresetMap = StudentPresetMap.init("students.map");
+            MinuteUpdater.lessonHistoryMap = LessonHistoryMap.init("history.map");
 
             if (!BackgroundNotification.initialized) {
                 Log.v("BackgroundNotification", "not initialized");
                 (new BackgroundNotification()).onReceive(this, new Intent().setAction("android.intent.action.BOOT_COMPLETED"));
             }
-            while (CalendarMap.isInitializing || MinuteUpdater.calendarMap == null) {
+            while (MinuteUpdater.isInitializing || MinuteUpdater.calendarMap == null) {
                 Thread.sleep(10);
             }
         } catch (Exception e) {

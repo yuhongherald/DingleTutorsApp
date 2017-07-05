@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import java.io.File;
 import java.util.Calendar;
 
 /**
@@ -19,24 +18,14 @@ public class BackgroundNotification extends BroadcastReceiver {
     public static MinuteUpdater updater;
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (intent.getAction() != "android.intent.action.BOOT_COMPLETED") {
-//            Log.v("BackgroundNotification", intent.getAction());
+        if (initialized == true) {
+            Log.v("BackgroundNotification", "Multiple initialzation.");
             return;
         }
+        Log.v("BackgroundNotification", intent.getAction());
         initialized = true;
         Log.v("BroadcastReceiver", "Initialized");
-        MinuteQueue.mapDir = new File(context.getFilesDir(), "/map");
-        MinuteQueue.mapDir.mkdirs();
-        CalendarMap.mapDir = new File(context.getFilesDir(), "/map");
-        CalendarMap.mapDir.mkdirs();
-        CalendarMap.isInitializing = true;
-        try {
-            MinuteUpdater.minuteQueue = MinuteQueue.init("queue.map");
-            MinuteUpdater.calendarMap = CalendarMap.init("notifications.map");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        CalendarMap.isInitializing = false;
+        MinuteUpdater.loadMap(context);
 
         Intent newIntent = new Intent(context, MinuteUpdater.class);
         intent.setAction("orbital.dingletutors.MINUTE_ACTION");
@@ -48,5 +37,7 @@ public class BackgroundNotification extends BroadcastReceiver {
         //alarm.cancel(pendingIntent);
         // somehow this thing is not very precise
         alarm.setRepeating(AlarmManager.RTC, calendar.getTimeInMillis(), 1000*60, pendingIntent);
+        Log.v("BackgroundNotification", "Done");
     }
+
 }

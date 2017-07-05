@@ -155,6 +155,9 @@ public class NewLessonFragment extends Fragment {
                 if(newLesson != null && newLesson != lesson) {
                     Toast.makeText(getActivity(), "Lesson in conflict with: " + newLesson.name, Toast.LENGTH_SHORT).show();
                     return;
+                } else if (currentDate.before(Calendar.getInstance().getTime())) {
+                    Toast.makeText(getActivity(), "Please set lesson after current time", Toast.LENGTH_SHORT).show();
+                    return;
                 } else {
                     if (lesson != null) {
                         lesson.delete();

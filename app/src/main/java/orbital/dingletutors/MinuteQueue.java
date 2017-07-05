@@ -10,7 +10,6 @@ import java.io.FileOutputStream;
 import java.io.InvalidClassException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -22,8 +21,6 @@ import java.util.Date;
 public class MinuteQueue extends ArrayList<Lesson> {
 
     private static final long serialVersionUID = 2L;
-    public static File mapDir;
-    // public static boolean isInitializing = false; // share with CalendarMap?
     public static boolean updating = false;
 
     public String fileName;
@@ -46,13 +43,12 @@ public class MinuteQueue extends ArrayList<Lesson> {
             }
         }
         updating = true;
-        if (super.contains(lesson)) {
-            updating = false;
-            return false;
+        boolean result = false;
+        if (!super.contains(lesson)) {
+            result = super.add(lesson);
         }
-        boolean temp = super.add(lesson);
         updating = false;
-        return temp;
+        return result;
     }
 
     @Override
@@ -80,16 +76,14 @@ public class MinuteQueue extends ArrayList<Lesson> {
             }
         }
         updating = true;
-        boolean temp = super.remove(lesson);
+        boolean result = super.remove(lesson);
         updating = false;
-        return temp;
-    }
 
-    public boolean remove(Context context, Lesson lesson) {
-        boolean result = remove(lesson);
-        Intent i = new Intent();
-        i.setAction("orbital.dingletutors.UPDATE_MAIN");
-        context.sendBroadcast(i);
+        if (result) {
+            Intent i = new Intent();
+            i.setAction("orbital.dingletutors.UPDATE_MAIN");
+            MinuteUpdater.context.sendBroadcast(i);
+        }
         return result;
     }
 
@@ -110,7 +104,7 @@ public class MinuteQueue extends ArrayList<Lesson> {
     }
 
     public static MinuteQueue init(String fileName) throws Exception {
-        File f = new File(mapDir, fileName);
+        File f = new File(MinuteUpdater.mapDir, fileName);
         if(f.exists() && !f.isDirectory()) {
             Log.v("MinuteQueue", "directory found");
             FileInputStream fileInputStream  = new FileInputStream(f);
@@ -140,7 +134,7 @@ public class MinuteQueue extends ArrayList<Lesson> {
     // either do autosave or save on app close
     public void save() throws Exception {
         // create a File object for the output file
-        File outputFile = new File(mapDir, this.fileName);
+        File outputFile = new File(MinuteUpdater.mapDir, this.fileName);
         // outputFile.mkdirs();
         outputFile.createNewFile();
         FileOutputStream fileOutputStream = new FileOutputStream(outputFile);
