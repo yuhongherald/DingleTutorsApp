@@ -5,6 +5,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +20,7 @@ import android.widget.TextView;
 import org.w3c.dom.Text;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Set;
 
@@ -28,43 +31,52 @@ import java.util.Set;
 public class LessonListFragment extends Fragment{
     MonthMap monthMap;
     DayMap dayMap;
+    RecyclerView rv;
+    ArrayList<Lesson> lessons;
+    LessonListRV adapter;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.linear_scrollable, container, false);
-        LinearLayout list = (LinearLayout) v.findViewById(R.id.list);
-        // static reference
+        View v = inflater.inflate(R.layout.recycler_view_list_lessons, container, false);
+        rv = (RecyclerView) v.findViewById(R.id.rv);
+        LinearLayoutManager llm = new LinearLayoutManager(getContext());
+        rv.setLayoutManager(llm);
 
-        // for testing listview
-        //Lesson temp = new Lesson("00", "00", "test", 0, CalendarFragment.selectedDay);
-        updateList(list);
-        //temp.delete();
-//        ArrayList<TextView> list = new ArrayList<TextView>();
-//        list.add( (TextView) v.findViewById(R.id.lesson1) );
-//        list.add( (TextView) v.findViewById(R.id.lesson2) );
-//        list.add( (TextView) v.findViewById(R.id.lesson3) );
-//        list.add( (TextView) v.findViewById(R.id.lesson4) );
-//        list.add( (TextView) v.findViewById(R.id.lesson5) );
+        String stringDate = new SimpleDateFormat("mmHHddMMYYYY").format(CalendarFragment.currentDate);
+        monthMap = MonthMap.init(Integer.parseInt(stringDate.substring(6, 8)) + "-" +
+                Integer.parseInt(stringDate.substring(8, 12)), MinuteUpdater.calendarMap);
+        dayMap = DayMap.init(CalendarFragment.formatter.format(CalendarFragment.currentDate), monthMap);
+        Set<Map.Entry<Integer, Lesson>> set = dayMap.entrySet();
+        lessons = new ArrayList<>();
+        for (Map.Entry<Integer, Lesson> entry : set) {
+            lessons.add(entry.getValue());
+        }
 
-//         instead of of 5 can use size of daymap here
-//        for (int i=1; i<6; i++){
-//            list.get(i-1).setText(getArguments().getStringArray("Lesson names")[i-1]);
-//        }
-
+        adapter = new LessonListRV(lessons, new LessonListRV.OnItemClickListener() {
+            @Override
+            public void onItemClick(Lesson lesson) {
+                NewLessonFragment newLesson = NewLessonFragment.newInstance(lesson);
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                // putting animation for fragment transaction
+                transaction.setCustomAnimations(R.anim.slide_in_up, android.R.anim.fade_out,
+                        android.R.anim.fade_in, R.anim.slide_out_down);
+                transaction.replace(R.id.calendar_fragment_container, newLesson) // carry out the transaction
+                        .addToBackStack("newLesson") // add to backstack
+                        .commit();
+            }
+        }, new LessonListRV.OnItemClickListener() {
+            @Override
+            public void onItemClick(Lesson lesson) {
+                lesson.delete();
+                updateList();
+            }
+        });
+        rv.setAdapter(adapter);
         return v;
     }
 
-//    @Override
-//    public void onDestroyView() {
-//        if (CalendarFragment.thisFragment != null) {
-//            // recolor here
-//            Log.v("Calendar", "recoloring");
-//            CalendarFragment.thisFragment.deleteDay();
-//        }
-//        super.onDestroyView();
-//    }
-
-    public void updateList(final LinearLayout list) {
-        list.removeAllViewsInLayout(); // the most inefficient way to sort the views
+    public void updateList() {
+//        list.removeAllViewsInLayout(); // the most inefficient way to sort the views
         // if an entry is edited it will be deleted and placed back in
 
         String stringDate = new SimpleDateFormat("mmHHddMMYYYY").format(CalendarFragment.currentDate);
@@ -72,42 +84,12 @@ public class LessonListFragment extends Fragment{
                 Integer.parseInt(stringDate.substring(8, 12)), MinuteUpdater.calendarMap);
         dayMap = DayMap.init(CalendarFragment.formatter.format(CalendarFragment.currentDate), monthMap);
         Set<Map.Entry<Integer, Lesson>> set = dayMap.entrySet();
-        RelativeLayout layout;
+//        RelativeLayout layout;
+        lessons.clear();
         for (Map.Entry<Integer, Lesson> entry : set) {
-            layout = (RelativeLayout) getActivity().getLayoutInflater()
-                    .inflate(R.layout.view_lesson, null);
-            final Lesson lesson = entry.getValue();
-            ((TextView) layout.findViewById(R.id.time)).setText(lesson.displayTime);
-            ((TextView) layout.findViewById(R.id.name)).setText(lesson.name);
-//            ((TextView) layout.findViewById(R.id.level)).setText(lesson.levels[lesson.level]);
-//            ((TextView) layout.findViewById(R.id.size)).setText(Integer.toString(lesson.size()));
-            ((Button) layout.findViewById(R.id.edit)).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (getFragmentManager().findFragmentByTag("newLesson") != null) {
-                        Log.v("newLesson", "exists");
-                        return;
-                    }
-                    NewLessonFragment newLesson = NewLessonFragment.newInstance(lesson);
-                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                    // putting animation for fragment transaction
-                    transaction.setCustomAnimations(R.anim.slide_in_up, android.R.anim.fade_out,
-                            android.R.anim.fade_in, R.anim.slide_out_down);
-                    transaction.replace(R.id.calendar_container,newLesson) // carry out the transaction
-                            .addToBackStack("newLesson") // add to backstack
-                            .commit();
-                }
-            });
-            ((Button) layout.findViewById(R.id.remove)).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    lesson.delete();
-                    updateList(list);
-                }
-            });
-
-            list.addView(layout);
+            lessons.add(entry.getValue());
         }
+        adapter.swap(lessons);
     }
 
     @Override
@@ -123,7 +105,7 @@ public class LessonListFragment extends Fragment{
         super.onDestroyView();
     }
 
-    public static LessonListFragment newInstance(DayMap dayMap){
+    public static LessonListFragment newInstance(){
         LessonListFragment f = new LessonListFragment();
         // do for loop here and extract all the data necessary from daymap here
 

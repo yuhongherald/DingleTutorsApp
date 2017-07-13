@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.telephony.SmsManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -104,8 +105,27 @@ public class NotificationFragment extends Fragment {
                 alert.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        // do the check in here
+                        upcomingLesson.checkIn();
+                        // send sms to parent here
+                        // we assume only one student first
+                        // this is untested havent try yet
+                        String phoneNo = upcomingLesson.students.get(0).clientNo;
+                        String studentName = upcomingLesson.students.get(0).studentName;
+                        String clientName = upcomingLesson.students.get(0).clientName;
+                        String message = "Hi Mr/Ms " + clientName + ". This is confirmation of the lesson with "
+                                + studentName + " at " + upcomingLesson.displayTime;
+                        try {
+                            SmsManager smsManager = SmsManager.getDefault();
+                            smsManager.sendTextMessage(phoneNo, null, message, null, null);
+                            Toast.makeText(getContext(), "SMS sent!",
+                                    Toast.LENGTH_LONG).show();
 
+                        } catch (Exception e) {
+                            Toast.makeText(getContext(), "SMS failed, try again later!",
+                                    Toast.LENGTH_LONG).show();
+                            e.printStackTrace();
+                        }
+                        // update the box to show new upcoming lesson if any
                         alert.dismiss();
                     }
                 });

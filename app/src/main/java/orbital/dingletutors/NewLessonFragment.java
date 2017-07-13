@@ -289,7 +289,7 @@ public class NewLessonFragment extends Fragment {
         LessonListFragment currentFragment = (LessonListFragment) manager.findFragmentByTag("viewLesson");
         if (currentFragment != null) {
             Log.v("ViewLesson", "updating");
-            currentFragment.updateList((LinearLayout) currentFragment.getView().findViewById(R.id.list));
+            currentFragment.updateList();
         }
         if (CalendarFragment.thisFragment != null) {
             // recolor here

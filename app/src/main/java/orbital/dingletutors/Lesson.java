@@ -33,6 +33,7 @@ public class Lesson implements Serializable {
     public String level;
     public ArrayList<Student> students;
     public String summaryReport;
+    public boolean checkedIn;
 
     Lesson(int hours,int minutes, @NonNull DayMap parent) {
         this.time = hours * 60 + minutes;
@@ -43,6 +44,7 @@ public class Lesson implements Serializable {
         this.name = NewLessonFragment.subjectNames[0];
         this.level = NewLessonFragment.educationLevels[0];
         this.duration = NewLessonFragment.durationStringToInt.get(NewLessonFragment.durations[0]);
+        this.checkedIn = false;
 //        try {
 //            this.lessonDate = CalendarFragment.formatter.parse(parent.key);
 //        } catch (ParseException e) {
@@ -74,6 +76,15 @@ public class Lesson implements Serializable {
         }
         return result;
     }
+
+    public void checkIn() {
+        if (checkedIn) {
+            Log.v("Check-In", "Attempting to check in a lesson which has already been checked in");
+            return;
+        }
+        checkedIn = true;
+    }
+
     // delete, init a new one and add the fields in
     public static Lesson remap(Date date) {
         String stringDate = new SimpleDateFormat("mmHHddMMYYYY").format(date);

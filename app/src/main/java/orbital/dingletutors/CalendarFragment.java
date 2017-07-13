@@ -138,7 +138,7 @@ public class CalendarFragment extends Fragment {
                 // putting animation for fragment transaction
                 transaction.setCustomAnimations(R.anim.slide_in_up, android.R.anim.fade_out,
                         android.R.anim.fade_in, R.anim.slide_out_down);
-                transaction.replace(R.id.calendar_container,newLesson) // carry out the transaction
+                transaction.replace(R.id.calendar_fragment_container,newLesson) // carry out the transaction
                         .addToBackStack("newLesson") // add to backstack
                         .commit();
             }
@@ -152,12 +152,12 @@ public class CalendarFragment extends Fragment {
                     Log.v("viewLesson", "exists");
                     return;
                 }
-                LessonListFragment viewLesson = LessonListFragment.newInstance(null);
+                LessonListFragment viewLesson = LessonListFragment.newInstance();
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
                 // putting animation for fragment transaction
                 transaction.setCustomAnimations(R.anim.slide_in_up, android.R.anim.fade_out,
                         android.R.anim.fade_in, R.anim.slide_out_down);
-                transaction.replace(R.id.calendar,viewLesson,"viewLesson") // carry out the transaction
+                transaction.replace(R.id.calendar_container,viewLesson,"viewLesson") // carry out the transaction
                         .addToBackStack("viewLesson") // add to backstack
                         .commit();
             }

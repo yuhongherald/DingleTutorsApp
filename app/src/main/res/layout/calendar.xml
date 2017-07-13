@@ -3,8 +3,8 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/holo_orange_dark"
-    android:id="@+id/calendar_container">
+    android:id="@+id/calendar_fragment_container"
+    android:background="@color/white">
 
     <!--<LinearLayout-->
         <!--android:orientation="horizontal"-->
@@ -29,17 +29,19 @@
         android:id="@+id/topPanel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/popup">
+        android:layout_marginTop="15dp">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="default title\n hi"
-            android:textSize="32dp"
-            android:layout_margin="8dp"
-            android:textColor="@color/white"
+            android:textSize="35dp"
+            android:layout_marginBottom="15dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="20dp"
             android:id="@+id/title"
-            android:layout_alignParentLeft="true"
-            android:minLines="2"/>
+            android:textColor="@color/black"
+            android:layout_alignParentLeft="true"/>
         <Button
             android:layout_width="62dp"
             android:layout_height="62dp"
@@ -60,11 +62,17 @@
             android:scaleType="fitXY" />
         
     </RelativeLayout>
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/calendar"
-        android:orientation="vertical"
-        android:layout_alignParentBottom="true">
-    </LinearLayout>
+        android:id="@+id/calendar_container"
+        android:layout_below="@+id/topPanel">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/calendar"
+            android:orientation="vertical"
+            android:layout_alignParentBottom="true">
+        </LinearLayout>
+    </RelativeLayout>
 </RelativeLayout>

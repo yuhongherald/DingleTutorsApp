@@ -25,11 +25,12 @@ public class ViewStudentFragment extends Fragment{
         RecyclerView rv = (RecyclerView) v.findViewById(R.id.rv);
         LinearLayoutManager llm = new LinearLayoutManager(getContext());
         rv.setLayoutManager(llm);
-        final RVAdapter adapter = new RVAdapter(Student.studentList, new RVAdapter.OnItemClickListener() {
+        final RVAdapter adapter = new RVAdapter(MinuteUpdater.studentPresetMap.studentList, new RVAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Student student) {
                 // view and edit student data (like number and type of lessons taught, age, education level etc
                 Toast.makeText(getContext(), "Student pressed", Toast.LENGTH_SHORT);
+
             }
         });
         rv.setAdapter(adapter);
@@ -96,7 +97,7 @@ public class ViewStudentFragment extends Fragment{
                                 number.getText().toString()
                         );
                         alert.dismiss();
-                        adapter.notifyItemInserted(Student.studentMap.headMap(addedStudent.UID).size());
+                        adapter.notifyItemInserted(MinuteUpdater.studentPresetMap.studentMap.headMap(addedStudent).size());
                     }
                 });
 

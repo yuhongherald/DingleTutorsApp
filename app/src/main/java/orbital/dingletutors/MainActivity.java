@@ -1,9 +1,11 @@
 package orbital.dingletutors;
 
+import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
@@ -109,6 +111,8 @@ public class MainActivity extends AppCompatActivity {
         DrawerMenuItem.setDrawerCallBack(mCallBack);
         mCallBack.onHomeMenuSelected();
 
+        // request permission for sms
+        ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.SEND_SMS},1);
 
         // onClickListener for the notification button
         // can change to what we want when decided
@@ -191,12 +195,14 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onNotificationsSelected() {
-            // add stuff
+            fragment = NotificationFragment.newInstance();
+            doTransaction(fragment);
         }
 
         @Override
         public void onStudentsSelected() {
-            // add stuff
+            fragment = ViewStudentFragment.newInstance();
+            doTransaction(fragment);
         }
 
         @Override
