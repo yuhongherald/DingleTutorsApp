@@ -74,6 +74,9 @@ public class Lesson implements Serializable {
         if (this.parent.isEmpty()) {
             this.parent.delete();
         }
+        if (MinuteUpdater.minuteQueue != null) {
+            MinuteUpdater.minuteQueue.remove(this);
+        }
         return result;
     }
 

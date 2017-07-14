@@ -89,7 +89,12 @@ public class NewLessonFragment extends Fragment {
         startTime.setText(timeformat.format(new Date()));
         currentHour = cal.get(Calendar.HOUR_OF_DAY);
         currentMinute = cal.get(Calendar.MINUTE);
-        updateStudents();
+
+        if (lesson != null){
+            className.setText(lesson.name);
+            educationLevel.setText(lesson.level);
+            updateStudents();
+        }
 
         // Setting buttons
 

@@ -40,7 +40,7 @@ public class CalendarFragment extends Fragment {
     public final static ColorDrawable green = new ColorDrawable(Color.GREEN);
     public final static ColorDrawable white = new ColorDrawable(Color.WHITE);
     public final static ColorDrawable cyan = new ColorDrawable(Color.CYAN);
-    public final static boolean showPastDates = false;
+    public final static boolean showPastDates = true;
 
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
