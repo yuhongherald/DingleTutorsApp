@@ -55,7 +55,7 @@ public class Lesson implements Serializable {
     }
 
     public static Lesson init(Date date) {
-        String stringDate = new SimpleDateFormat("mmHHddMMYYYY").format(date);
+        String stringDate = new SimpleDateFormat("mmHHddMMyyyy").format(date);
         MonthMap monthMap = MonthMap.init(Integer.parseInt(stringDate.substring(6, 8)) + "-" +
                 Integer.parseInt(stringDate.substring(8, 12)), MinuteUpdater.calendarMap);
         DayMap dayMap = DayMap.init(CalendarFragment.formatter.format(date), monthMap);
@@ -90,7 +90,7 @@ public class Lesson implements Serializable {
 
     // delete, init a new one and add the fields in
     public static Lesson remap(Date date) {
-        String stringDate = new SimpleDateFormat("mmHHddMMYYYY").format(date);
+        String stringDate = new SimpleDateFormat("mmHHddMMyyyy").format(date);
         MonthMap monthMap = MonthMap.init(Integer.parseInt(stringDate.substring(6, 8)) + "-" +
                 Integer.parseInt(stringDate.substring(8, 12)), MinuteUpdater.calendarMap);
         DayMap dayMap = DayMap.init(CalendarFragment.formatter.format(date), monthMap);

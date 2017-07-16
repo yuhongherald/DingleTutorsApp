@@ -94,7 +94,7 @@ public class MinuteUpdater extends BroadcastReceiver {
     }
 
     private static void checkDate(Date rawDate) {
-        String date = new SimpleDateFormat("mmHHddMMYYYY").format(rawDate);
+        String date = new SimpleDateFormat("mmHHddMMyyyy").format(rawDate);
         MonthMap month = calendarMap.get(Integer.parseInt(date.substring(6, 8)) + "-" +
                                              Integer.parseInt(date.substring(8, 12)));
         if (month != null) {

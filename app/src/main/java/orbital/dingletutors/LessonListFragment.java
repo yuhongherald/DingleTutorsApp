@@ -52,7 +52,7 @@ public class LessonListFragment extends Fragment{
             lessons.add(entry.getValue());
         }
 
-        adapter = new LessonListRV(lessons, new LessonListRV.OnItemClickListener() {
+        adapter = new LessonListRV(R.layout.view_lesson_rv, lessons, new LessonListRV.OnItemClickListener() {
             @Override
             public void onItemClick(Lesson lesson) {
                 NewLessonFragment newLesson = NewLessonFragment.newInstance(lesson);

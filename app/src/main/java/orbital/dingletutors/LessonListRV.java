@@ -17,6 +17,7 @@ public class LessonListRV extends RecyclerView.Adapter<LessonListRV.LessonHolder
     List<Lesson> lessons;
     OnItemClickListener itemCLickListener;
     OnItemClickListener onCloseListener;
+    int resource;
 
     public interface OnItemClickListener {
         void onItemClick(Lesson lesson);
@@ -24,7 +25,7 @@ public class LessonListRV extends RecyclerView.Adapter<LessonListRV.LessonHolder
 
     @Override
     public LessonHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.view_lesson_rv, parent, false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(resource, parent, false);
         LessonHolder lh = new LessonHolder(v);
         return lh;
     }
@@ -45,7 +46,8 @@ public class LessonListRV extends RecyclerView.Adapter<LessonListRV.LessonHolder
         return lessons.size();
     }
 
-    public LessonListRV(List<Lesson> lessons, OnItemClickListener itemCLickListener, OnItemClickListener onCloseListener){
+    public LessonListRV(int resource, List<Lesson> lessons, OnItemClickListener itemCLickListener, OnItemClickListener onCloseListener){
+        this.resource = resource;
         this.lessons = lessons;
         this.itemCLickListener = itemCLickListener;
         this.onCloseListener = onCloseListener;

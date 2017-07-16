@@ -174,7 +174,7 @@ public class CalendarFragment extends Fragment {
     }
 
     public void recolorDay(Date date) {
-        String stringDate = new SimpleDateFormat("mmHHddMMYYYY").format(date);
+        String stringDate = new SimpleDateFormat("mmHHddMMyyyy").format(date);
         MonthMap monthMap = MinuteUpdater.calendarMap.get(Integer.parseInt(stringDate.substring(6, 8)) + "-" +
                 Integer.parseInt(stringDate.substring(8, 12)));
         if (monthMap == null) {
