@@ -42,7 +42,7 @@ public class LessonListFragment extends Fragment{
         LinearLayoutManager llm = new LinearLayoutManager(getContext());
         rv.setLayoutManager(llm);
 
-        String stringDate = new SimpleDateFormat("mmHHddMMYYYY").format(CalendarFragment.currentDate);
+        String stringDate = new SimpleDateFormat("mmHHddMMyyyy").format(CalendarFragment.currentDate);
         monthMap = MonthMap.init(Integer.parseInt(stringDate.substring(6, 8)) + "-" +
                 Integer.parseInt(stringDate.substring(8, 12)), MinuteUpdater.calendarMap);
         dayMap = DayMap.init(CalendarFragment.formatter.format(CalendarFragment.currentDate), monthMap);
@@ -79,7 +79,7 @@ public class LessonListFragment extends Fragment{
 //        list.removeAllViewsInLayout(); // the most inefficient way to sort the views
         // if an entry is edited it will be deleted and placed back in
 
-        String stringDate = new SimpleDateFormat("mmHHddMMYYYY").format(CalendarFragment.currentDate);
+        String stringDate = new SimpleDateFormat("mmHHddMMyyyy").format(CalendarFragment.currentDate);
         monthMap = MonthMap.init(Integer.parseInt(stringDate.substring(6, 8)) + "-" +
                 Integer.parseInt(stringDate.substring(8, 12)), MinuteUpdater.calendarMap);
         dayMap = DayMap.init(CalendarFragment.formatter.format(CalendarFragment.currentDate), monthMap);
