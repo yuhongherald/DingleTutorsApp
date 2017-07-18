@@ -22,6 +22,7 @@ public class MinuteQueue extends ArrayList<Lesson> {
 
     private static final long serialVersionUID = 2L;
     public static boolean updating = false;
+    public static final int defaultMinutes = 30;
 
     public String fileName;
     public Date lastUpdated;
@@ -30,7 +31,7 @@ public class MinuteQueue extends ArrayList<Lesson> {
     public MinuteQueue(String fileName) {
         this.fileName = fileName;
         this.lastUpdated = Calendar.getInstance().getTime();
-        advMinutes = 30;
+        advMinutes = defaultMinutes;
     }
 
     @Override

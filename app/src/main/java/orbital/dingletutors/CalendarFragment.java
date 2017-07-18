@@ -122,6 +122,7 @@ public class CalendarFragment extends Fragment {
         // initialize selected month and day
         Calendar cal = Calendar.getInstance();
         listener.onChangeMonth(cal.get(Calendar.MONTH) + 1, cal.get(Calendar.YEAR));
+        // somehow selectdate didnt work on boot, always 1 day later
         listener.onSelectDate(cal.getTime(), v);
 
         // defining what happens when we click the new lesson button

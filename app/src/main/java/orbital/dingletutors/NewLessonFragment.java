@@ -69,13 +69,7 @@ public class NewLessonFragment extends Fragment {
         View v = inflater.inflate(R.layout.new_lesson, container, false);
         currentInstance = this; // for access when choosing students
         currentDate = CalendarFragment.currentDate;
-        if (lesson != null) {
-            try {
-                oldDate = CalendarFragment.formatter.parse(lesson.parent.key);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-        }
+
         final Calendar cal = Calendar.getInstance();
 
         className = (TextView) v.findViewById(R.id.classNameVal);
@@ -91,6 +85,7 @@ public class NewLessonFragment extends Fragment {
         currentMinute = cal.get(Calendar.MINUTE);
 
         if (lesson != null){
+//            oldDate = lesson.lessonDate;
             className.setText(lesson.name);
             educationLevel.setText(lesson.level);
             updateStudents();
@@ -152,7 +147,7 @@ public class NewLessonFragment extends Fragment {
                 }
 
                 cal.setTime(currentDate);
-                cal.set(Calendar.HOUR, currentHour);
+                cal.set(Calendar.HOUR_OF_DAY, currentHour);
                 cal.set(Calendar.MINUTE, currentMinute);
                 currentDate = cal.getTime();
                 Lesson newLesson = Lesson.remap(currentDate);
@@ -315,7 +310,7 @@ public class NewLessonFragment extends Fragment {
             f.lesson = null;
         } else {
             f.lesson = lesson;
-            f.selectedStudents = lesson.students;
+            f.selectedStudents = (ArrayList<Student>) lesson.students.clone();
         }
         return f;
     }

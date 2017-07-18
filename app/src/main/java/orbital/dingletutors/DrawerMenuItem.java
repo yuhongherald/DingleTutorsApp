@@ -1,6 +1,7 @@
 package orbital.dingletutors;
 
 import android.content.Context;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -54,6 +55,8 @@ public class DrawerMenuItem {
                 itemIcon.setImageDrawable(mContext.getResources().getDrawable(R.drawable.ic_assignment_black_20dp));
                 break;
             case DRAWER_MENU_ITEM_NOTIFICATIONS:
+                Log.v("notificationCount", "set up");
+                MainActivity.notificationCount = notificationCount; // passing over to MainActivity
                 itemNameTxt.setText("Notifications");
                 notificationCount.setVisibility(VISIBLE);
                 itemIcon.setImageDrawable(mContext.getResources().getDrawable(R.drawable.ic_priority_high_black_20dp));

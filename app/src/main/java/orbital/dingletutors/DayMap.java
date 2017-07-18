@@ -13,7 +13,7 @@ import java.util.TreeMap;
 
 public class DayMap extends TreeMap<Integer, Lesson> {
     public static final long serialVersionUID = 1003L;
-    public String key; // dd MMM YYYY format
+    public String key; // dd MMM yyyy format
     public MonthMap parent;
     public DayMap(String key, MonthMap parent) {
         this.key = key;

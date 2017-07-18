@@ -1,6 +1,7 @@
 package orbital.dingletutors;
 
 import android.Manifest;
+import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -26,7 +27,7 @@ import java.io.File;
 public class MainActivity extends AppCompatActivity {
     public static boolean active = false;
     private Popup popup;
-    private TextView notificationCount;
+    public static TextView notificationCount;
 
     public String[] categoryTitles = new String[]{"Home", "Lesson History", "Notifications", "Students", "Finances"};
     private PlaceHolderView mDrawerView;
@@ -36,7 +37,9 @@ public class MainActivity extends AppCompatActivity {
     private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+            Log.v("Notification", "attempting update");
             if (notificationCount != null) {
+                Log.v("Notification", "attempting update");
                 notificationCount.setText(Integer.toString(MinuteUpdater.minuteQueue.size()));
             }
             if (popup != null && popup.isVisible()) {
@@ -47,6 +50,10 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
+        NotificationManager mNotifyMgr =
+                (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        mNotifyMgr.cancel(MinuteUpdater.notificationCode);
+
         IntentFilter filter = new IntentFilter();
         filter.addAction("orbital.dingletutors.UPDATE_MAIN");
         registerReceiver(receiver, filter);
@@ -67,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
             MinuteUpdater.mainAppRunning = false;
             MinuteUpdater.calendarMap.save();
             MinuteUpdater.minuteQueue.save();
+            MinuteUpdater.recurringLessonMap.save();
             MinuteUpdater.lessonPresetMap.save();
             MinuteUpdater.studentPresetMap.save();
             MinuteUpdater.lessonHistoryMap.save();
@@ -106,6 +114,7 @@ public class MainActivity extends AppCompatActivity {
 
         mDrawer = (DrawerLayout)findViewById(R.id.drawerLayout);
         mDrawerView = (PlaceHolderView)findViewById(R.id.drawerView);
+
         setupDrawer();
         mCallBack = new DrawerCallBack();
         DrawerMenuItem.setDrawerCallBack(mCallBack);
@@ -240,6 +249,7 @@ public class MainActivity extends AppCompatActivity {
                 MinuteUpdater.mapDir = new File(getFilesDir(), "/map");
                 MinuteUpdater.mapDir.mkdirs();
             }
+            MinuteUpdater.recurringLessonMap = RecurringLessonMap.init("recurringLessons.map");
             MinuteUpdater.lessonPresetMap = LessonPresetMap.init("lessons.map");
             MinuteUpdater.studentPresetMap = StudentPresetMap.init("students.map");
             MinuteUpdater.lessonHistoryMap = LessonHistoryMap.init("history.map");

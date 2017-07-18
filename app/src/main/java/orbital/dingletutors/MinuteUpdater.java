@@ -12,6 +12,7 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import java.io.File;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -24,9 +25,12 @@ import java.util.Set;
 
 // Calculates remaining time to next minute and sleeps for that long
 public class MinuteUpdater extends BroadcastReceiver {
+    public static final int notificationCode = 1337;
+
     public static boolean mainAppRunning = false;
     public static CalendarMap calendarMap;
     public static MinuteQueue minuteQueue;
+    public static RecurringLessonMap recurringLessonMap;
     public static Context context;
     public static boolean isInitializing = false;
 
@@ -35,6 +39,7 @@ public class MinuteUpdater extends BroadcastReceiver {
     public static LessonHistoryMap lessonHistoryMap;
     public static StudentPresetMap studentPresetMap;
 
+    public static final int nextDay = 24 * 60 * 60 * 1000;
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.v("MinuteUpdater","called");
@@ -59,22 +64,32 @@ public class MinuteUpdater extends BroadcastReceiver {
                     // can stop when is after or is the same day
                     loop = false;
                 } else {
-                    previous.setTime(previous.getTime() + (24 * 60 * 60 * 1000));
+                    previous.setTime(previous.getTime() + nextDay);
                 }
             }
             minuteQueue.lastUpdated = Calendar.getInstance().getTime();
         }
 
-        int size = minuteQueue.size();
-        // we create 1 notification with number of lessons
-        if (size > 0) {
-            Lesson firstLesson = minuteQueue.get(0);
-            createNotification(context, firstLesson, firstLesson.minutesBefore(), size);
+        Lesson firstLesson;
+        long minutesBefore;
+        while (minuteQueue.size() > 0) {
+            firstLesson = minuteQueue.get(0);
+            minutesBefore = firstLesson.minutesBefore();
+            if (minutesBefore < 0) {
+                Log.v("Lesson", "expired");
+                firstLesson.delete();
+                if (CalendarFragment.thisFragment != null) {
+                    try {
+                        CalendarFragment.thisFragment.recolorDay(CalendarFragment.formatter.parse(firstLesson.parent.key));
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                }
+            } else {
+                createNotification(context, firstLesson, minutesBefore);
+                return;
+            }
         }
-//        for (Lesson lesson : MinuteQueue.map) {
-//            createNotification(context, lesson, MinuteQueue.map.minutesBefore(lesson));
-//        }
-        // Log.v("MinuteUpdater","no updates");
     }
 
     public static void loadMap(Context context) {
@@ -123,21 +138,15 @@ public class MinuteUpdater extends BroadcastReceiver {
         }
     }
 
-    private void createNotification(Context context, Lesson lesson, long minutes, int lessons) {
+    private void createNotification(Context context, Lesson lesson, long minutes) {
         if (mainAppRunning) {
             Intent i = new Intent(context, MainActivity.class);
             i.setAction("orbital.dingletutors.UPDATE_MAIN");
             context.sendBroadcast(i);
             return;
         }
-        String message = "";
-        if (minutes < 0) {
-            minutes = - minutes;
-            message = "You are " + Long.toString(minutes) + " minutes late for your lesson!";
-        } else {
-            message = "Your lesson is in " + Long.toString(minutes) + " minutes!";
-        }
-        message += "You have " + lessons + " lessons waiting!";
+        String message = "Your " + lesson.name + " lesson is in " + minutes + " minutes!";
+
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(context)
                         .setSmallIcon(R.drawable.dingle) // have to change this probably
@@ -145,6 +154,7 @@ public class MinuteUpdater extends BroadcastReceiver {
                         .setContentText(message);
         Intent resultIntent = new Intent(context, MainActivity.class);
         resultIntent.setAction("android.intent.action.MAIN");
+        //TODO
         PendingIntent resultPendingIntent =
                 PendingIntent.getActivity(
                         context,
@@ -155,7 +165,7 @@ public class MinuteUpdater extends BroadcastReceiver {
         mBuilder.setContentIntent(resultPendingIntent);
         NotificationManager mNotifyMgr =
                 (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
-        mNotifyMgr.notify(0, mBuilder.build());
+        mNotifyMgr.notify(notificationCode, mBuilder.build());
         // added for ringtone notification
         try {
             Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);

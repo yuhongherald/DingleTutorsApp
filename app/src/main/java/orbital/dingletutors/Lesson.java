@@ -34,6 +34,7 @@ public class Lesson implements Serializable {
     public ArrayList<Student> students;
     public String summaryReport;
     public boolean checkedIn;
+    public RecurringLesson recurringLesson;
 
     Lesson(int hours,int minutes, @NonNull DayMap parent) {
         this.time = hours * 60 + minutes;
@@ -45,11 +46,11 @@ public class Lesson implements Serializable {
         this.level = NewLessonFragment.educationLevels[0];
         this.duration = NewLessonFragment.durationStringToInt.get(NewLessonFragment.durations[0]);
         this.checkedIn = false;
-//        try {
-//            this.lessonDate = CalendarFragment.formatter.parse(parent.key);
-//        } catch (ParseException e) {
-//            e.printStackTrace();
-//        }
+        try {
+            this.lessonDate = RecurringLesson.addTime(this.time, CalendarFragment.formatter.parse(parent.key));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         this.students = new ArrayList<>();
         parent.put(this.time, this);
     }
@@ -61,16 +62,19 @@ public class Lesson implements Serializable {
         DayMap dayMap = DayMap.init(CalendarFragment.formatter.format(date), monthMap);
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
-        Lesson lesson = dayMap.get(calendar.get(Calendar.HOUR) * 60 + calendar.get(Calendar.MINUTE));
+        Lesson lesson = dayMap.get(calendar.get(Calendar.HOUR_OF_DAY) * 60 + calendar.get(Calendar.MINUTE));
         if (lesson != null) {
             return lesson;
         } else {
-            return new Lesson(calendar.get(Calendar.HOUR), calendar.get(Calendar.MINUTE), dayMap);
+            return new Lesson(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), dayMap);
         }
     }
 
     public boolean delete() {
         boolean result = this.parent.remove(this.time) != null;
+        if (this.recurringLesson != null) {
+            this.recurringLesson.delete();
+        }
         if (this.parent.isEmpty()) {
             this.parent.delete();
         }
@@ -103,13 +107,15 @@ public class Lesson implements Serializable {
 
     public long minutesBefore() {
         // we need a date for the lesson
-        Date lessonDate = null;
-        try {
-            lessonDate = CalendarFragment.formatter.parse(this.parent.key);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        long diff = lessonDate.getTime() + (this.time * 60 * 1000) - Calendar.getInstance().getTime().getTime();
+//        Date lessonDate = null;
+//        try {
+//            lessonDate = CalendarFragment.formatter.parse(this.parent.key);
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//        }
+        long diff = lessonDate.getTime()
+//                + (this.time * 60 * 1000)
+                - Calendar.getInstance().getTime().getTime();
         long diffMinutes = diff / 60 / 1000;
         return diffMinutes;
     }
