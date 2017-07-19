@@ -53,27 +53,33 @@
                     android:layout_marginRight="10dp"
                     android:id="@+id/durationVal"/>
             </RelativeLayout>
-            <RelativeLayout
+            <net.cachapa.expandablelayout.ExpandableLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="20dp"
-                android:id="@+id/date"
                 android:layout_below="@+id/duration"
-                android:clickable="true">
-                <TextView
-                    android:layout_width="wrap_content"
+                android:id="@+id/dateEL"
+                app:el_expanded="true">
+                <RelativeLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Date"
-                    android:textSize="20dp"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="1st Jan 2017"
-                    android:textSize="20dp"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginRight="10dp"
-                    android:id="@+id/dateVal"/>
-            </RelativeLayout>
+                    android:layout_margin="20dp"
+                    android:id="@+id/date"
+                    android:clickable="true">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Date"
+                        android:textSize="20dp"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="1st Jan 2017"
+                        android:textSize="20dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginRight="10dp"
+                        android:id="@+id/dateVal"/>
+                </RelativeLayout>
+            </net.cachapa.expandablelayout.ExpandableLayout>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -83,7 +89,7 @@
                 android:layout_marginBottom="20dp"
                 android:orientation="vertical"
                 android:id="@+id/dateRepeat"
-                android:layout_below="@+id/date">
+                android:layout_below="@+id/dateEL">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -92,20 +98,26 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:clickable="true">
                     <TextView
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="match_parent"
                         android:text="M"
+                        android:id="@+id/monday"
+                        android:textColor="@color/black"
                         android:textSize="20dp"
+                        android:clickable="true"
                         android:gravity="center"
                         android:background="@drawable/customborder"/>
                     <TextView
                         android:layout_width="0dp"
-                        android:layout_weight="1.03"
+                        android:layout_weight="1"
                         android:layout_height="match_parent"
                         android:text="T"
+                        android:id="@+id/tuesday"
+                        android:textColor="@color/black"
                         android:textSize="20dp"
                         android:gravity="center"
                         android:background="@drawable/customborder"/>
@@ -114,22 +126,30 @@
                         android:layout_weight="1"
                         android:layout_height="match_parent"
                         android:text="W"
+                        android:id="@+id/wednesday"
+                        android:textColor="@color/black"
                         android:textSize="20dp"
                         android:gravity="center"
                         android:background="@drawable/customborder"/>
+
                     <TextView
                         android:layout_width="0dp"
-                        android:layout_weight="1"
                         android:layout_height="match_parent"
-                        android:text="T"
-                        android:textSize="20dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/customborder"
                         android:gravity="center"
-                        android:background="@drawable/customborder"/>
+                        android:text="T"
+                        android:id="@+id/thursday"
+                        android:textColor="@color/black"
+                        android:textSize="20dp" />
+
                     <TextView
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="match_parent"
                         android:text="F"
+                        android:id="@+id/friday"
+                        android:textColor="@color/black"
                         android:textSize="20dp"
                         android:gravity="center"
                         android:background="@drawable/customborder"/>
@@ -138,6 +158,8 @@
                         android:layout_weight="1"
                         android:layout_height="match_parent"
                         android:text="S"
+                        android:id="@+id/saturday"
+                        android:textColor="@color/black"
                         android:textSize="20dp"
                         android:gravity="center"
                         android:background="@drawable/customborder"/>
@@ -146,6 +168,7 @@
                         android:layout_weight="1"
                         android:layout_height="match_parent"
                         android:text="S"
+                        android:id="@+id/sunday"
                         android:textColor="@color/red"
                         android:textSize="20dp"
                         android:gravity="center"
@@ -154,14 +177,13 @@
                 <net.cachapa.expandablelayout.ExpandableLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:el_expanded="true"
+                    app:el_expanded="false"
+                    android:clickable="true"
                     android:id="@+id/repeatDuration">
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="20dp"
-                        android:layout_below="@+id/dateRepeat"
-                        android:clickable="true">
+                        android:layout_marginTop="20dp">
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"

@@ -7,7 +7,7 @@
     <color name="blue">#0000FF</color>
     <color name="black">#000000</color>
     <color name="red">#FF0000</color>
-
+    <color name="lightBlue">#1782b4</color>
     <color name="popup">#88222222</color>
     <!--Bright yellow is for highlight-->
     <color name="brightYellow">#88fff100</color>

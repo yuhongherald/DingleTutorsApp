@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +19,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
+
+import net.cachapa.expandablelayout.ExpandableLayout;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -47,6 +50,20 @@ public class NewLessonFragment extends Fragment {
     TextView duration;
     TextView studentName;
     TextView educationLevel;
+    TextView repeatDuration;
+
+    // for selection of multiple dates for repeat
+    boolean[] repeatDaysSelected;
+    boolean atLeastOneRepeatDay;
+    ExpandableLayout repeatDays;
+    ExpandableLayout singleDate;
+    TextView monday;
+    TextView tuesday;
+    TextView wednesday;
+    TextView thursday;
+    TextView friday;
+    TextView saturday;
+    TextView sunday;
 
     ArrayList<Student> selectedStudents;
     NewLessonFragment currentInstance;
@@ -78,11 +95,29 @@ public class NewLessonFragment extends Fragment {
         startTime = (TextView) v.findViewById(R.id.startTimeVal);
         studentName = (TextView) v.findViewById(R.id.studentNameVal);
         educationLevel = (TextView) v.findViewById(R.id.levelVal);
+        repeatDuration = (TextView) v.findViewById(R.id.repeatDurationVal);
 
         classDate.setText(CalendarFragment.formatter.format(currentDate));
         startTime.setText(timeformat.format(new Date()));
         currentHour = cal.get(Calendar.HOUR_OF_DAY);
         currentMinute = cal.get(Calendar.MINUTE);
+
+        singleDate = (ExpandableLayout) v.findViewById(R.id.dateEL);
+        repeatDays = (ExpandableLayout) v.findViewById(R.id.repeatDuration);
+        monday = (TextView) v.findViewById(R.id.monday);
+        tuesday = (TextView) v.findViewById(R.id.tuesday);
+        wednesday = (TextView) v.findViewById(R.id.wednesday);
+        thursday = (TextView) v.findViewById(R.id.thursday);
+        friday = (TextView) v.findViewById(R.id.friday);
+        saturday = (TextView) v.findViewById(R.id.saturday);
+        sunday = (TextView) v.findViewById(R.id.sunday);
+
+        final TextView[] days = {monday, tuesday, wednesday, thursday, friday, saturday, sunday};
+
+        atLeastOneRepeatDay = false;
+        // Monday to Sunday assume that all are not selected first
+        repeatDaysSelected = new boolean[]{false, false, false, false, false, false, false};
+
 
         if (lesson != null){
 //            oldDate = lesson.lessonDate;
@@ -92,6 +127,40 @@ public class NewLessonFragment extends Fragment {
         }
 
         // Setting buttons
+
+        for (int i = 0; i<7; i++) {
+            if (repeatDaysSelected[i]){
+                days[i].setBackgroundResource(R.drawable.customborderselected);
+                days[i].setTextColor(ContextCompat.getColor(getContext(), R.color.white));
+            } else {
+                days[i].setBackgroundResource(R.drawable.customborder);
+                days[i].setTextColor(ContextCompat.getColor(getContext(), R.color.black));
+            }
+            final int finalI = i;
+            days[i].setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // toggle the value on click
+                    repeatDaysSelected[finalI] = !repeatDaysSelected[finalI];
+                    checkRepeatDays();
+                    // change the highlighting based on previous state
+                    if (!repeatDaysSelected[finalI]){
+                        days[finalI].setBackgroundResource(R.drawable.customborder);
+                        days[finalI].setTextColor(ContextCompat.getColor(getContext(), R.color.black));
+                    } else {
+                        days[finalI].setBackgroundResource(R.drawable.customborderselected);
+                        days[finalI].setTextColor(ContextCompat.getColor(getContext(), R.color.white));
+                    }
+                    if (atLeastOneRepeatDay) {
+                        singleDate.collapse();
+                        repeatDays.expand();
+                    } else {
+                        singleDate.expand();
+                        repeatDays.collapse();
+                    }
+                }
+            });
+        }
 
 
         v.findViewById(R.id.date).setOnClickListener(new View.OnClickListener(){
@@ -123,6 +192,12 @@ public class NewLessonFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 SingleChoiceDialog("subjectNames");
+            }
+        });
+        v.findViewById(R.id.repeatDuration).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SingleChoiceDialog("repeatDurations");
             }
         });
         v.findViewById(R.id.studentName).setOnClickListener(new View.OnClickListener() {
@@ -230,6 +305,8 @@ public class NewLessonFragment extends Fragment {
     public static final String[] educationLevels = { "Primary 1", "Primary 2", "Primary 3", "Primary 4",
             "Primary 5", "Primary 6", "Secondary 1", "Secondary 2", "Secondary 3", "Secondary 4"};
     public static final String[] durations = { "1 Hour", "1.5 Hours", "2 Hours", "2.5 Hours", "3 Hours"};
+    public static final String[] repeatDurations = { "1 week", "2 weeks", "3 weeks", "4 weeks", "5 weeks", "6 weeks",
+            "7 weeks", "8 weeks", "9 weeks", "10 weeks", "11 weeks", "12 weeks"};
 
     private void SingleChoiceDialog(String field){
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
@@ -262,6 +339,15 @@ public class NewLessonFragment extends Fragment {
                     }
                 });
                 break;
+            case "repeatDurations":
+                builder.setItems(repeatDurations, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        repeatDuration.setText(repeatDurations[which]);
+                        dialog.dismiss();
+                    }
+                });
+                break;
             default:
                 Log.v("TAG","Incorrect input for single choice dialog");
         }
@@ -281,6 +367,15 @@ public class NewLessonFragment extends Fragment {
         if (!selectedStudents.isEmpty()) {
             this.studentName.setText(selectedStudents.get(0).studentName);
         }
+    }
+    public void checkRepeatDays() {
+        for (boolean day:repeatDaysSelected){
+            if (day) {
+                atLeastOneRepeatDay = true;
+                return;
+            }
+        }
+        atLeastOneRepeatDay = false;
     }
 
     @Override
