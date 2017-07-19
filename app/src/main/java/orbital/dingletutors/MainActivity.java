@@ -9,6 +9,7 @@ import android.content.IntentFilter;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -28,23 +29,29 @@ public class MainActivity extends AppCompatActivity {
     public static boolean active = false;
     private Popup popup;
     public static TextView notificationCount;
+    public static TextView oldNotificationCount;
 
     public String[] categoryTitles = new String[]{"Home", "Lesson History", "Notifications", "Students", "Finances"};
     private PlaceHolderView mDrawerView;
     private DrawerLayout mDrawer;
     private DrawerCallBack mCallBack;
 
+    // don't really need this anymore
     private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.v("Notification", "attempting update");
-            if (notificationCount != null) {
-                Log.v("Notification", "attempting update");
-                notificationCount.setText(Integer.toString(MinuteUpdater.minuteQueue.size()));
-            }
-            if (popup != null && popup.isVisible()) {
-                popup.updateList();
-            }
+//            Log.v("Notification", "attempting update");
+//            int size = MinuteUpdater.getLessons().size();
+//            if (notificationCount != null) {
+//                Log.v("Notification", "attempting update");
+//                notificationCount.setText(size);
+//            }
+//            if (oldNotificationCount != null) {
+//                notificationCount.setText(size);
+//            }
+//            if (popup != null && popup.isVisible()) {
+//                popup.updateList();
+//            }
         }
     };
 
@@ -92,14 +99,13 @@ public class MainActivity extends AppCompatActivity {
 
         load();
         // test();
-
-//        Modification of the Action bar so space isnt wasted
+        NotificationFragment.img = ContextCompat.getDrawable(this, R.drawable.notification);
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setDisplayShowCustomEnabled(true);
         getSupportActionBar().setCustomView(R.layout.custom_action_bar_layout);
-        final View view =getSupportActionBar().getCustomView();
+        final View view = getSupportActionBar().getCustomView();
 
-        notificationCount = (TextView) view.findViewById(R.id.notificationCount);
+        oldNotificationCount = (TextView) view.findViewById(R.id.notificationCount);
         // tabs for each page
 //        TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
 //        tabLayout.addTab(tabLayout.newTab().setText("Calendar"));
@@ -112,35 +118,43 @@ public class MainActivity extends AppCompatActivity {
 //        drawerList.setAdapter(new ArrayAdapter<String>(getApplicationContext(), R.layout.drawer_list, categoryTitles));
 //        drawerList.setOnItemClickListener(new DrawerItemClickListener());
 
+        MinuteUpdater.getLessons(); // force a load
         mDrawer = (DrawerLayout)findViewById(R.id.drawerLayout);
         mDrawerView = (PlaceHolderView)findViewById(R.id.drawerView);
 
         setupDrawer();
         mCallBack = new DrawerCallBack();
         DrawerMenuItem.setDrawerCallBack(mCallBack);
-        mCallBack.onHomeMenuSelected();
 
-        // request permission for sms
-        ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.SEND_SMS},1);
-
-        // onClickListener for the notification button
-        // can change to what we want when decided
         Button checkinBtn =(Button) view.findViewById(R.id.checkinBtn);
         checkinBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Popup popup = new PopupCheckIn(getApplicationContext(), view, view.getWidth() * 3 / 4, view.getWidth() * 3 / 4, 0);
-                popup.show();
+
+//                Popup popup = new PopupCheckIn(getApplicationContext(), view, view.getWidth() * 3 / 4, view.getWidth() * 3 / 4, 0);
+//                popup.show();
             }
         });
         ImageButton notificationBtn = (ImageButton) view.findViewById(R.id.notificationBtn);
         notificationBtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                popup = new PopupNotification(getApplicationContext(), view, view.getWidth() * 3 / 4, view.getWidth() * 3 / 4, 0);
-                popup.show();
+                mCallBack.onNotificationsSelected();
+
+//                popup = new PopupNotification(getApplicationContext(), view, view.getWidth() * 3 / 4, view.getWidth() * 3 / 4, 0);
+//                popup.show();
             }
         });
+
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null && "MinuteUpdater".equals(bundle.get("MainActivity"))) {
+            mCallBack.onNotificationsSelected();
+        } else {
+            mCallBack.onHomeMenuSelected();
+        }
+
+        // request permission for sms
+        ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.SEND_SMS},1);
 
 //        final ViewPager pager = (ViewPager) findViewById(R.id.viewPager);
 //        pager.setAdapter(new CustomPagerAdapter(getSupportFragmentManager()));

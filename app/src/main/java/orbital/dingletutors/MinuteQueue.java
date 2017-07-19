@@ -10,98 +10,26 @@ import java.io.FileOutputStream;
 import java.io.InvalidClassException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
 /**
  * Created by Herald on 9/6/2017.
+ * Now changed to only hold a timestamp.
  */
 
-public class MinuteQueue extends ArrayList<Lesson> {
+public class MinuteQueue implements Serializable {
 
-    private static final long serialVersionUID = 2L;
-    public static boolean updating = false;
-    public static final int defaultMinutes = 30;
+    private static final long serialVersionUID = 102L;
 
     public String fileName;
     public Date lastUpdated;
-    public long advMinutes;
 
     public MinuteQueue(String fileName) {
         this.fileName = fileName;
         this.lastUpdated = Calendar.getInstance().getTime();
-        advMinutes = defaultMinutes;
-    }
-
-    @Override
-    public boolean add(Lesson lesson) {
-        while (updating) {
-            try {
-                Thread.sleep(10);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        updating = true;
-        boolean result = false;
-        if (!super.contains(lesson)) {
-            result = super.add(lesson);
-        }
-        updating = false;
-        return result;
-    }
-
-    @Override
-    public Lesson get(int index) {
-        while (updating) {
-            try {
-                Thread.sleep(10);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        updating = true;
-        Lesson temp = super.get(index);
-        updating = false;
-        return temp;
-    }
-
-    @Override
-    public boolean remove(Object lesson) {
-        while (updating) {
-            try {
-                Thread.sleep(10);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        updating = true;
-        boolean result = super.remove(lesson);
-        updating = false;
-
-        if (result) {
-            Intent i = new Intent();
-            i.setAction("orbital.dingletutors.UPDATE_MAIN");
-            MinuteUpdater.context.sendBroadcast(i);
-        }
-        return result;
-    }
-
-    public void clear(Context context) {
-        while (updating) {
-            try {
-                Thread.sleep(10);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        updating = true;
-        super.clear();
-        updating = false;
-        Intent i = new Intent();
-        i.setAction("orbital.dingletutors.UPDATE_MAIN");
-        context.sendBroadcast(i);
     }
 
     public static MinuteQueue init(String fileName) throws Exception {

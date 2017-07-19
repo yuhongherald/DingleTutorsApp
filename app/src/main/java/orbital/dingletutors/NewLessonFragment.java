@@ -395,6 +395,7 @@ public class NewLessonFragment extends Fragment {
             }
             CalendarFragment.thisFragment.recolorDay(currentDate);
         }
+        MinuteUpdater.getLessons();
         super.onDestroyView();
     }
 

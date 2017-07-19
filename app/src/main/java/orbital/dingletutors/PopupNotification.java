@@ -10,6 +10,7 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Set;
 
@@ -44,7 +45,7 @@ public class PopupNotification extends Popup {
         RelativeLayout lessons = (RelativeLayout)((LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE))
                 .inflate(R.layout.notification_header, null);
         ((TextView) lessons.findViewById(R.id.name)).setText("Pending lessons");
-        ((TextView) lessons.findViewById(R.id.number)).setText(Integer.toString(MinuteUpdater.minuteQueue.size()));
+        ((TextView) lessons.findViewById(R.id.number)).setText(MinuteUpdater.getLessons().size());
         lessons.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -57,7 +58,8 @@ public class PopupNotification extends Popup {
                 final LinearLayout newList = (LinearLayout) extraPanel.findViewById(R.id.list);
                 RelativeLayout layout;
                 int count = 0;
-                for (Lesson lesson : MinuteUpdater.minuteQueue) {
+                ArrayList<Lesson> lessons = MinuteUpdater.getLessons();
+                for (Lesson lesson : lessons) {
                     count++;
                     final Lesson finalLesson = lesson;
                     final int index = count;
@@ -108,7 +110,8 @@ public class PopupNotification extends Popup {
         ((Button) lessons.findViewById(R.id.delete)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MinuteUpdater.minuteQueue.clear(context);
+                // nothing to clear
+//                MinuteUpdater.minuteQueue.clear(context);
             }
         });
         list.addView(lessons);

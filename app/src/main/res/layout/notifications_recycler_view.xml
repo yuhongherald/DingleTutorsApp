@@ -6,15 +6,29 @@
     android:orientation="vertical"
     android:id="@+id/notifications_container">
 
-    <TextView
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAlignment="viewStart"
-        android:layout_gravity="start"
-        android:text="Upcoming Lesson"
-        android:textSize="24dp"
-        android:id="@+id/upcoming_tv"
-        android:layout_margin="7dp"/>
+        android:layout_margin="7dp"
+        android:id="@+id/upcoming_header">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAlignment="viewStart"
+            android:layout_gravity="start"
+            android:text="Upcoming Lesson"
+            android:textSize="24dp"
+            android:layout_alignParentLeft="true"
+            android:id="@+id/upcoming_tv"
+            />
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:id="@+id/upcoming_img"
+            android:layout_alignParentRight="true"
+            android:layout_margin="4dp"/>
+    </RelativeLayout>
+
     <View
         android:layout_width="match_parent"
         android:layout_height="2dp"

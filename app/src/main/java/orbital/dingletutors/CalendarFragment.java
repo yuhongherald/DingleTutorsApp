@@ -88,12 +88,16 @@ public class CalendarFragment extends Fragment {
                     // might want to hard recolor everything to white
 
                     for (Map.Entry<String, DayMap> day : set) {
+                        Date date = new Date();
                         try {
-                            if (!day.getValue().isEmpty()) {
-                                caldroidFragment.setBackgroundDrawableForDate(green, formatter.parse(day.getKey()));
-                            }
+                            date = formatter.parse(day.getKey());
                         } catch (ParseException e) {
                             e.printStackTrace();
+                        }
+                        DayMap dayMap = day.getValue();
+                        if (!dayMap.isEmpty()) {
+                            MinuteUpdater.checkDate(date);
+                            // caldroidFragment.setBackgroundDrawableForDate(green, date);
                         }
                     }
                     caldroidFragment.refreshView();

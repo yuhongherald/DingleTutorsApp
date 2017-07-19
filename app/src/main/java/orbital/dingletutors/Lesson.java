@@ -1,6 +1,7 @@
 package orbital.dingletutors;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -78,17 +79,24 @@ public class Lesson implements Serializable {
         if (this.parent.isEmpty()) {
             this.parent.delete();
         }
-        if (MinuteUpdater.minuteQueue != null) {
-            MinuteUpdater.minuteQueue.remove(this);
-        }
+//        if (MinuteUpdater.minuteQueue != null) {
+//            MinuteUpdater.minuteQueue.remove(this);
+//        }
+
         return result;
     }
 
-    public void checkIn() {
+    public void checkIn(Context context) {
         if (checkedIn) {
             Log.v("Check-In", "Attempting to check in a lesson which has already been checked in");
             return;
         }
+        // put into lesson history map and remove from calendar map
+        delete();
+        if (MinuteUpdater.lessonHistoryMap == null) {
+            MinuteUpdater.loadMap(context);
+        }
+        MinuteUpdater.lessonHistoryMap.add(this);
         checkedIn = true;
     }
 

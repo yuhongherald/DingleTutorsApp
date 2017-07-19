@@ -3,16 +3,20 @@ package orbital.dingletutors;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.database.DataSetObserver;
+import android.graphics.drawable.Drawable;
+import android.media.ImageReader;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.telephony.SmsManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -33,107 +37,51 @@ import java.util.GregorianCalendar;
  */
 
 public class NotificationFragment extends Fragment {
+    public static ImageView imgNotification;
+    public static Drawable img;
 
     public Lesson upcomingLesson;
+    private TextView upcomingTime;
+    private TextView upcomingLevel;
+    private TextView upcomingName;
+    private TextView upcomingSize;
+    private ExpandableLayout upcomingExpandable;
+    private LayoutInflater inflater;
+    private RelativeLayout upcomingContainer;
+    private View upcomingHeader;
 
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.notifications_recycler_view, container, false);
-        final ExpandableLayout upcomingExpandable = (ExpandableLayout) v.findViewById(R.id.upcoming_expandable);
-        TextView upcomingTV = (TextView) v.findViewById(R.id.upcoming_tv);
-        RelativeLayout upcomingContainer = (RelativeLayout) v.findViewById(R.id.upcoming_container);
+        upcomingExpandable = (ExpandableLayout) v.findViewById(R.id.upcoming_expandable);
+        upcomingHeader = v.findViewById(R.id.upcoming_header);
+        upcomingContainer = (RelativeLayout) v.findViewById(R.id.upcoming_container);
 
-        TextView upcomingTime = (TextView) v.findViewById(R.id.upcoming_time);
-        TextView upcomingLevel = (TextView) v.findViewById(R.id.upcoming_level);
-        TextView upcomingName = (TextView) v.findViewById(R.id.upcoming_name);
-        TextView upcomingSize = (TextView) v.findViewById(R.id.upcoming_size);
+        this.inflater = inflater;
+        upcomingTime = (TextView) v.findViewById(R.id.upcoming_time);
+        upcomingLevel = (TextView) v.findViewById(R.id.upcoming_level);
+        upcomingName = (TextView) v.findViewById(R.id.upcoming_name);
+        upcomingSize = (TextView) v.findViewById(R.id.upcoming_size);
+        imgNotification = (ImageView) v.findViewById(R.id.upcoming_img);
 
+        MinuteUpdater.getLessons();
         // Just for testing purpose
         // can comment and uncomment if want to see how it looks like
 
-        upcomingLesson = Lesson.init(Calendar.getInstance().getTime());
-        upcomingLesson.students.add(new Student("Alice", "Mother", "12345678"));
-        upcomingLesson.students.add(new Student("Bob", "Father", "87654321"));
-        upcomingLesson.lessonDate = Calendar.getInstance().getTime();
+//        upcomingLesson = Lesson.init(Calendar.getInstance().getTime());
+//        upcomingLesson.students.add(new Student("Alice", "Mother", "12345678"));
+//        upcomingLesson.students.add(new Student("Bob", "Father", "87654321"));
+//        upcomingLesson.lessonDate = Calendar.getInstance().getTime();
         // everything above was for testing
 
-        final StudentAdapter adapter = new StudentAdapter(getContext(),
-                R.layout.view_student_checkin, upcomingLesson.students);
-        if (upcomingLesson != null) {
-            upcomingTime.setText(upcomingLesson.displayTime);
-            upcomingLevel.setText(upcomingLesson.level);
-            upcomingName.setText(upcomingLesson.name);
-            upcomingSize.setText("Size: " + upcomingLesson.students.size());
-        }
-
-
-        upcomingTV.setOnClickListener(new View.OnClickListener() {
+        upcomingHeader.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (upcomingLesson != null) upcomingExpandable.toggle();
-            }
-        });
-        upcomingContainer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final View dialogLayout = createDialog(inflater, upcomingLesson, adapter);
-
-                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                builder.setTitle("Upcoming Lesson details");
-                builder.setView(dialogLayout);
-                builder.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-//                        // dont do anything here
-                    }
-                });
-                builder.setPositiveButton("check in", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        // dont do anything here
-                    }
-                });
-                final AlertDialog alert = builder.create();
-                alert.show();
-                alert.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (!upcomingLesson.checkedIn) {
-                            upcomingLesson.checkIn();
-                            // send sms to parent here
-                            // we assume only one student first
-                            // this is untested havent try yet
-                            //                        String phoneNo = upcomingLesson.students.get(0).clientNo;
-                            String phoneNo = "91112188";
-                            String studentName = upcomingLesson.students.get(0).studentName;
-                            String clientName = upcomingLesson.students.get(0).clientName;
-                            String message = "Hi Mr/Ms " + clientName + ". This is confirmation of the lesson with "
-                                    + studentName + " at " + upcomingLesson.displayTime;
-                            try {
-                                SmsManager smsManager = SmsManager.getDefault();
-                                smsManager.sendTextMessage(phoneNo, null, message, null, null);
-                                Toast.makeText(getContext(), "SMS sent!",
-                                        Toast.LENGTH_LONG).show();
-
-                            } catch (Exception e) {
-                                Toast.makeText(getContext(), "SMS failed, try again later!",
-                                        Toast.LENGTH_LONG).show();
-                                e.printStackTrace();
-                            }
-                            // update the box to show new upcoming lesson if any
-                        } else {
-                            Toast.makeText(getContext(), "Lesson already checked in.",
-                                    Toast.LENGTH_LONG).show();
-                        }
-                        alert.dismiss();
-                    }
-                });
-                alert.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        alert.dismiss();
-                    }
-                });
+                ArrayList<Lesson> lessons = MinuteUpdater.getLessons();
+                if (!MinuteUpdater.getLessons().isEmpty()) {
+                    openUpcomingLesson(lessons);
+                }
+                // if (upcomingLesson != null) upcomingExpandable.toggle();
             }
         });
 
@@ -151,11 +99,11 @@ public class NotificationFragment extends Fragment {
         rv.setLayoutManager(llm);
         ArrayList<Lesson> lessonsWithoutSummary = new ArrayList<>();
         // populate the arraylist for now we use test lessons
-        Lesson testLesson1 = Lesson.init(Calendar.getInstance().getTime());
-        testLesson1.students.add(new Student("Cindy", "Mother", "12345678"));
-        testLesson1.students.add(new Student("Damien", "Father", "91827364"));
-        lessonsWithoutSummary.add(testLesson1);
-        lessonsWithoutSummary.add(testLesson1);
+//        Lesson testLesson1 = Lesson.init(Calendar.getInstance().getTime());
+//        testLesson1.students.add(new Student("Cindy", "Mother", "12345678"));
+//        testLesson1.students.add(new Student("Damien", "Father", "91827364"));
+//        lessonsWithoutSummary.add(testLesson1);
+//        lessonsWithoutSummary.add(testLesson1);
         LessonListRV lessonsWithoutSummaryAdapter = new LessonListRV(R.layout.view_lesson_rv, lessonsWithoutSummary,
                 new LessonListRV.OnItemClickListener() {
                     @Override
@@ -212,7 +160,89 @@ public class NotificationFragment extends Fragment {
                 });
         rv.setAdapter(lessonsWithoutSummaryAdapter);
 
+        // default to open upcoming lessons
+        upcomingHeader.callOnClick();
+
         return v;
+    }
+
+    private void openUpcomingLesson(ArrayList<Lesson> lessons) {
+        upcomingLesson = lessons.get(0);
+        upcomingTime.setText(upcomingLesson.displayTime);
+        upcomingLevel.setText(upcomingLesson.level);
+        upcomingName.setText(upcomingLesson.name);
+        upcomingSize.setText("Size: " + upcomingLesson.students.size());
+
+        final StudentAdapter adapter = new StudentAdapter(getContext(),
+                R.layout.view_student_checkin, upcomingLesson.students);
+
+        upcomingContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final View dialogLayout = createDialog(inflater, upcomingLesson, adapter);
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setTitle("Upcoming Lesson details");
+                builder.setView(dialogLayout);
+                builder.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+//                        // dont do anything here
+                    }
+                });
+                builder.setPositiveButton("check in", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // dont do anything here
+                    }
+                });
+                final AlertDialog alert = builder.create();
+                alert.show();
+                alert.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (!upcomingLesson.checkedIn) {
+                            upcomingLesson.checkIn(getContext());
+                            // send sms to parent here
+                            // we assume only one student first
+                            // this is untested havent try yet
+                            //                        String phoneNo = upcomingLesson.students.get(0).clientNo;
+//                            String phoneNo = "91112188";
+//                            String studentName = upcomingLesson.students.get(0).studentName;
+//                            String clientName = upcomingLesson.students.get(0).clientName;
+//                            String message = "Hi Mr/Ms " + clientName + ". This is confirmation of the lesson with "
+//                                    + studentName + " at " + upcomingLesson.displayTime;
+//                            try {
+//                                SmsManager smsManager = SmsManager.getDefault();
+//                                smsManager.sendTextMessage(phoneNo, null, message, null, null);
+//                                Toast.makeText(getContext(), "SMS sent!",
+//                                        Toast.LENGTH_LONG).show();
+//
+//                            } catch (Exception e) {
+//                                Toast.makeText(getContext(), "SMS failed, try again later!",
+//                                        Toast.LENGTH_LONG).show();
+//                                e.printStackTrace();
+//                            }
+                            // update the box to show new upcoming lesson if any
+                        } else {
+                            Toast.makeText(getContext(), "Lesson already checked in.",
+                                    Toast.LENGTH_LONG).show();
+                        }
+                        DrawerMenuItem.mCallBack.onNotificationsSelected();
+                        alert.dismiss();
+                    }
+                });
+                alert.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        alert.dismiss();
+                    }
+                });
+            }
+        });
+
+        upcomingExpandable.toggle();
+
     }
 
     private View createDialog(LayoutInflater inflater, Lesson lesson, StudentAdapter adapter){

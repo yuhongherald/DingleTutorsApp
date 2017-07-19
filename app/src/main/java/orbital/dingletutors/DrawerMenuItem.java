@@ -27,7 +27,7 @@ public class DrawerMenuItem {
 
     private int mMenuPosition;
     private Context mContext;
-    private static IDrawerCallBack mCallBack;
+    public static IDrawerCallBack mCallBack;
 
     @View(R.id.itemNameTxt)
     private TextView itemNameTxt;

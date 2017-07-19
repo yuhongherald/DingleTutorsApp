@@ -9,6 +9,8 @@ import java.io.InvalidClassException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Created by user on 19/6/2017.
@@ -19,12 +21,75 @@ public class LessonHistoryMap extends ArrayList<Lesson> {
     // may have to change between sd and phone memory
 //    public static final String data = Environment.getDataDirectory().getPath();
 //    public static final String root = "/DingleTutors/";
-
+    public static final int historyDays = 90;
+    public static final int historyTime = historyDays * 24 * 60;
+    public static boolean updating = false;
     public String fileName;
 
     public LessonHistoryMap(String fileName) {
         //super();
         this.fileName = fileName;
+    }
+
+    @Override
+    public boolean add(Lesson lesson) {
+        while (updating) {
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        updating = true;
+        boolean result = super.add(lesson);
+        updating = false;
+        return result;
+    }
+
+    @Override
+    public Lesson get(int index) {
+        while (updating) {
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        updating = true;
+        Lesson result = super.get(index);
+        updating = false;
+        return result;
+
+    }
+
+    @Override
+    public boolean remove(Object lesson) {
+        while (updating) {
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        updating = true;
+        boolean result = super.remove(lesson);
+        updating = false;
+        return result;
+    }
+
+    public void updateHistory() {
+        if (isEmpty()) {
+            return;
+        }
+        Lesson lesson = get(0);
+        Date earliest = RecurringLesson.addTime(-1 * historyTime, Calendar.getInstance().getTime());
+        while (lesson.lessonDate.before(earliest)) {
+            remove(lesson);
+            if (isEmpty()) {
+                return;
+            }
+            lesson = get(0);
+        }
     }
 
     public static LessonHistoryMap init(String fileName) throws Exception {

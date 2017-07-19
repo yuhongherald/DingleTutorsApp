@@ -36,7 +36,7 @@ public class PopupCheckIn extends Popup {
         ((TextView) popupView.findViewById(R.id.title)).setText("Check in");
 
         Date rawDate = Calendar.getInstance().getTime();
-        String date = new SimpleDateFormat("mmHHddMMYYYY").format(rawDate);
+        String date = new SimpleDateFormat("mmHHddMMyyyy").format(rawDate);
         MonthMap month = MinuteUpdater.calendarMap.get(Integer.parseInt(date.substring(6, 8)) + "-" +
                 Integer.parseInt(date.substring(8, 12)));
         int count = 0;
@@ -93,7 +93,7 @@ public class PopupCheckIn extends Popup {
                             @Override
                             public void onClick(View v) {
                                 // add the lesson into history and remove it from calendar
-                                MinuteUpdater.lessonHistoryMap.add(lesson);
+//                                MinuteUpdater.lessonHistoryMap.add(lesson);
                                 String tempDate = lesson.parent.key;
                                 lesson.delete();
                                 if (CalendarFragment.thisFragment != null) {
