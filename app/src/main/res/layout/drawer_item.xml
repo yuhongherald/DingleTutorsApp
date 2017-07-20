@@ -25,6 +25,7 @@
         android:text="0"
         android:layout_marginLeft="60dp"
         android:paddingTop="6dp"
+        android:textColor="@color/white"
         android:textAlignment="center"
         android:id="@+id/notification_count"
         android:visibility="invisible"

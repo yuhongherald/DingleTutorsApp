@@ -32,21 +32,37 @@
         <!--android:layout_toLeftOf="@+id/notificationCount"-->
         <!--android:layout_centerVertical="true"-->
         <!--android:background="@null" />-->
-    <TextView
-        android:id="@+id/notificationCount"
-        android:text="0"
-        android:textSize="12dp"
-        android:textColor="#fff"
+    <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toLeftOf="@+id/notificationBtn"/>
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="5dp">
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:adjustViewBounds="true"
+            android:maxHeight="17dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/notification_circle"/>
+        <TextView
+            android:id="@+id/notificationCount"
+            android:text="0"
+            android:textSize="12dp"
+            android:textColor="@color/white"
+            android:layout_gravity="center|center_vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </FrameLayout>
+
     <ImageButton
         android:id="@+id/notificationBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:layout_marginRight="8dp"
+        android:layout_marginRight="16dp"
         android:background="@null"
         android:src="@android:drawable/ic_dialog_alert" />
 
