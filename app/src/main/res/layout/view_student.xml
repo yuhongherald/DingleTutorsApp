@@ -7,52 +7,24 @@
     <!--Put all your text fields here-->
     <LinearLayout
         android:id="@+id/textPanel"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
         <TextView
             android:id="@+id/name"
             android:text="name"
-            android:textSize="28dp"
+            android:textSize="16dp"
             android:layout_margin="4dp"
+            android:paddingLeft="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
         <TextView
-            android:id="@+id/client"
+            android:id="@+id/client_and_contact"
             android:text="client"
-            android:textSize="28dp"
+            android:textSize="16dp"
             android:layout_margin="4dp"
+            android:paddingLeft="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
-        <TextView
-            android:id="@+id/number"
-            android:text="number"
-            android:textSize="28dp"
-            android:layout_margin="4dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
-
-    <!--Put all your buttons here-->
-    <LinearLayout
-        android:id="@+id/buttonPanel"
-        android:orientation="horizontal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true">
-
-        <Button
-            android:id="@+id/edit"
-            android:layout_width="44dp"
-            android:layout_height="44dp"
-            android:layout_margin="4dp"
-            android:background="@drawable/view" />
-
-        <Button
-            android:id="@+id/cancel"
-            android:background="@drawable/cross"
-            android:layout_width="44dp"
-            android:layout_height="44dp"
-            android:layout_margin="4dp"/>
     </LinearLayout>
 </RelativeLayout>

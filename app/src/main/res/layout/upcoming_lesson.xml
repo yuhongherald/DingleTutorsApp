@@ -6,40 +6,42 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/display_upcoming_level"
-        android:text="level"
-        android:textSize="20dp"
-        android:padding="15dp"/>
+        android:id="@+id/level_and_name_descriptor"
+        android:text="Subject and Level:"
+        android:textSize="15dp"
+        android:layout_marginTop="10dp"
+        android:padding="7dp"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/display_upcoming_name"
-        android:layout_toRightOf="@+id/display_upcoming_level"
+        android:id="@+id/display_upcoming_level_and_name"
+        android:layout_marginTop="10dp"
+        android:layout_toRightOf="@+id/level_and_name_descriptor"
         android:text="name"
-        android:textSize="20dp"
-        android:padding="15dp"/>
+        android:textSize="15dp"
+        android:padding="7dp"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/display_upcoming_date"
-        android:layout_below="@+id/display_upcoming_level"
-        android:text="date"
-        android:textSize="20dp"
-        android:padding="15dp"/>
+        android:id="@+id/date_and_time_descriptor"
+        android:layout_below="@+id/level_and_name_descriptor"
+        android:text="Date and Time:"
+        android:textSize="15dp"
+        android:padding="7dp"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/display_upcoming_time"
-        android:layout_below="@+id/display_upcoming_level"
-        android:layout_toRightOf="@+id/display_upcoming_date"
-        android:text="time"
-        android:textSize="20dp"
-        android:padding="15dp"/>
+        android:id="@+id/display_upcoming_date_and_time"
+        android:layout_below="@+id/level_and_name_descriptor"
+        android:layout_toRightOf="@+id/date_and_time_descriptor"
+        android:text="Date and Time"
+        android:textSize="15dp"
+        android:padding="7dp"/>
     <View
         android:layout_width="match_parent"
         android:layout_height="2dp"
         android:background="@android:color/black"
-        android:layout_below="@+id/display_upcoming_time"
+        android:layout_below="@+id/date_and_time_descriptor"
         android:id="@+id/upcoming_black1"/>
     <TextView
         android:layout_width="match_parent"

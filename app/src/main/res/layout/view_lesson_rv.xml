@@ -34,8 +34,14 @@
                 android:textSize="15dp"
                 android:layout_toRightOf="@+id/lesson_list_className"
                 android:layout_alignBaseline="@+id/lesson_list_classDate"
-                android:layout_marginLeft="5dp"
+                android:layout_marginLeft="-70dp"
                 android:id="@+id/lesson_list_startTime"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/lesson_list_classDate"
+                android:layout_alignParentRight="true"
+                android:id="@+id/students"/>
             <Button
                 android:layout_width="15dp"
                 android:layout_height="15dp"

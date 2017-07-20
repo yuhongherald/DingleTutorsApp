@@ -60,6 +60,7 @@ public class LessonListRV extends RecyclerView.Adapter<LessonListRV.LessonHolder
         TextView className;
         TextView classDate;
         TextView startTime;
+        TextView students;
         Button deleteLesson;
 
         public LessonHolder(View itemView) {
@@ -67,6 +68,7 @@ public class LessonListRV extends RecyclerView.Adapter<LessonListRV.LessonHolder
             className = (TextView) itemView.findViewById(R.id.lesson_list_className);
             classDate = (TextView) itemView.findViewById(R.id.lesson_list_classDate);
             startTime = (TextView) itemView.findViewById(R.id.lesson_list_startTime);
+            students = (TextView) itemView.findViewById(R.id.students);
             deleteLesson = (Button) itemView.findViewById(R.id.delete_lesson);
         }
         public void bind(final Lesson lesson, final OnItemClickListener itemClickListener, final OnItemClickListener onCloseListener){
@@ -77,6 +79,11 @@ public class LessonListRV extends RecyclerView.Adapter<LessonListRV.LessonHolder
             }
             classDate.setText(CalendarFragment.formatter.format(lesson.lessonDate));
             startTime.setText(lesson.displayTime);
+            if (lesson.students.size() == 1) {
+                students.setText(lesson.students.get(0).studentName);
+            } else {
+                students.setText(lesson.students.size() + " students");
+            }
             deleteLesson.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

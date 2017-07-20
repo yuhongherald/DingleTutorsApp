@@ -77,11 +77,12 @@ public class SummaryReportFragment extends Fragment{
         return v;
     }
 
-    public static SummaryReportFragment newInstance(@NonNull Lesson lesson, @NonNull NotificationFragment parent) {
-
+    public static SummaryReportFragment newInstance(@NonNull Lesson lesson) {
+//        @NonNull NotificationFragment parent
+//        I just commented the parent temporarily
         SummaryReportFragment f = new SummaryReportFragment();
         f.lesson = lesson;
-        f.parent = parent;
+//        f.parent = parent;
         return f;
     }
 }

@@ -37,24 +37,21 @@ public class StudentAdapter extends ArrayAdapter<Student> {
 
             holder = new StudentHolder();
             holder.studentName = (TextView) row.findViewById(R.id.name);
-            holder.clientName = (TextView) row.findViewById(R.id.client);
-            holder.phoneNum = (TextView) row.findViewById(R.id.number);
+            holder.clientNameAndContact = (TextView) row.findViewById(R.id.client_and_contact);
             row.setTag(holder);
 
         } else {
             holder = (StudentHolder) row.getTag();
         }
         Student student = students.get(position);
-        holder.studentName.setText(student.studentName);
-        holder.clientName.setText(student.clientName);
-        holder.phoneNum.setText(student.clientNo);
+        holder.studentName.setText("Student: " +student.studentName);
+        holder.clientNameAndContact.setText("Contact: " + student.clientName + ", " + student.clientNo);
         return row;
     }
 
     static class StudentHolder {
         TextView studentName;
-        TextView clientName;
-        TextView phoneNum;
+        TextView clientNameAndContact;
     }
 
 }

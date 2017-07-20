@@ -130,7 +130,7 @@ public class NotificationFragment extends Fragment {
                     @Override
                     public void onItemClick(final Lesson lesson) {
                         StudentAdapter adapter = new StudentAdapter(getContext(),
-                                R.layout.view_student_checkin, lesson.students);
+                                R.layout.view_student, lesson.students);
                         View dialogLayout = createDialog(inflater, lesson, adapter);
                         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                         builder.setTitle("Lesson details");
@@ -155,7 +155,7 @@ public class NotificationFragment extends Fragment {
                             public void onClick(View v) {
                                 alert.dismiss();
                                 summaryExpandable.toggle();
-                                SummaryReportFragment summaryReportFragment = SummaryReportFragment.newInstance(lesson, thisFragment);
+                                SummaryReportFragment summaryReportFragment = SummaryReportFragment.newInstance(lesson);
                                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
                                 // putting animation for fragment transaction
                                 transaction.setCustomAnimations(R.anim.slide_in_up, android.R.anim.fade_out,
@@ -191,7 +191,7 @@ public class NotificationFragment extends Fragment {
         upcomingSize.setText("Size: " + upcomingLesson.students.size());
 
         final StudentAdapter adapter = new StudentAdapter(getContext(),
-                R.layout.view_student_checkin, upcomingLesson.students);
+                R.layout.view_student, upcomingLesson.students);
 
         upcomingContainer.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -261,17 +261,14 @@ public class NotificationFragment extends Fragment {
         });
     }
 
-    private View createDialog(LayoutInflater inflater, Lesson lesson, StudentAdapter adapter){
+    public static View createDialog(LayoutInflater inflater, Lesson lesson, StudentAdapter adapter){
         View dialogLayout = inflater.inflate(R.layout.upcoming_lesson, null);
-        TextView displayUpcomingTime = (TextView) dialogLayout.findViewById(R.id.display_upcoming_time);
-        TextView displayUpcomingLevel = (TextView) dialogLayout.findViewById(R.id.display_upcoming_name);
-        TextView displayUpcomingName = (TextView) dialogLayout.findViewById(R.id.display_upcoming_level);
-        TextView displayUpcomingDate = (TextView) dialogLayout.findViewById(R.id.display_upcoming_date);
+        TextView displayUpcomingDateAndTime = (TextView) dialogLayout.findViewById(R.id.display_upcoming_date_and_time);
+        TextView displayUpcomingLevelAndName = (TextView) dialogLayout.findViewById(R.id.display_upcoming_level_and_name);
         ListView displayListStudents = (ListView) dialogLayout.findViewById(R.id.display_list_students);
-        displayUpcomingTime.setText(lesson.displayTime);
-        displayUpcomingLevel.setText(lesson.level);
-        displayUpcomingName.setText(lesson.name);
-        displayUpcomingDate.setText(CalendarFragment.formatter.format(lesson.lessonDate));
+        displayUpcomingDateAndTime.setText(CalendarFragment.formatter.format(lesson.lessonDate) + ", " +
+                lesson.displayTime);
+        displayUpcomingLevelAndName.setText(lesson.name + " - " + lesson.level);
         displayListStudents.setAdapter(adapter);
         return dialogLayout;
     }
