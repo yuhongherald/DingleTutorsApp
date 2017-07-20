@@ -15,9 +15,10 @@ import java.util.List;
 
 public class LessonListRV extends RecyclerView.Adapter<LessonListRV.LessonHolder> {
     List<Lesson> lessons;
-    OnItemClickListener itemCLickListener;
-    OnItemClickListener onCloseListener;
-    int resource;
+    private OnItemClickListener itemCLickListener;
+    private OnItemClickListener onCloseListener;
+    private int resource;
+    private boolean hideCross;
 
     public interface OnItemClickListener {
         void onItemClick(Lesson lesson);
@@ -27,6 +28,7 @@ public class LessonListRV extends RecyclerView.Adapter<LessonListRV.LessonHolder
     public LessonHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(resource, parent, false);
         LessonHolder lh = new LessonHolder(v);
+        lh.showCross(this.hideCross);
         return lh;
     }
 
@@ -46,33 +48,34 @@ public class LessonListRV extends RecyclerView.Adapter<LessonListRV.LessonHolder
         return lessons.size();
     }
 
-    public LessonListRV(int resource, List<Lesson> lessons, OnItemClickListener itemCLickListener, OnItemClickListener onCloseListener){
+    public LessonListRV(boolean hideCross, int resource, List<Lesson> lessons, OnItemClickListener itemCLickListener, OnItemClickListener onCloseListener){
         this.resource = resource;
         this.lessons = lessons;
         this.itemCLickListener = itemCLickListener;
         this.onCloseListener = onCloseListener;
+        this.hideCross = hideCross;
     }
 
     public static class LessonHolder extends RecyclerView.ViewHolder{
         TextView className;
-        TextView classLevel;
+        TextView classDate;
         TextView startTime;
         Button deleteLesson;
 
         public LessonHolder(View itemView) {
             super(itemView);
             className = (TextView) itemView.findViewById(R.id.lesson_list_className);
-            classLevel = (TextView) itemView.findViewById(R.id.lesson_list_classLevel);
+            classDate = (TextView) itemView.findViewById(R.id.lesson_list_classDate);
             startTime = (TextView) itemView.findViewById(R.id.lesson_list_startTime);
             deleteLesson = (Button) itemView.findViewById(R.id.delete_lesson);
         }
         public void bind(final Lesson lesson, final OnItemClickListener itemClickListener, final OnItemClickListener onCloseListener){
             if (lesson.recurringLesson != null) {
-                className.setText("[R]" + lesson.name); // Just a primitive indication to save time
+                className.setText("[R]" + lesson.name + " - " + lesson.level); // Just a primitive indication to save time
             } else {
-                className.setText(lesson.name);
+                className.setText(lesson.name + " - " + lesson.level);
             }
-            classLevel.setText(lesson.level);
+            classDate.setText(CalendarFragment.formatter.format(lesson.lessonDate));
             startTime.setText(lesson.displayTime);
             deleteLesson.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -86,6 +89,9 @@ public class LessonListRV extends RecyclerView.Adapter<LessonListRV.LessonHolder
                     itemClickListener.onItemClick(lesson);
                 }
             });
+        }
+        public void showCross(boolean hideCross){
+            if (hideCross) this.deleteLesson.setVisibility(View.GONE);
         }
     }
 }

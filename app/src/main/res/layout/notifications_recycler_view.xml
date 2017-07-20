@@ -17,7 +17,7 @@
             android:textAlignment="viewStart"
             android:layout_gravity="start"
             android:text="Upcoming Lesson"
-            android:textSize="24dp"
+            android:textSize="20dp"
             android:layout_alignParentLeft="true"
             android:id="@+id/upcoming_tv"
             />
@@ -94,11 +94,11 @@
             android:textAlignment="viewStart"
             android:layout_gravity="start"
             android:text="Incomplete Summary Reports"
-            android:textSize="24dp"
+            android:textSize="20dp"
             android:id="@+id/summary_tv"/>
         <TextView
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:id="@+id/summary_count"
             android:background="@drawable/notification_circle"
             android:textAlignment="center"
@@ -125,52 +125,52 @@
 
         </android.support.v7.widget.RecyclerView>
     </net.cachapa.expandablelayout.ExpandableLayout>
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAlignment="viewStart"
-        android:layout_gravity="start"
-        android:text="Lesson Requests"
-        android:textSize="24dp"
-        android:layout_margin="7dp"/>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:background="@android:color/black" />
-    <net.cachapa.expandablelayout.ExpandableLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/darker_gray"
-        app:el_expanded="false">
-        <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/lesson_requests_rv">
+    <!--<TextView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:textAlignment="viewStart"-->
+        <!--android:layout_gravity="start"-->
+        <!--android:text="Lesson Requests"-->
+        <!--android:textSize="24dp"-->
+        <!--android:layout_margin="7dp"/>-->
+    <!--<View-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="2dp"-->
+        <!--android:background="@android:color/black" />-->
+    <!--<net.cachapa.expandablelayout.ExpandableLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:background="@android:color/darker_gray"-->
+        <!--app:el_expanded="false">-->
+        <!--<android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:id="@+id/lesson_requests_rv">-->
 
-        </android.support.v7.widget.RecyclerView>
-    </net.cachapa.expandablelayout.ExpandableLayout>
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAlignment="viewStart"
-        android:layout_gravity="start"
-        android:text="Pending Invoices"
-        android:textSize="24dp"
-        android:layout_margin="7dp"/>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:background="@android:color/black" />
-    <net.cachapa.expandablelayout.ExpandableLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/darker_gray"
-        app:el_expanded="false">
-        <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/invoices_rv">
+        <!--</android.support.v7.widget.RecyclerView>-->
+    <!--</net.cachapa.expandablelayout.ExpandableLayout>-->
+    <!--<TextView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:textAlignment="viewStart"-->
+        <!--android:layout_gravity="start"-->
+        <!--android:text="Pending Invoices"-->
+        <!--android:textSize="24dp"-->
+        <!--android:layout_margin="7dp"/>-->
+    <!--<View-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="2dp"-->
+        <!--android:background="@android:color/black" />-->
+    <!--<net.cachapa.expandablelayout.ExpandableLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:background="@android:color/darker_gray"-->
+        <!--app:el_expanded="false">-->
+        <!--<android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:id="@+id/invoices_rv">-->
 
-        </android.support.v7.widget.RecyclerView>
-    </net.cachapa.expandablelayout.ExpandableLayout>
+        <!--</android.support.v7.widget.RecyclerView>-->
+    <!--</net.cachapa.expandablelayout.ExpandableLayout>-->
 </LinearLayout>

@@ -125,7 +125,7 @@ public class NotificationFragment extends Fragment {
     }
 
     private void openLessonSummary(ArrayList<Lesson> lessons) {
-        LessonListRV lessonsWithoutSummaryAdapter = new LessonListRV(R.layout.view_lesson_rv, lessons,
+        LessonListRV lessonsWithoutSummaryAdapter = new LessonListRV(true, R.layout.view_lesson_rv, lessons,
                 new LessonListRV.OnItemClickListener() {
                     @Override
                     public void onItemClick(final Lesson lesson) {
