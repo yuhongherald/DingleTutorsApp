@@ -67,7 +67,11 @@ public class LessonListRV extends RecyclerView.Adapter<LessonListRV.LessonHolder
             deleteLesson = (Button) itemView.findViewById(R.id.delete_lesson);
         }
         public void bind(final Lesson lesson, final OnItemClickListener itemClickListener, final OnItemClickListener onCloseListener){
-            className.setText(lesson.name);
+            if (lesson.recurringLesson != null) {
+                className.setText("[R]" + lesson.name); // Just a primitive indication to save time
+            } else {
+                className.setText(lesson.name);
+            }
             classLevel.setText(lesson.level);
             startTime.setText(lesson.displayTime);
             deleteLesson.setOnClickListener(new View.OnClickListener() {

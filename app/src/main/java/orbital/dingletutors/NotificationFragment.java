@@ -2,23 +2,16 @@ package orbital.dingletutors;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.database.DataSetObserver;
 import android.graphics.drawable.Drawable;
-import android.media.ImageReader;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.telephony.SmsManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -26,11 +19,7 @@ import android.widget.Toast;
 
 import net.cachapa.expandablelayout.ExpandableLayout;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 
 /**
  * Created by Muruges on 2/7/2017.
@@ -39,6 +28,7 @@ import java.util.GregorianCalendar;
 public class NotificationFragment extends Fragment {
     public static ImageView imgNotification;
     public static Drawable img;
+    private NotificationFragment thisFragment;
 
     public Lesson upcomingLesson;
     private TextView upcomingTime;
@@ -49,6 +39,9 @@ public class NotificationFragment extends Fragment {
     private LayoutInflater inflater;
     private RelativeLayout upcomingContainer;
     private View upcomingHeader;
+    private ExpandableLayout summaryExpandable;
+    private RecyclerView rv;
+    private TextView notificationCount;
 
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -64,7 +57,6 @@ public class NotificationFragment extends Fragment {
         upcomingSize = (TextView) v.findViewById(R.id.upcoming_size);
         imgNotification = (ImageView) v.findViewById(R.id.upcoming_img);
 
-        MinuteUpdater.getLessons();
         // Just for testing purpose
         // can comment and uncomment if want to see how it looks like
 
@@ -78,33 +70,62 @@ public class NotificationFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 ArrayList<Lesson> lessons = MinuteUpdater.getLessons();
-                if (!MinuteUpdater.getLessons().isEmpty()) {
+                if (!lessons.isEmpty()) {
                     openUpcomingLesson(lessons);
+                    upcomingExpandable.toggle();
+                } else {
+                    upcomingExpandable.collapse();
                 }
                 // if (upcomingLesson != null) upcomingExpandable.toggle();
             }
         });
 
-        TextView summaryTV = (TextView) v.findViewById(R.id.summary_tv);
-        final ExpandableLayout summaryExpandable = (ExpandableLayout) v.findViewById(R.id.summary_expandable);
-        summaryTV.setOnClickListener(new View.OnClickListener() {
+        View summaryHeader = v.findViewById(R.id.summary_header);
+        summaryExpandable = (ExpandableLayout) v.findViewById(R.id.summary_expandable);
+        summaryHeader.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                summaryExpandable.toggle();
+                ArrayList<Lesson> lessons = MinuteUpdater.lessonWithoutReports;
+                if (!lessons.isEmpty()) {
+                    openLessonSummary(lessons);
+                    summaryExpandable.toggle();
+                } else {
+                    summaryExpandable.collapse();
+                }
             }
         });
 
-        RecyclerView rv = (RecyclerView) v.findViewById(R.id.notifications_rv);
+        rv = (RecyclerView) v.findViewById(R.id.notifications_rv);
         LinearLayoutManager llm = new LinearLayoutManager(getContext());
         rv.setLayoutManager(llm);
-        ArrayList<Lesson> lessonsWithoutSummary = new ArrayList<>();
+        notificationCount = (TextView) v.findViewById(R.id.summary_count);
+//        ArrayList<Lesson> lessonsWithoutSummary = new ArrayList<>();
         // populate the arraylist for now we use test lessons
 //        Lesson testLesson1 = Lesson.init(Calendar.getInstance().getTime());
 //        testLesson1.students.add(new Student("Cindy", "Mother", "12345678"));
 //        testLesson1.students.add(new Student("Damien", "Father", "91827364"));
 //        lessonsWithoutSummary.add(testLesson1);
 //        lessonsWithoutSummary.add(testLesson1);
-        LessonListRV lessonsWithoutSummaryAdapter = new LessonListRV(R.layout.view_lesson_rv, lessonsWithoutSummary,
+
+        thisFragment = this;
+        updateSummaryCount();
+        upcomingHeader.callOnClick();
+
+        return v;
+    }
+
+    private void updateSummaryCount() {
+        if (notificationCount == null) {
+            return;
+        }
+        if (MinuteUpdater.lessonWithoutReports == null) {
+            MinuteUpdater.loadMap(getContext());
+        }
+        notificationCount.setText(Integer.toString(MinuteUpdater.lessonWithoutReports.size()));
+    }
+
+    private void openLessonSummary(ArrayList<Lesson> lessons) {
+        LessonListRV lessonsWithoutSummaryAdapter = new LessonListRV(R.layout.view_lesson_rv, lessons,
                 new LessonListRV.OnItemClickListener() {
                     @Override
                     public void onItemClick(final Lesson lesson) {
@@ -128,17 +149,18 @@ public class NotificationFragment extends Fragment {
                         });
                         final AlertDialog alert = builder.create();
                         alert.show();
+                        // this seems to work with drawer rather than notifications container
                         alert.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
                                 alert.dismiss();
                                 summaryExpandable.toggle();
-                                SummaryReportFragment summaryReportFragment = SummaryReportFragment.newInstance(lesson);
+                                SummaryReportFragment summaryReportFragment = SummaryReportFragment.newInstance(lesson, thisFragment);
                                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
                                 // putting animation for fragment transaction
                                 transaction.setCustomAnimations(R.anim.slide_in_up, android.R.anim.fade_out,
                                         android.R.anim.fade_in, R.anim.slide_out_down);
-                                transaction.replace(R.id.notifications_container, summaryReportFragment) // carry out the transaction
+                                transaction.replace(R.id.drawer_container, summaryReportFragment) // carry out the transaction
                                         .addToBackStack("Writing summary") // add to backstack
                                         .commit();
 
@@ -159,11 +181,6 @@ public class NotificationFragment extends Fragment {
                     }
                 });
         rv.setAdapter(lessonsWithoutSummaryAdapter);
-
-        // default to open upcoming lessons
-        upcomingHeader.callOnClick();
-
-        return v;
     }
 
     private void openUpcomingLesson(ArrayList<Lesson> lessons) {
@@ -224,11 +241,13 @@ public class NotificationFragment extends Fragment {
 //                                e.printStackTrace();
 //                            }
                             // update the box to show new upcoming lesson if any
+                            updateSummaryCount();
                         } else {
                             Toast.makeText(getContext(), "Lesson already checked in.",
                                     Toast.LENGTH_LONG).show();
                         }
-                        DrawerMenuItem.mCallBack.onNotificationsSelected();
+                        upcomingHeader.callOnClick();
+//                        DrawerMenuItem.mCallBack.onNotificationsSelected();
                         alert.dismiss();
                     }
                 });
@@ -240,9 +259,6 @@ public class NotificationFragment extends Fragment {
                 });
             }
         });
-
-        upcomingExpandable.toggle();
-
     }
 
     private View createDialog(LayoutInflater inflater, Lesson lesson, StudentAdapter adapter){

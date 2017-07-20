@@ -79,12 +79,10 @@ public class MainActivity extends AppCompatActivity {
     public void onStop() {
         try {
             MinuteUpdater.mainAppRunning = false;
-            MinuteUpdater.calendarMap.save();
-            MinuteUpdater.minuteQueue.save();
             MinuteUpdater.recurringLessonMap.save();
             MinuteUpdater.lessonPresetMap.save();
             MinuteUpdater.studentPresetMap.save();
-            MinuteUpdater.lessonHistoryMap.save();
+            MinuteUpdater.saveMap();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -266,7 +264,6 @@ public class MainActivity extends AppCompatActivity {
             MinuteUpdater.recurringLessonMap = RecurringLessonMap.init("recurringLessons.map");
             MinuteUpdater.lessonPresetMap = LessonPresetMap.init("lessons.map");
             MinuteUpdater.studentPresetMap = StudentPresetMap.init("students.map");
-            MinuteUpdater.lessonHistoryMap = LessonHistoryMap.init("history.map");
 
             if (!BackgroundNotification.initialized) {
                 Log.v("BackgroundNotification", "not initialized");

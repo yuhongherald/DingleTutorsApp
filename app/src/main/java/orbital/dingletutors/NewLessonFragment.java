@@ -25,10 +25,13 @@ import net.cachapa.expandablelayout.ExpandableLayout;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by Muruges on 20/5/2017.
@@ -114,141 +117,201 @@ public class NewLessonFragment extends Fragment {
 
         final TextView[] days = {monday, tuesday, wednesday, thursday, friday, saturday, sunday};
 
-        atLeastOneRepeatDay = false;
-        // Monday to Sunday assume that all are not selected first
-        repeatDaysSelected = new boolean[]{false, false, false, false, false, false, false};
-
+        if (lesson != null && lesson.recurringLesson != null && lesson.recurringLesson.sessionsAWeek > 0) {
+            atLeastOneRepeatDay = true;
+            repeatDaysSelected = lesson.recurringLesson.daysOfWeek; // no duplication, no modification
+        } else {
+            atLeastOneRepeatDay = false;
+            // Monday to Sunday assume that all are not selected first
+            repeatDaysSelected = new boolean[]{false, false, false, false, false, false, false};
+        }
 
         if (lesson != null){
-//            oldDate = lesson.lessonDate;
+            oldDate = lesson.lessonDate;
+            Set<Map.Entry<String, Integer>> set = durationStringToInt.entrySet();
+            for (Map.Entry<String, Integer> entry : set) {
+                if (entry.getValue() == lesson.duration) {
+                    duration.setText(entry.getKey()); // not very convenient
+                }
+            }
             className.setText(lesson.name);
             educationLevel.setText(lesson.level);
             updateStudents();
         }
 
         // Setting buttons
-
-        for (int i = 0; i<7; i++) {
-            if (repeatDaysSelected[i]){
-                days[i].setBackgroundResource(R.drawable.customborderselected);
-                days[i].setTextColor(ContextCompat.getColor(getContext(), R.color.white));
+        if (lesson != null && lesson.recurringLesson != null) {
+            if (lesson.recurringLesson.weeks == 1) {
+                repeatDuration.setText("1 Week");
             } else {
-                days[i].setBackgroundResource(R.drawable.customborder);
-                days[i].setTextColor(ContextCompat.getColor(getContext(), R.color.black));
+                repeatDuration.setText(lesson.recurringLesson.weeks + "Weeks");
             }
-            final int finalI = i;
-            days[i].setOnClickListener(new View.OnClickListener() {
+            for (int i = 0; i < 7; i++) {
+                if (repeatDaysSelected[i]){
+                    days[i].setBackgroundResource(R.drawable.customborderselected);
+                    days[i].setTextColor(ContextCompat.getColor(getContext(), R.color.white));
+                } else {
+                    days[i].setBackgroundResource(R.drawable.customborder);
+                    days[i].setTextColor(ContextCompat.getColor(getContext(), R.color.black));
+                }
+            }
+            v.findViewById(R.id.saveLesson).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    // toggle the value on click
-                    repeatDaysSelected[finalI] = !repeatDaysSelected[finalI];
-                    checkRepeatDays();
-                    // change the highlighting based on previous state
-                    if (!repeatDaysSelected[finalI]){
-                        days[finalI].setBackgroundResource(R.drawable.customborder);
-                        days[finalI].setTextColor(ContextCompat.getColor(getContext(), R.color.black));
-                    } else {
-                        days[finalI].setBackgroundResource(R.drawable.customborderselected);
-                        days[finalI].setTextColor(ContextCompat.getColor(getContext(), R.color.white));
+                    getActivity().onBackPressed();
+                }
+            });
+            repeatDays.expand();
+        } else {
+            for (int i = 0; i<7; i++) {
+                if (repeatDaysSelected[i]) {
+                    days[i].setBackgroundResource(R.drawable.customborderselected);
+                    days[i].setTextColor(ContextCompat.getColor(getContext(), R.color.white));
+                } else {
+                    days[i].setBackgroundResource(R.drawable.customborder);
+                    days[i].setTextColor(ContextCompat.getColor(getContext(), R.color.black));
+                }
+                final int finalI = i;
+                days[i].setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // toggle the value on click
+                        repeatDaysSelected[finalI] = !repeatDaysSelected[finalI];
+                        checkRepeatDays();
+                        // change the highlighting based on previous state
+                        if (!repeatDaysSelected[finalI]) {
+                            days[finalI].setBackgroundResource(R.drawable.customborder);
+                            days[finalI].setTextColor(ContextCompat.getColor(getContext(), R.color.black));
+                        } else {
+                            days[finalI].setBackgroundResource(R.drawable.customborderselected);
+                            days[finalI].setTextColor(ContextCompat.getColor(getContext(), R.color.white));
+                        }
+                        if (atLeastOneRepeatDay) {
+                            singleDate.collapse();
+                            repeatDays.expand();
+                        } else {
+                            singleDate.expand();
+                            repeatDays.collapse();
+                        }
                     }
+                });
+            }
+            v.findViewById(R.id.date).setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View v){
+                    showDatePicker();
+                }
+            });
+
+            v.findViewById(R.id.startTime).setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View v){
+                    showTimePicker();
+                }
+            });
+            v.findViewById(R.id.duration).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    SingleChoiceDialog("durations");
+                }
+            });
+            v.findViewById(R.id.educationLevel).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    SingleChoiceDialog("educationLevels");
+                }
+            });
+            v.findViewById(R.id.classname).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    SingleChoiceDialog("subjectNames");
+                }
+            });
+            v.findViewById(R.id.repeatDuration).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    SingleChoiceDialog("repeatDurations");
+                }
+            });
+            v.findViewById(R.id.studentName).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Choose_Student_Fragment chooseStudent = Choose_Student_Fragment.newInstance(currentInstance);
+                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                    transaction.setCustomAnimations(R.anim.slide_in_up, android.R.anim.fade_out,
+                            android.R.anim.fade_in, R.anim.slide_out_down);
+                    transaction.replace(R.id.new_lesson_container, chooseStudent) // carry out the transaction
+                            .addToBackStack("newLesson") // add to backstack
+                            .commit();
+                }
+            });
+
+            v.findViewById(R.id.saveLesson).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (selectedStudents.isEmpty()){
+                        Toast.makeText(getActivity(), "No students selected yet", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
                     if (atLeastOneRepeatDay) {
-                        singleDate.collapse();
-                        repeatDays.expand();
+                        int weeks = Integer.parseInt(repeatDuration.getText().toString().replaceAll("[^0-9]", ""));
+                        RecurringLesson recurringLesson = new RecurringLesson(
+                                currentHour, currentMinute, weeks, repeatDaysSelected);
+                        recurringLesson.duration = durationStringToInt.get(duration.getText().toString());
+                        recurringLesson.name = className.getText().toString();
+                        recurringLesson.level = educationLevel.getText().toString();
+                        recurringLesson.students = selectedStudents;
+
+                        cal.setTime(currentDate);
+                        cal.set(Calendar.HOUR_OF_DAY, currentHour);
+                        cal.set(Calendar.MINUTE, currentMinute);
+                        currentDate = cal.getTime();
+                        Date date = Calendar.getInstance().getTime();
+                        if (date.after(currentDate)) {
+                            currentDate = date;
+                        }
+                        Lesson newLesson = recurringLesson.validate(getContext(), currentDate);
+                        if (newLesson != null) {
+                            Toast.makeText(getActivity(), "Lesson in conflict with: " + newLesson.name + " "
+                                    + CalendarFragment.formatter.format(lesson.lessonDate)
+                                    + " " + newLesson.displayTime, Toast.LENGTH_SHORT).show();
+                            return;
+                        } else if (lesson != null) {
+                            // remember to delete lesson if not null!
+                            lesson.delete();
+                        }
                     } else {
-                        singleDate.expand();
-                        repeatDays.collapse();
+                        cal.setTime(currentDate);
+                        cal.set(Calendar.HOUR_OF_DAY, currentHour);
+                        cal.set(Calendar.MINUTE, currentMinute);
+                        currentDate = cal.getTime();
+                        Lesson newLesson = Lesson.remap(currentDate);
+
+                        if (newLesson != null && newLesson != lesson) {
+                            Toast.makeText(getActivity(), "Lesson in conflict with: " + newLesson.name, Toast.LENGTH_SHORT).show();
+                            return;
+                        } else if (currentDate.before(Calendar.getInstance().getTime())) {
+                            Toast.makeText(getActivity(), "Please set lesson after current time", Toast.LENGTH_SHORT).show();
+                            return;
+                        } else {
+                            if (lesson != null) {
+                                lesson.delete();
+                            }
+                            newLesson = Lesson.init(currentDate);
+                            newLesson.duration = durationStringToInt.get(duration.getText().toString());
+                            newLesson.name = className.getText().toString();
+                            newLesson.level = educationLevel.getText().toString();
+                            newLesson.students = selectedStudents;
+                        }
                     }
+                    // we close this popup
+                    getActivity().onBackPressed();
+                    //                close();
                 }
             });
         }
 
-
-        v.findViewById(R.id.date).setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v){
-                showDatePicker();
-            }
-        });
-
-        v.findViewById(R.id.startTime).setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v){
-                showTimePicker();
-            }
-        });
-        v.findViewById(R.id.duration).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SingleChoiceDialog("durations");
-            }
-        });
-        v.findViewById(R.id.educationLevel).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SingleChoiceDialog("educationLevels");
-            }
-        });
-        v.findViewById(R.id.classname).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SingleChoiceDialog("subjectNames");
-            }
-        });
-        v.findViewById(R.id.repeatDuration).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SingleChoiceDialog("repeatDurations");
-            }
-        });
-        v.findViewById(R.id.studentName).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Choose_Student_Fragment chooseStudent = Choose_Student_Fragment.newInstance(currentInstance);
-                FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                transaction.setCustomAnimations(R.anim.slide_in_up, android.R.anim.fade_out,
-                        android.R.anim.fade_in, R.anim.slide_out_down);
-                transaction.replace(R.id.new_lesson_container, chooseStudent) // carry out the transaction
-                        .addToBackStack("newLesson") // add to backstack
-                        .commit();
-            }
-        });
-
-        v.findViewById(R.id.saveLesson).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (selectedStudents.isEmpty()){
-                    Toast.makeText(getActivity(), "No students selected yet", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                cal.setTime(currentDate);
-                cal.set(Calendar.HOUR_OF_DAY, currentHour);
-                cal.set(Calendar.MINUTE, currentMinute);
-                currentDate = cal.getTime();
-                Lesson newLesson = Lesson.remap(currentDate);
-
-                if(newLesson != null && newLesson != lesson) {
-                    Toast.makeText(getActivity(), "Lesson in conflict with: " + newLesson.name, Toast.LENGTH_SHORT).show();
-                    return;
-                } else if (currentDate.before(Calendar.getInstance().getTime())) {
-                    Toast.makeText(getActivity(), "Please set lesson after current time", Toast.LENGTH_SHORT).show();
-                    return;
-                } else {
-                    if (lesson != null) {
-                        lesson.delete();
-                    }
-                    newLesson = Lesson.init(currentDate);
-                    newLesson.duration = durationStringToInt.get(duration.getText().toString());
-                    newLesson.name = className.getText().toString();
-                    newLesson.level = educationLevel.getText().toString();
-                    newLesson.students = selectedStudents;
-                }
-
-                // we close this popup
-                getActivity().onBackPressed();
-//                close();
-            }
-        });
         v.findViewById(R.id.cancelLesson).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -390,10 +453,17 @@ public class NewLessonFragment extends Fragment {
             // recolor here
             Log.v("Calendar", "recoloring");
 //            CalendarFragment.thisFragment.deleteDay();
-            if (oldDate != null) {
-                CalendarFragment.thisFragment.recolorDay(oldDate);
-            }
-            CalendarFragment.thisFragment.recolorDay(currentDate);
+//            if (oldDate != null) {
+//                CalendarFragment.thisFragment.recolorDay(oldDate);
+//            }
+//            CalendarFragment.thisFragment.recolorDay(currentDate);
+
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(CalendarFragment.currentDate);
+            CalendarFragment.thisFragment.caldroidFragment.getCaldroidListener().onChangeMonth(
+                    CalendarFragment.thisFragment.caldroidFragment.getMonth()
+                    , CalendarFragment.thisFragment.caldroidFragment.getYear()
+            );
         }
         MinuteUpdater.getLessons();
         super.onDestroyView();
@@ -406,7 +476,7 @@ public class NewLessonFragment extends Fragment {
             f.lesson = null;
         } else {
             f.lesson = lesson;
-            f.selectedStudents = (ArrayList<Student>) lesson.students.clone();
+            f.selectedStudents = (ArrayList<Student>) lesson.students.clone(); // to facilitate cancel
         }
         return f;
     }

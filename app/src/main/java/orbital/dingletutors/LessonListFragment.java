@@ -21,6 +21,7 @@ import org.w3c.dom.Text;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Map;
 import java.util.Set;
 
@@ -67,7 +68,12 @@ public class LessonListFragment extends Fragment{
         }, new LessonListRV.OnItemClickListener() {
             @Override
             public void onItemClick(Lesson lesson) {
-                lesson.delete();
+                // over here i delete all other recurring lessons and update current month coloring in destroyview
+                if (lesson.recurringLesson != null) {
+                    lesson.deleteAll();
+                } else {
+                    lesson.delete();
+                }
                 updateList();
             }
         });
@@ -100,7 +106,13 @@ public class LessonListFragment extends Fragment{
         if (CalendarFragment.thisFragment != null) {
             // recolor here
             Log.v("Calendar", "recoloring");
-            CalendarFragment.thisFragment.recolorDay(CalendarFragment.currentDate);
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(CalendarFragment.currentDate);
+            CalendarFragment.thisFragment.caldroidFragment.getCaldroidListener().onChangeMonth(
+                    CalendarFragment.thisFragment.caldroidFragment.getMonth()
+                    , CalendarFragment.thisFragment.caldroidFragment.getYear()
+            );
+//            CalendarFragment.thisFragment.recolorDay(CalendarFragment.currentDate);
         }
         super.onDestroyView();
     }

@@ -45,6 +45,7 @@ public class MinuteUpdater extends BroadcastReceiver {
     public static File mapDir;
     public static LessonPresetMap lessonPresetMap;
     public static LessonHistoryMap lessonHistoryMap;
+    public static LessonHistoryMap lessonWithoutReports;
     public static StudentPresetMap studentPresetMap;
 
     public static final int nextDay = 24 * 60 * 60 * 1000;
@@ -60,7 +61,8 @@ public class MinuteUpdater extends BroadcastReceiver {
             Log.v("MinuteUpdater", "retrieving garbage collected stuff");
             loadMap(context);
         }
-        MinuteUpdater.lessonHistoryMap.updateHistory();
+        lessonHistoryMap.updateHistory();
+        // lessonWithoutReports.updateHistory(); // currently no support for notificationfragment
 
         boolean loop = true;
         Date previous = minuteQueue.lastUpdated;
@@ -84,6 +86,7 @@ public class MinuteUpdater extends BroadcastReceiver {
         if (!lessons.isEmpty()) {
             createNotification(context, lessons.get(0));
         }
+        saveMap(); // inefficient saving!
         isRunning = false;
     }
 
@@ -98,10 +101,22 @@ public class MinuteUpdater extends BroadcastReceiver {
             minuteQueue = MinuteQueue.init("queue.map");
             calendarMap = CalendarMap.init("notifications.map");
             lessonHistoryMap = LessonHistoryMap.init("history.map");
+            lessonWithoutReports = LessonHistoryMap.init("reports.map");
         } catch (Exception e) {
             e.printStackTrace();
         }
         isInitializing = false;
+    }
+
+    public static void saveMap() {
+        try {
+            minuteQueue.save();
+            calendarMap.save();
+            lessonHistoryMap.save();
+            lessonWithoutReports.save();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void createNotification(Context context, Lesson lesson) {
@@ -121,7 +136,6 @@ public class MinuteUpdater extends BroadcastReceiver {
         Intent resultIntent = new Intent(context, MainActivity.class);
         resultIntent.setAction("android.intent.action.MAIN");
         resultIntent.putExtra("MainActivity", "MinuteUpdater");
-        //TODO
         PendingIntent resultPendingIntent =
                 PendingIntent.getActivity(
                         context,

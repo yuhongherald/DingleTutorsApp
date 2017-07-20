@@ -9,6 +9,7 @@ import java.io.InvalidClassException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -17,48 +18,13 @@ import java.util.HashMap;
  * Created by Herald on 18/7/2017.
  */
 
-public class RecurringLessonMap implements Serializable {
-    private static final long serialVersionUID = 8L;
+public class RecurringLessonMap extends ArrayList<RecurringLesson> implements Serializable {
+    private static final long serialVersionUID = 1010L;
     private final String fileName;
-    public HashMap<Integer, HashMap<Date, RecurringLesson>>[] map;
 
     public RecurringLessonMap(String fileName) {
         //super();
         this.fileName = fileName;
-        int daysInWeek = 7;
-        map = new HashMap[daysInWeek];
-        for (int i = 0; i < daysInWeek; i++) {
-            map[i] = new HashMap<>();
-        }
-    }
-
-    public boolean add(RecurringLesson recurringLesson) {
-        recurringLesson.parent = this;
-        int day = dayOfWeek(recurringLesson.startDate);
-        HashMap<Integer, HashMap<Date, RecurringLesson>> hashMap = map[day];
-        HashMap<Date, RecurringLesson> innerMap = hashMap.get(recurringLesson.time);
-        if (innerMap == null) {
-            innerMap = hashMap.put(recurringLesson.time, new HashMap<Date, RecurringLesson>());
-        }
-        RecurringLesson existingLesson = innerMap.get(recurringLesson.startDate);
-        if (existingLesson != null) {
-            return false;
-        }
-        return recurringLesson.changeSessionNumber(recurringLesson.initialSessions);
-    }
-
-    public RecurringLesson remove(int time, Date startDate) {
-        int day = dayOfWeek(startDate);
-        HashMap<Integer, HashMap<Date, RecurringLesson>> hashMap = map[day];
-        HashMap<Date, RecurringLesson> innerMap = hashMap.get(time);
-        if (innerMap == null) {
-            return null;
-        }
-        RecurringLesson result = innerMap.remove(startDate);
-        if (innerMap.isEmpty()) {
-            hashMap.remove(time);
-        }
-        return result;
     }
 
     public static RecurringLessonMap init(String fileName) throws Exception {

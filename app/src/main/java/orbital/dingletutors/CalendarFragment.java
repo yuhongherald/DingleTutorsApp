@@ -97,7 +97,7 @@ public class CalendarFragment extends Fragment {
                         DayMap dayMap = day.getValue();
                         if (!dayMap.isEmpty()) {
                             MinuteUpdater.checkDate(date);
-                            // caldroidFragment.setBackgroundDrawableForDate(green, date);
+                            caldroidFragment.setBackgroundDrawableForDate(green, date);
                         }
                     }
                     caldroidFragment.refreshView();

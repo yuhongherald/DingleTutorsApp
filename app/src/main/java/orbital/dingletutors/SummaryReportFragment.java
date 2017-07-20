@@ -15,11 +15,16 @@ import android.widget.Toast;
 
 public class SummaryReportFragment extends Fragment{
     private Lesson lesson;
+    private NotificationFragment parent;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.summary_report_fragment, container, false);
         final EditText editText = (EditText) v.findViewById(R.id.edtInputSummary);
+        String oldReport = lesson.getSummaryReport();
+        if (oldReport != null) {
+            editText.setText(oldReport);
+        }
         v.findViewById(R.id.cancelLessonSummary).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -31,18 +36,39 @@ public class SummaryReportFragment extends Fragment{
         v.findViewById(R.id.saveLessonSummary).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (editText.getText().toString().trim().length() == 0){
+                String report = editText.getText().toString().trim();
+                if (report.length() == 0){
                     editText.setError("Cannot be empty");
                     return;
                 }
 
-                lesson.setSummaryReport(editText.getText().toString());
+                lesson.setSummaryReport(report);
 
-                // Do some magic here and send report as sms then show the toast
+                boolean SMSSuccessful = true;
+                for (Student student : lesson.students) {
+                    String number = student.clientNo;
+                    try {
+                        // TODO // Do some magic here and send report as sms then show the toast
+                    } catch (Exception e) {
+                        SMSSuccessful = false;
+                        break;
+                    }
+                }
+                if (SMSSuccessful) {
+                    if (MinuteUpdater.lessonWithoutReports == null) {
+                        MinuteUpdater.loadMap(getContext());
+                    }
+                    MinuteUpdater.lessonWithoutReports.remove(lesson);
+                    Toast.makeText(getActivity().getApplicationContext(),
+                            "Summary report has been saved and sent to the contacts of parents via SMS",
+                            Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getActivity().getApplicationContext(),
+                            "Error while sending SMS. Summary report has been saved.",
+                            Toast.LENGTH_SHORT).show();
+                }
 
-                Toast.makeText(getActivity().getApplicationContext(),
-                        "Summary report has been saved and sent to the contacts of parents via SMS",
-                        Toast.LENGTH_SHORT).show();
+
                 getActivity().onBackPressed();
             }
         });
@@ -51,11 +77,11 @@ public class SummaryReportFragment extends Fragment{
         return v;
     }
 
-    public static SummaryReportFragment newInstance(@NonNull Lesson lesson) {
+    public static SummaryReportFragment newInstance(@NonNull Lesson lesson, @NonNull NotificationFragment parent) {
 
         SummaryReportFragment f = new SummaryReportFragment();
         f.lesson = lesson;
-
+        f.parent = parent;
         return f;
     }
 }

@@ -13,7 +13,7 @@ public class ShutDownReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         // Just to save the MinuteQueue
         try {
-            MinuteUpdater.minuteQueue.save();
+            MinuteUpdater.saveMap();
         } catch (Exception e) {
             e.printStackTrace();
         }

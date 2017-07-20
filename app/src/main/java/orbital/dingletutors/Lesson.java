@@ -65,16 +65,21 @@ public class Lesson implements Serializable {
         calendar.setTime(date);
         Lesson lesson = dayMap.get(calendar.get(Calendar.HOUR_OF_DAY) * 60 + calendar.get(Calendar.MINUTE));
         if (lesson != null) {
+            Log.v("expected", "expected");
             return lesson;
         } else {
-            return new Lesson(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), dayMap);
+            lesson = new Lesson(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), dayMap);
+            if (remap(date) == null) {
+                Log.v("unexpected", "unexpected");
+            }
+            return lesson;
         }
     }
 
     public boolean delete() {
         boolean result = this.parent.remove(this.time) != null;
         if (this.recurringLesson != null) {
-            this.recurringLesson.delete();
+            this.recurringLesson.remove(this);
         }
         if (this.parent.isEmpty()) {
             this.parent.delete();
@@ -84,6 +89,13 @@ public class Lesson implements Serializable {
 //        }
 
         return result;
+    }
+
+    public boolean deleteAll() {
+        if (this.recurringLesson != null) {
+            return this.recurringLesson.delete();
+        }
+        return false;
     }
 
     public void checkIn(Context context) {
@@ -97,6 +109,7 @@ public class Lesson implements Serializable {
             MinuteUpdater.loadMap(context);
         }
         MinuteUpdater.lessonHistoryMap.add(this);
+        MinuteUpdater.lessonWithoutReports.add(this);
         checkedIn = true;
     }
 
@@ -108,7 +121,7 @@ public class Lesson implements Serializable {
         DayMap dayMap = DayMap.init(CalendarFragment.formatter.format(date), monthMap);
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
-        Lesson lesson = dayMap.get(calendar.get(Calendar.HOUR) * 60 + calendar.get(Calendar.MINUTE));
+        Lesson lesson = dayMap.get(calendar.get(Calendar.HOUR_OF_DAY) * 60 + calendar.get(Calendar.MINUTE));
         return lesson;
     }
 
@@ -135,8 +148,8 @@ public class Lesson implements Serializable {
     public String getSummaryReport(){
         if (this.summaryReport == null){
             Log.v("Summary report", "Summary report not filled in yet");
-        }
-        if (this.summaryReport.isEmpty()){
+            return null;
+        } else if (this.summaryReport.isEmpty()){
             Log.v("Summary report", "Empty Summary report");
             return "";
         }
