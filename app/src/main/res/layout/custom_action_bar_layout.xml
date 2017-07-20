@@ -21,17 +21,17 @@
         android:layout_centerVertical="true"
         android:layout_marginLeft="8dp"
         android:src="@drawable/dingle" />
-    <Button
-        android:id="@+id/checkinBtn"
-        android:text="Check in"
-        android:textAllCaps="false"
-        android:textSize="12dp"
-        android:textColor="#fff"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toLeftOf="@+id/notificationCount"
-        android:layout_centerVertical="true"
-        android:background="@null" />
+    <!--<Button-->
+        <!--android:id="@+id/checkinBtn"-->
+        <!--android:text="Check in"-->
+        <!--android:textAllCaps="false"-->
+        <!--android:textSize="12dp"-->
+        <!--android:textColor="#fff"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_toLeftOf="@+id/notificationCount"-->
+        <!--android:layout_centerVertical="true"-->
+        <!--android:background="@null" />-->
     <TextView
         android:id="@+id/notificationCount"
         android:text="0"

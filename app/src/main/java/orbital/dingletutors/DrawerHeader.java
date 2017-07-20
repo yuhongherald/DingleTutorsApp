@@ -17,18 +17,18 @@ import com.mindorks.placeholderview.annotations.View;
 @Layout(R.layout.drawer_header)
 public class DrawerHeader {
 
-    @View(R.id.profileImageView)
-    private ImageView profileImage;
+//    @View(R.id.profileImageView)
+//    private ImageView profileImage;
 
     @View(R.id.nameTxt)
     private TextView nameTxt;
 
-    @View(R.id.emailTxt)
-    private TextView emailTxt;
+//    @View(R.id.emailTxt)
+//    private TextView emailTxt;
 
     @Resolve
     private void onResolved() {
-        nameTxt.setText("Teacher's name here");
-        emailTxt.setText("teachers_email@gmail.com");
+        nameTxt.setText("Navigation Drawer");
+//        emailTxt.setText("teachers_email@gmail.com");
     }
 }

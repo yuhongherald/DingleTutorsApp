@@ -126,15 +126,15 @@ public class MainActivity extends AppCompatActivity {
         mCallBack = new DrawerCallBack();
         DrawerMenuItem.setDrawerCallBack(mCallBack);
 
-        Button checkinBtn =(Button) view.findViewById(R.id.checkinBtn);
-        checkinBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
+//        Button checkinBtn =(Button) view.findViewById(R.id.checkinBtn);
+//        checkinBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
 //                Popup popup = new PopupCheckIn(getApplicationContext(), view, view.getWidth() * 3 / 4, view.getWidth() * 3 / 4, 0);
 //                popup.show();
-            }
-        });
+//            }
+//        });
         ImageButton notificationBtn = (ImageButton) view.findViewById(R.id.notificationBtn);
         notificationBtn.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -184,7 +184,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupDrawer(){
         mDrawerView
-                .addView(new DrawerHeader())
+//                .addView(new DrawerHeader())
                 .addView(new DrawerMenuItem(this.getApplicationContext(), DrawerMenuItem.DRAWER_MENU_ITEM_HOME))
                 .addView(new DrawerMenuItem(this.getApplicationContext(), DrawerMenuItem.DRAWER_MENU_ITEM_LESSON_HISTORY))
                 .addView(new DrawerMenuItem(this.getApplicationContext(), DrawerMenuItem.DRAWER_MENU_ITEM_NOTIFICATIONS))
