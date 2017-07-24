@@ -82,7 +82,8 @@ public class LessonHistoryMap extends ArrayList<Lesson> {
             return;
         }
         Lesson lesson = get(0);
-        Date earliest = RecurringLesson.addTime(-1 * historyTime, Calendar.getInstance().getTime());
+        // this thing is not sorted so it does not work, need to use treemap
+        Date earliest = RecurringLesson.addTime(historyTime, Calendar.getInstance().getTime());
         while (lesson.lessonDate.before(earliest)) {
             remove(lesson);
             if (isEmpty()) {

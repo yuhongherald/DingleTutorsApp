@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,8 +39,11 @@ public class LessonHistoryFragment extends Fragment {
         rv.setLayoutManager(llm);
 
         // populate with all the lessons that have been checked in, with or without summary report
-        lessons = new ArrayList<>();
-        lessons.addAll(MinuteUpdater.lessonHistoryMap);
+        Log.v("History", Integer.toString(MinuteUpdater.lessonHistoryMap.size()));
+        lessons = new ArrayList<Lesson>(MinuteUpdater.lessonHistoryMap);
+        Log.v("History", Integer.toString(MinuteUpdater.lessonHistoryMap.size()));
+        Log.v("Lesson", Integer.toString(lessons.size()));
+
 //        // populate the arraylist for now we use test lessons
 //        Lesson testLesson1 = Lesson.init(Calendar.getInstance().getTime());
 //        testLesson1.students.add(new Student("Cindy", "Mother", "12345678"));
