@@ -14,6 +14,8 @@ import java.util.Date;
  */
 
 public class RecurringLesson implements Serializable {
+    public static final boolean isRecurring = false;
+
     public static final int nextWeek = 7 * 24 * 60 * 60 * 1000;
     private static final long serialVersionUID = 1011L;
     private static final int recurringCap = 12;
@@ -80,11 +82,13 @@ public class RecurringLesson implements Serializable {
             currentDate.setTime(currentDate.getTime() + MinuteUpdater.nextDay);
         }
         // SUCCESS!
-        if (MinuteUpdater.recurringLessonMap == null) {
-            MinuteUpdater.loadMap(context);
+        if (isRecurring) {
+            if (MinuteUpdater.recurringLessonMap == null) {
+                MinuteUpdater.loadMap(context);
+            }
+            this.parent = MinuteUpdater.recurringLessonMap;
+            MinuteUpdater.recurringLessonMap.add(this);
         }
-        this.parent = MinuteUpdater.recurringLessonMap;
-        MinuteUpdater.recurringLessonMap.add(this);
         Lesson temp;
         for (Date date : dates) {
             Log.v("Recurring lesson", CalendarFragment.formatter.format(date));
@@ -118,12 +122,23 @@ public class RecurringLesson implements Serializable {
     }
 
     public void copyToLesson(Lesson lesson) {
-        lesson.recurringLesson = this;
+        if (isRecurring) {
+            lesson.recurringLesson = this;
+        }
         // time has been done already
         lesson.duration = this.duration;
         lesson.name = this.name;
         lesson.level = this.level;
         lesson.students = this.students; // not duplicating
+    }
+
+    // in case you want to use this
+    public boolean removeRecurring() {
+        ArrayList<Lesson> lessonsCopy = new ArrayList<>(lessons);
+        for (Lesson lesson : lessonsCopy) {
+            lesson.recurringLesson = null;
+        }
+        return parent.remove(this);
     }
 
     // returns the ceiling

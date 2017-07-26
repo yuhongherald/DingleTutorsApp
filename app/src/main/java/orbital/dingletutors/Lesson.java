@@ -127,6 +127,13 @@ public class Lesson implements Serializable {
         return lesson;
     }
 
+    // in case you want to use this
+    public boolean removeRecurring() {
+        if (recurringLesson == null) {
+            return false;
+        }
+        return recurringLesson.removeRecurring();
+    }
 
     public long minutesBefore() {
         // we need a date for the lesson
