@@ -16,7 +16,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -27,6 +26,8 @@ import java.io.File;
 
 public class MainActivity extends AppCompatActivity {
     public static boolean active = false;
+    public static final String intent = "MainActivity";
+
     private Popup popup;
     public static TextView notificationCount;
     public static TextView oldNotificationCount;
@@ -59,18 +60,18 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         NotificationManager mNotifyMgr =
                 (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        mNotifyMgr.cancel(MinuteUpdater.notificationCode);
+//        mNotifyMgr.cancel(MinuteUpdater.lessonCode);
 
-        IntentFilter filter = new IntentFilter();
-        filter.addAction("orbital.dingletutors.UPDATE_MAIN");
-        registerReceiver(receiver, filter);
+//        IntentFilter filter = new IntentFilter();
+//        filter.addAction("orbital.dingletutors.UPDATE_MAIN");
+//        registerReceiver(receiver, filter);
         super.onResume();
         MinuteUpdater.mainAppRunning = true;
     }
 
     @Override
     protected void onPause() {
-        unregisterReceiver(receiver);
+//        unregisterReceiver(receiver);
         super.onPause();
         MinuteUpdater.mainAppRunning = false;
     }
@@ -145,8 +146,22 @@ public class MainActivity extends AppCompatActivity {
         });
 
         Bundle bundle = getIntent().getExtras();
-        if (bundle != null && "MinuteUpdater".equals(bundle.get("MainActivity"))) {
-            mCallBack.onNotificationsSelected();
+        if (bundle != null && bundle.get(intent) != null) {
+            String msg = bundle.getString(intent);
+            mCallBack.fragment = NotificationFragment.newInstance();
+            mCallBack.fragment.setArguments(bundle);
+            mCallBack.doTransaction(mCallBack.fragment);
+
+            NotificationManager mNotifyMgr =
+                    (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+//            if (msg.equals(MinuteUpdater.lessonIntent)) {
+//                mNotifyMgr.cancel(MinuteUpdater.lessonCode);
+//            } else if (msg.equals(MinuteUpdater.reportIntent)) {
+//                mNotifyMgr.cancel(MinuteUpdater.reportCode);
+//            } else {
+//                Log.v("Bundle", msg);
+//            }
+
         } else {
             mCallBack.onHomeMenuSelected();
         }

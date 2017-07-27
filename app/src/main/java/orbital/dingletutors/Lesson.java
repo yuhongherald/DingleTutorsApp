@@ -37,6 +37,8 @@ public class Lesson implements Serializable {
     public boolean checkedIn;
     public RecurringLesson recurringLesson;
 
+    public Date nextReportCheck;
+
     Lesson(int hours,int minutes, @NonNull DayMap parent) {
         this.time = hours * 60 + minutes;
         this.hours = hours;
@@ -111,6 +113,7 @@ public class Lesson implements Serializable {
         if (MinuteUpdater.lessonHistoryMap == null) {
             MinuteUpdater.loadMap(context);
         }
+        nextReportCheck = RecurringLesson.addTime(duration, Calendar.getInstance().getTime());
         MinuteUpdater.lessonHistoryMap.add(this);
         MinuteUpdater.lessonWithoutReports.add(this);
         checkedIn = true;

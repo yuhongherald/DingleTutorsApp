@@ -65,6 +65,7 @@ public class SummaryReportFragment extends Fragment{
                     if (MinuteUpdater.lessonWithoutReports == null) {
                         MinuteUpdater.loadMap(getContext());
                     }
+                    lesson.nextReportCheck = null; // Just in case
                     MinuteUpdater.lessonWithoutReports.remove(lesson);
                     getActivity().onBackPressed();
                 } else {

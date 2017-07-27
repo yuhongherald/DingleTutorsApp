@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -109,12 +110,23 @@ public class NotificationFragment extends Fragment {
 
         thisFragment = this;
         updateSummaryCount();
-        upcomingHeader.callOnClick();
+        Bundle bundle = getArguments();
+        if (bundle != null && bundle.getString(MainActivity.intent) != null) {
+            String msg = bundle.getString(MainActivity.intent);
+            if (MinuteUpdater.lessonIntent.equals(msg)) {
+                upcomingHeader.callOnClick();
+            } else if (MinuteUpdater.reportIntent.equals(msg)) {
+                summaryHeader.callOnClick();
+            } else {
+                Log.v("bundle", msg);
+            }
+        }
 
         return v;
     }
 
     private void updateSummaryCount() {
+        MinuteUpdater.getLessons();
         if (notificationCount == null) {
             return;
         }
