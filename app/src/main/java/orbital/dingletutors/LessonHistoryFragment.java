@@ -75,7 +75,7 @@ public class LessonHistoryFragment extends Fragment {
 //                              // dont do anything here
                             }
                         });
-                        if (lesson.getSummaryReport() == null) { // in case summary report not filled up yet
+                        if (!lesson.areSummaryReportsComplete()) { // in case summary report not filled up yet
                             builder.setPositiveButton("write summary", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
@@ -101,7 +101,7 @@ public class LessonHistoryFragment extends Fragment {
                         alert.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                if (lesson.getSummaryReport() == null){ // in case summary report not filled up
+                                if (!lesson.areSummaryReportsComplete()){ // in case summary report not filled up
                                     alert.dismiss();
                                     SummaryReportFragment summaryReportFragment = SummaryReportFragment.newInstance(lesson);
                                     FragmentTransaction transaction = getFragmentManager().beginTransaction();

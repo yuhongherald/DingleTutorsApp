@@ -373,9 +373,9 @@ public class NewLessonFragment extends Fragment {
 
     private void SingleChoiceDialog(String field){
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle("Single Choice");
         switch (field) {
             case "subjectNames":
+                builder.setTitle("Subjects");
                 builder.setItems(subjectNames, new DialogInterface.OnClickListener(){
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -385,6 +385,7 @@ public class NewLessonFragment extends Fragment {
                 });
                 break;
             case "educationLevels":
+                builder.setTitle("Education levels");
                 builder.setItems(educationLevels, new DialogInterface.OnClickListener(){
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -394,6 +395,7 @@ public class NewLessonFragment extends Fragment {
                 });
                 break;
             case "durations":
+                builder.setTitle("Lesson Duration");
                 builder.setItems(durations, new DialogInterface.OnClickListener(){
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -403,6 +405,7 @@ public class NewLessonFragment extends Fragment {
                 });
                 break;
             case "repeatDurations":
+                builder.setTitle("Repeat Duration");
                 builder.setItems(repeatDurations, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {

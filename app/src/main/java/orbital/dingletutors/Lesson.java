@@ -33,7 +33,7 @@ public class Lesson implements Serializable {
     public String name;
     public String level;
     public ArrayList<Student> students;
-    public String summaryReport;
+    public ArrayList<String> summaryReport;
     public boolean checkedIn;
     public RecurringLesson recurringLesson;
 
@@ -49,6 +49,7 @@ public class Lesson implements Serializable {
         this.level = NewLessonFragment.educationLevels[0];
         this.duration = NewLessonFragment.durationStringToInt.get(NewLessonFragment.durations[0]);
         this.checkedIn = false;
+        this.summaryReport = new ArrayList<>();
         try {
             this.lessonDate = RecurringLesson.addTime(this.time, CalendarFragment.formatter.parse(parent.key));
         } catch (ParseException e) {
@@ -134,6 +135,16 @@ public class Lesson implements Serializable {
         }
         return recurringLesson.removeRecurring();
     }
+    public boolean areSummaryReportsComplete(){
+        return this.summaryReport.size() == this.students.size();
+    }
+
+    /**
+     * For writing of next summary report
+     */
+    public Student getNextStudent(){
+        return this.students.get(this.summaryReport.size());
+    }
 
     public long minutesBefore() {
         // we need a date for the lesson
@@ -151,18 +162,11 @@ public class Lesson implements Serializable {
     }
 
     public void setSummaryReport(@NonNull String summaryReport){
-        this.summaryReport = summaryReport;
+        this.summaryReport.add(summaryReport);
     }
 
-    public String getSummaryReport(){
-        if (this.summaryReport == null){
-            Log.v("Summary report", "Summary report not filled in yet");
-            return null;
-        } else if (this.summaryReport.isEmpty()){
-            Log.v("Summary report", "Empty Summary report");
-            return "";
-        }
-        return this.summaryReport;
-    }
+    public String getSummaryReport(int pos){
+        return this.summaryReport.get(pos);
 
+    }
 }

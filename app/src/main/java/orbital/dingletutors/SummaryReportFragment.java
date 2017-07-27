@@ -3,10 +3,12 @@ package orbital.dingletutors;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.telephony.SmsManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 /**
@@ -21,10 +23,10 @@ public class SummaryReportFragment extends Fragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.summary_report_fragment, container, false);
         final EditText editText = (EditText) v.findViewById(R.id.edtInputSummary);
-        String oldReport = lesson.getSummaryReport();
-        if (oldReport != null) {
-            editText.setText(oldReport);
-        }
+        final TextView studentName = (TextView) v.findViewById(R.id.studentName);
+        studentName.setText("Student: " + lesson.getNextStudent().studentName);
+
+
         v.findViewById(R.id.cancelLessonSummary).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -41,35 +43,34 @@ public class SummaryReportFragment extends Fragment{
                     editText.setError("Cannot be empty");
                     return;
                 }
-
+                Student currentStudent = lesson.getNextStudent();
                 lesson.setSummaryReport(report);
 
                 boolean SMSSuccessful = true;
-                for (Student student : lesson.students) {
-                    String number = student.clientNo;
-                    try {
-                        // TODO // Do some magic here and send report as sms then show the toast
-                    } catch (Exception e) {
-                        SMSSuccessful = false;
-                        break;
-                    }
-                }
-                if (SMSSuccessful) {
-                    if (MinuteUpdater.lessonWithoutReports == null) {
-                        MinuteUpdater.loadMap(getContext());
-                    }
-                    MinuteUpdater.lessonWithoutReports.remove(lesson);
+                try {
+                    // TODO // Do some magic here and send report as sms then show the toast
+                    SmsManager smsManager = SmsManager.getDefault();
+                    smsManager.sendTextMessage(currentStudent.clientNo, null, report, null, null);
                     Toast.makeText(getActivity().getApplicationContext(),
-                            "Summary report has been saved and sent to the contacts of parents via SMS",
+                            "Summary report has been saved and successfully sent to the contacts of the parent via SMS",
                             Toast.LENGTH_SHORT).show();
-                } else {
+                } catch (Exception e) {
+                    SMSSuccessful = false;
                     Toast.makeText(getActivity().getApplicationContext(),
                             "Error while sending SMS. Summary report has been saved.",
                             Toast.LENGTH_SHORT).show();
                 }
 
-
-                getActivity().onBackPressed();
+                if (lesson.areSummaryReportsComplete()){
+                    if (MinuteUpdater.lessonWithoutReports == null) {
+                        MinuteUpdater.loadMap(getContext());
+                    }
+                    MinuteUpdater.lessonWithoutReports.remove(lesson);
+                    getActivity().onBackPressed();
+                } else {
+                    studentName.setText("Student: " + lesson.getNextStudent().studentName);
+                    editText.setText("");
+                }
             }
         });
 

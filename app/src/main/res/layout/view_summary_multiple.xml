@@ -15,7 +15,6 @@
         android:layout_width="match_parent"
         android:layout_height="2dp"
         android:background="@android:color/black" />
-
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -28,19 +27,12 @@
         android:layout_width="match_parent"
         android:layout_height="2dp"
         android:background="@android:color/black" />
-
-    <EditText
-        android:id="@+id/edtInputSummary"
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter something here..."
-        android:inputType="textCapSentences|textMultiLine"
-        android:maxLength="2000"
-        android:maxLines="16"
-        android:layout_weight="0"
-        android:background="@android:color/transparent"
-        android:layout_margin="10dp"/>
-
+        android:layout_margin="10dp"
+        android:id="@+id/summary_text"
+        android:layout_weight="0"/>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -51,16 +43,16 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="60dp"
-            android:text="Cancel"
+            android:text="Back"
             android:textSize="20dp"
-            android:id="@+id/cancelLessonSummary"/>
+            android:id="@+id/go_back_btn"/>
         <Button
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="60dp"
-            android:text="Save and send"
+            android:text="Next Student"
             android:textSize="20dp"
-            android:id="@+id/saveLessonSummary"/>
+            android:id="@+id/next_student_btn"/>
     </LinearLayout>
-
 </LinearLayout>
+
