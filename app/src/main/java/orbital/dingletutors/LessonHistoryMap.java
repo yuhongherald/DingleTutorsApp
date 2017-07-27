@@ -13,11 +13,11 @@ import java.util.Calendar;
 import java.util.Date;
 
 /**
- * Created by user on 19/6/2017.
+ * Created by Herald on 19/6/2017.
  */
 
 public class LessonHistoryMap extends ArrayList<Lesson> {
-    private static final long serialVersionUID = 1008L;
+    private static final long serialVersionUID = 8L;
     // may have to change between sd and phone memory
 //    public static final String data = Environment.getDataDirectory().getPath();
 //    public static final String root = "/DingleTutors/";

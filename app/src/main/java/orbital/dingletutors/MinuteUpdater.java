@@ -9,18 +9,10 @@ import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import java.io.File;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -32,7 +24,10 @@ import java.util.Set;
  */
 
 public class MinuteUpdater extends BroadcastReceiver {
-    public static final int notificationCode = 1337;
+    public static final int lessonCode = 1337;
+    public static final int reportCode = 1338;
+    public static final String lessonIntent = "lesson";
+    public static final String reportIntent = "report";
 
     public static boolean mainAppRunning = false;
     public static CalendarMap calendarMap;
@@ -49,13 +44,14 @@ public class MinuteUpdater extends BroadcastReceiver {
     public static StudentPresetMap studentPresetMap;
 
     public static final int nextDay = 24 * 60 * 60 * 1000;
+    public static final int reportInterval = 60;
     public static final int advMinutes = 30;
     public static final int advMS = advMinutes * 60 * 1000;
     @Override
     public void onReceive(Context context, Intent intent) {
         isRunning = true;
         Log.v("MinuteUpdater","called");
-        //createNotification(context, null);
+        //lessonNotification(context, null);
         if (calendarMap == null || minuteQueue == null || lessonHistoryMap == null || this.context == null) {
             // my stuff keeps getting garbage collected, somehow this only needs to be done once
             Log.v("MinuteUpdater", "retrieving garbage collected stuff");
@@ -63,6 +59,21 @@ public class MinuteUpdater extends BroadcastReceiver {
         }
         lessonHistoryMap.updateHistory();
         // lessonWithoutReports.updateHistory(); // currently no support for notificationfragment
+
+        Date currentDate = Calendar.getInstance().getTime();
+        ArrayList<Lesson> reportLessons = (ArrayList<Lesson>) lessonWithoutReports.clone();
+        Lesson pickedLesson = null;
+        for (Lesson lesson : reportLessons) {
+            if (lesson.nextReportCheck != null && lesson.nextReportCheck.before(currentDate)) {
+                Log.v("Report", "upcoming");
+                lesson.nextReportCheck = RecurringLesson.addTime(reportInterval, lesson.nextReportCheck);
+                pickedLesson = lesson;
+            }
+        }
+
+        if (pickedLesson != null) {
+            reportNotification(context, pickedLesson);
+        }
 
         boolean loop = true;
         Date previous = minuteQueue.lastUpdated;
@@ -84,8 +95,9 @@ public class MinuteUpdater extends BroadcastReceiver {
 
         ArrayList<Lesson> lessons = getLessons();
         if (!lessons.isEmpty()) {
-            createNotification(context, lessons.get(0));
+            lessonNotification(context, lessons.get(0));
         }
+
         saveMap(); // inefficient saving!
         isRunning = false;
     }
@@ -119,15 +131,24 @@ public class MinuteUpdater extends BroadcastReceiver {
         }
     }
 
-    private void createNotification(Context context, Lesson lesson) {
-        if (mainAppRunning) {
-            Intent i = new Intent(context, MainActivity.class);
-            i.setAction("orbital.dingletutors.UPDATE_MAIN");
-            context.sendBroadcast(i);
-            return;
-        }
+    private void lessonNotification(Context context, Lesson lesson) {
+//        if (mainAppRunning) {
+//            Intent i = new Intent(context, MainActivity.class);
+//            i.setAction("orbital.dingletutors.UPDATE_MAIN");
+//            context.sendBroadcast(i);
+//            return;
+//        }
         String message = "Your " + lesson.name + " lesson is in " + lesson.minutesBefore() + " minutes!";
 
+        createNotification(lesson, message, context, lessonIntent, lessonCode);
+    }
+
+    private void reportNotification(Context context, Lesson lesson) {
+        String message = "Your " + lesson.name + " has incomplete reports.";
+        createNotification(lesson, message, context, reportIntent, reportCode);
+    }
+
+    private void createNotification(Lesson lesson, String message, Context context, String extra, int code) {
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(context)
                         .setSmallIcon(R.drawable.dingle) // have to change this probably
@@ -135,7 +156,7 @@ public class MinuteUpdater extends BroadcastReceiver {
                         .setContentText(message);
         Intent resultIntent = new Intent(context, MainActivity.class);
         resultIntent.setAction("android.intent.action.MAIN");
-        resultIntent.putExtra("MainActivity", "MinuteUpdater");
+        resultIntent.putExtra(MainActivity.intent, extra);
         PendingIntent resultPendingIntent =
                 PendingIntent.getActivity(
                         context,
@@ -143,10 +164,11 @@ public class MinuteUpdater extends BroadcastReceiver {
                         resultIntent,
                         PendingIntent.FLAG_UPDATE_CURRENT // not sure what flag to put here
                 );
+        mBuilder.setAutoCancel(true);
         mBuilder.setContentIntent(resultPendingIntent);
         NotificationManager mNotifyMgr =
                 (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
-        mNotifyMgr.notify(notificationCode, mBuilder.build());
+        mNotifyMgr.notify(code, mBuilder.build());
         // added for ringtone notification
         try {
             Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
