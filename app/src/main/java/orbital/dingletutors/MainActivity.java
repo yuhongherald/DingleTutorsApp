@@ -244,6 +244,8 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onFinancesSelected() {
             // add stuff
+            fragment = FinanceFragment.newInstance();
+            doTransaction(fragment);
         }
     }
 
