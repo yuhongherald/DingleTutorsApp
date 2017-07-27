@@ -13,6 +13,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
+import java.util.TreeMap;
+import java.util.TreeSet;
+
 /**
  * Created by Muruges on 21/6/2017.
  */
@@ -28,19 +32,78 @@ public class Choose_Student_Fragment extends Fragment{
         // the list of students selected is stored in the  Newlessonfragment newlessoninstance.selectedstudents
         //
         View v = inflater.inflate(R.layout.recycler_view, container, false);
-        RecyclerView rv = (RecyclerView) v.findViewById(R.id.rv);
-        LinearLayoutManager llm = new LinearLayoutManager(getContext());
-        rv.setLayoutManager(llm);
-        final RVAdapter adapter = new RVAdapter(MinuteUpdater.studentPresetMap.studentList, new RVAdapter.OnItemClickListener(){
+        RecyclerView rvAvailable = (RecyclerView) v.findViewById(R.id.available_students);
+        RecyclerView rvChosen = (RecyclerView) v.findViewById(R.id.chosen_students);
+        final ArrayList<Student> availableStudents = new ArrayList<>(MinuteUpdater.studentPresetMap.studentList);
+        final ArrayList<Student> chosenStudents = new ArrayList<>();
 
+        if (newLessonInstance.selectedStudents.size() != 0) {
+            for (Student student: newLessonInstance.selectedStudents){
+                chosenStudents.add(student);
+                availableStudents.remove(student);
+            }
+        }
+        final TreeSet<Student> availableStudentsSorted = new TreeSet<>(availableStudents);
+        final TreeSet<Student> chosenStudentsSorted = new TreeSet<>(chosenStudents);
+
+
+        LinearLayoutManager llm1 = new LinearLayoutManager(getContext());
+        rvAvailable.setLayoutManager(llm1);
+        LinearLayoutManager llm2 = new LinearLayoutManager(getContext());
+        rvChosen.setLayoutManager(llm2);
+        final RVAdapter adapterChosen = new RVAdapter(chosenStudents, null); // we declare first so that can be used in adapteravilable
+        final RVAdapter adapterAvailable = new RVAdapter(availableStudents, null);
+
+        // Setting of onclick listeners
+        adapterAvailable.setListener(new RVAdapter.OnItemClickListener(){
             @Override
             public void onItemClick(Student student) {
-                selectNewStudent(student);
+                // add to chosen students in alphebatical order of students
+                chosenStudentsSorted.add(student);
+                int posAdded = chosenStudentsSorted.headSet(student).size();
+                chosenStudents.add(posAdded,student);
+                adapterChosen.notifyItemInserted(posAdded);
+                // remove from avilable students
+                int posRemoved = availableStudentsSorted.headSet(student).size();
+                availableStudentsSorted.remove(student);
+                availableStudents.remove(posRemoved);
+                adapterAvailable.notifyItemRemoved(posRemoved);
+
+            }
+        });
+        rvAvailable.setAdapter(adapterAvailable);
+
+        adapterChosen.setListener(new RVAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(Student student) {
+                availableStudentsSorted.add(student);
+                int posAdded = availableStudentsSorted.headSet(student).size();
+                availableStudents.add(posAdded,student);
+                adapterAvailable.notifyItemInserted(posAdded);
+                // remove from avilable students
+                int posRemoved = chosenStudentsSorted.headSet(student).size();
+                chosenStudentsSorted.remove(student);
+                chosenStudents.remove(posRemoved);
+                adapterChosen.notifyItemRemoved(posRemoved);
+
+            }
+        });
+        rvChosen.setAdapter(adapterChosen);
+
+        v.findViewById(R.id.back_btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getActivity().onBackPressed();
+            }
+        });
+        v.findViewById(R.id.save_btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectNewStudents(chosenStudents);
                 newLessonInstance.updateStudents();
                 getActivity().onBackPressed();
             }
         });
-        rv.setAdapter(adapter);
 
         FloatingActionButton quickAddStudent = (FloatingActionButton) v.findViewById(R.id.quick_add_student);
         quickAddStudent.setOnClickListener(new View.OnClickListener() {
@@ -105,7 +168,12 @@ public class Choose_Student_Fragment extends Fragment{
                                 number.getText().toString()
                         );
                         alert.dismiss();
-                        adapter.notifyItemInserted(MinuteUpdater.studentPresetMap.studentMap.headMap(addedStudent).size());
+
+                        availableStudentsSorted.add(addedStudent);
+                        int pos = availableStudentsSorted.headSet(addedStudent).size();
+                        availableStudents.add(pos, addedStudent);
+                        adapterAvailable.notifyItemInserted(pos);
+//                        adapterAvailable.notifyItemInserted(MinuteUpdater.studentPresetMap.studentMap.head(addedStudent).size());
                     }
                 });
             }
@@ -115,8 +183,8 @@ public class Choose_Student_Fragment extends Fragment{
     }
 
 
-    private void selectNewStudent(Student student){
-        newLessonInstance.selectedStudents.add(student);
+    private void selectNewStudents(ArrayList<Student> students){
+        newLessonInstance.selectedStudents = students;
     }
     public static Choose_Student_Fragment newInstance(NewLessonFragment newLessonInstance) {
 

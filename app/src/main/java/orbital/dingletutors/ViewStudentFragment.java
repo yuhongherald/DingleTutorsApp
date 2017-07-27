@@ -21,7 +21,7 @@ import android.widget.Toast;
 public class ViewStudentFragment extends Fragment{
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
-        View v = inflater.inflate(R.layout.recycler_view, container, false);
+        View v = inflater.inflate(R.layout.view_student_fragment, container, false);
         RecyclerView rv = (RecyclerView) v.findViewById(R.id.rv);
         LinearLayoutManager llm = new LinearLayoutManager(getContext());
         rv.setLayoutManager(llm);

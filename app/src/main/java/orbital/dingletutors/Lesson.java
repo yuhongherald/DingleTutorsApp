@@ -45,7 +45,7 @@ public class Lesson implements Serializable {
         this.minutes = minutes;
         this.displayTime = String.format("%02d", hours) + ":" + String.format("%02d", minutes);
         this.displayTime += (hours >= 12)
-                ? "pm" : "am";
+                ? "PM" : "AM";
         this.parent = parent;
         this.name = NewLessonFragment.subjectNames[0];
         this.level = NewLessonFragment.educationLevels[0];

@@ -135,6 +135,7 @@ public class NewLessonFragment extends Fragment {
                 }
             }
             className.setText(lesson.name);
+            startTime.setText(lesson.displayTime);
             educationLevel.setText(lesson.level);
             updateStudents();
         }
@@ -431,7 +432,13 @@ public class NewLessonFragment extends Fragment {
 
     public void updateStudents(){
         if (!selectedStudents.isEmpty()) {
-            this.studentName.setText(selectedStudents.get(0).studentName);
+            if (selectedStudents.size() > 1) {
+                this.studentName.setText(selectedStudents.size() + " students");
+            } else {
+                this.studentName.setText(selectedStudents.get(0).studentName);
+            }
+        } else {
+            this.studentName.setText("None Selected Yet");
         }
     }
     public void checkRepeatDays() {

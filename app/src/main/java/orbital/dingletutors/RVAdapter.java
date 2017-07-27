@@ -60,6 +60,9 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.StudentHolder> {
             });
         }
     }
+    public void setListener(OnItemClickListener listener){
+        this.listener = listener;
+    }
 
     public RVAdapter(List<Student> students, OnItemClickListener listener){
         this.students = students;
