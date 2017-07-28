@@ -10,7 +10,7 @@
     <color name="lightBlue">#1782b4</color>
     <color name="popup">#88222222</color>
     <!--Bright yellow is for highlight-->
-    <color name="brightYellow">#88fff100</color>
+    <color name="brightYellow">#f4e937</color>
     <color name="lightYellow">#fcf7ab</color>
     <color name="darkYellow">#aaa770</color>
 </resources>

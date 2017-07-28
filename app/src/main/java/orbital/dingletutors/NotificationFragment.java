@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -231,27 +232,27 @@ public class NotificationFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
                         if (!upcomingLesson.checkedIn) {
+                            // send sms to eac parent here
+                            for (Student student: upcomingLesson.students) {
+                                String phoneNo = student.clientNo;
+                                String studentName = student.studentName;
+                                String clientName = student.clientName;
+                                String message = "Hi Mr/Ms " + clientName + ". This is confirmation of the lesson with "
+                                        + studentName + " at " + upcomingLesson.displayTime + " today.";
+                                try {
+                                    SmsManager smsManager = SmsManager.getDefault();
+                                    smsManager.sendTextMessage(phoneNo, null, message, null, null);
+                                    Toast.makeText(getContext(), "SMS sent!",
+                                            Toast.LENGTH_LONG).show();
+
+                                } catch (Exception e) {
+                                    Toast.makeText(getContext(), "SMS failed for at least one parent, try again later!",
+                                            Toast.LENGTH_LONG).show();
+                                    e.printStackTrace();
+                                    return;
+                                }
+                            }
                             upcomingLesson.checkIn(getContext());
-                            // send sms to parent here
-                            // we assume only one student first
-                            // this is untested havent try yet
-                            //                        String phoneNo = upcomingLesson.students.get(0).clientNo;
-//                            String phoneNo = "91112188";
-//                            String studentName = upcomingLesson.students.get(0).studentName;
-//                            String clientName = upcomingLesson.students.get(0).clientName;
-//                            String message = "Hi Mr/Ms " + clientName + ". This is confirmation of the lesson with "
-//                                    + studentName + " at " + upcomingLesson.displayTime;
-//                            try {
-//                                SmsManager smsManager = SmsManager.getDefault();
-//                                smsManager.sendTextMessage(phoneNo, null, message, null, null);
-//                                Toast.makeText(getContext(), "SMS sent!",
-//                                        Toast.LENGTH_LONG).show();
-//
-//                            } catch (Exception e) {
-//                                Toast.makeText(getContext(), "SMS failed, try again later!",
-//                                        Toast.LENGTH_LONG).show();
-//                                e.printStackTrace();
-//                            }
                             // update the box to show new upcoming lesson if any
                             updateSummaryCount();
                         } else {
