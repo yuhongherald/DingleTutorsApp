@@ -11,7 +11,7 @@
         android:text="@string/app_name"
         android:textAllCaps="true"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="#fff"
+        android:textColor="@color/black"
         android:textStyle="bold" />
     <ImageView
         android:id="@+id/logo"
@@ -42,7 +42,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:adjustViewBounds="true"
-            android:maxHeight="17dp"
+            android:maxHeight="18.5dp"
             android:scaleType="fitXY"
             android:src="@drawable/notification_circle"/>
         <TextView
@@ -62,8 +62,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:layout_marginRight="16dp"
+        android:layout_marginRight="17dp"
         android:background="@null"
-        android:src="@android:drawable/ic_dialog_alert" />
+        android:src="@drawable/ic_notifications_black_24dp" />
 
 </RelativeLayout>

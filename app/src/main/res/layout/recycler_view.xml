@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/black">
+    android:background="@android:color/darker_gray">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -16,8 +16,9 @@
                 android:layout_height="wrap_content"
                 android:text="Chosen Students"
                 android:textSize="20dp"
+                android:background="@android:color/black"
                 android:textColor="@android:color/white"
-                android:layout_margin="15dp"
+                android:padding="15dp"
                 android:id="@+id/tv1"/>
 
             <View
@@ -46,9 +47,10 @@
                 android:layout_height="wrap_content"
                 android:text="Available Students"
                 android:textSize="20dp"
+                android:background="@android:color/black"
                 android:textColor="@android:color/white"
                 android:id="@+id/tv2"
-                android:layout_margin="15dp"
+                android:padding="15dp"
                 android:layout_below="@+id/divider2"/>
 
             <View

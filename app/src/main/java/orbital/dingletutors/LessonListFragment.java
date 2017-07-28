@@ -1,5 +1,7 @@
 package orbital.dingletutors;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -16,6 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.w3c.dom.Text;
 
@@ -67,14 +70,44 @@ public class LessonListFragment extends Fragment{
             }
         }, new LessonListRV.OnItemClickListener() {
             @Override
-            public void onItemClick(Lesson lesson) {
+            public void onItemClick(final Lesson lesson) {
                 // over here i delete all other recurring lessons and update current month coloring in destroyview
-                if (lesson.recurringLesson != null) {
-                    lesson.deleteAll();
-                } else {
-                    lesson.delete();
-                }
-                updateList();
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setMessage("Delete lesson?");
+                builder.setNegativeButton("no", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Don't do anything here
+                    }
+                });
+                builder.setPositiveButton("yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Don't do anything here
+                    }
+                });
+                final AlertDialog alert = builder.create();
+                alert.show();
+                alert.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        alert.dismiss();
+                    }
+                });
+                alert.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (lesson.recurringLesson != null) {
+                            lesson.deleteAll();
+                        } else {
+                            lesson.delete();
+                        }
+                        Toast.makeText(getContext(), "Lesson deleted",
+                                Toast.LENGTH_SHORT).show();
+                        alert.dismiss();
+                        updateList();
+                    }
+                });
             }
         });
         rv.setAdapter(adapter);

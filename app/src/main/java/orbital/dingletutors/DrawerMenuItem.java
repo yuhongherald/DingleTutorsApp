@@ -59,7 +59,7 @@ public class DrawerMenuItem {
                 MainActivity.notificationCount = notificationCount; // passing over to MainActivity
                 itemNameTxt.setText("Notifications");
                 notificationCount.setVisibility(VISIBLE);
-                itemIcon.setImageDrawable(mContext.getResources().getDrawable(R.drawable.ic_priority_high_black_20dp));
+                itemIcon.setImageDrawable(mContext.getResources().getDrawable(R.drawable.ic_notifications_black_20dp));
                 break;
             case DRAWER_MENU_ITEM_STUDENTS:
                 itemNameTxt.setText("Students");
