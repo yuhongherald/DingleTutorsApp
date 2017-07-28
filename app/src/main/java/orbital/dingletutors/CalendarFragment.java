@@ -9,6 +9,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -149,15 +150,15 @@ public class CalendarFragment extends Fragment {
             }
         });
 
-        ImageButton viewLessonBtn = (ImageButton) v.findViewById(R.id.list_lessons);
-        viewLessonBtn.setOnClickListener(new View.OnClickListener(){
+        final ImageButton viewLessonBtn = (ImageButton) v.findViewById(R.id.list_lessons);
+        final View.OnClickListener listener2 = new View.OnClickListener(){
             @Override
             public void onClick(View view){
                 if (getFragmentManager().findFragmentByTag("viewLesson") != null) {
                     Log.v("viewLesson", "exists");
                     return;
                 }
-                LessonListFragment viewLesson = LessonListFragment.newInstance();
+                LessonListFragment viewLesson = LessonListFragment.newInstance(viewLessonBtn, this);
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
                 // putting animation for fragment transaction
                 transaction.setCustomAnimations(R.anim.slide_in_up, android.R.anim.fade_out,
@@ -165,8 +166,10 @@ public class CalendarFragment extends Fragment {
                 transaction.replace(R.id.calendar_container,viewLesson,"viewLesson") // carry out the transaction
                         .addToBackStack("viewLesson") // add to backstack
                         .commit();
+                viewLessonBtn.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.return_icon_big));
             }
-        });
+        };
+        viewLessonBtn.setOnClickListener(listener2);
 
 
         return v;

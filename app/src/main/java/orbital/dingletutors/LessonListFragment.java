@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -38,6 +39,8 @@ public class LessonListFragment extends Fragment{
     RecyclerView rv;
     ArrayList<Lesson> lessons;
     LessonListRV adapter;
+    ImageButton returnBtn;
+    View.OnClickListener originalListener;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -111,6 +114,14 @@ public class LessonListFragment extends Fragment{
             }
         });
         rv.setAdapter(adapter);
+        returnBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getActivity().onBackPressed();
+            }
+        });
+
+
         return v;
     }
 
@@ -147,11 +158,15 @@ public class LessonListFragment extends Fragment{
             );
 //            CalendarFragment.thisFragment.recolorDay(CalendarFragment.currentDate);
         }
+        returnBtn.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.view));
+        returnBtn.setOnClickListener(originalListener);
         super.onDestroyView();
     }
 
-    public static LessonListFragment newInstance(){
+    public static LessonListFragment newInstance(ImageButton imgBtn, View.OnClickListener listener){
         LessonListFragment f = new LessonListFragment();
+        f.returnBtn = imgBtn;
+        f.originalListener = listener;
         // do for loop here and extract all the data necessary from daymap here
 
         // just going to refer to static reference
