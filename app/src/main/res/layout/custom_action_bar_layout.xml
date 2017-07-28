@@ -20,7 +20,7 @@
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
         android:layout_marginLeft="8dp"
-        android:src="@drawable/dingle" />
+        android:src="@mipmap/logo" />
     <!--<Button-->
         <!--android:id="@+id/checkinBtn"-->
         <!--android:text="Check in"-->
