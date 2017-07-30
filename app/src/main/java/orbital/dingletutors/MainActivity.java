@@ -125,15 +125,6 @@ public class MainActivity extends AppCompatActivity {
         mCallBack = new DrawerCallBack();
         DrawerMenuItem.setDrawerCallBack(mCallBack);
 
-//        Button checkinBtn =(Button) view.findViewById(R.id.checkinBtn);
-//        checkinBtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//                Popup popup = new PopupCheckIn(getApplicationContext(), view, view.getWidth() * 3 / 4, view.getWidth() * 3 / 4, 0);
-//                popup.show();
-//            }
-//        });
         ImageButton notificationBtn = (ImageButton) view.findViewById(R.id.notificationBtn);
         notificationBtn.setOnClickListener(new View.OnClickListener(){
             @Override

@@ -40,7 +40,7 @@ public class LessonHistoryFragment extends Fragment {
 
         // populate with all the lessons that have been checked in, with or without summary report
         Log.v("History", Integer.toString(MinuteUpdater.lessonHistoryMap.size()));
-        lessons = new ArrayList<Lesson>(MinuteUpdater.lessonHistoryMap);
+        lessons = new ArrayList<>(MinuteUpdater.lessonHistoryMap);
         Log.v("History", Integer.toString(MinuteUpdater.lessonHistoryMap.size()));
         Log.v("Lesson", Integer.toString(lessons.size()));
 

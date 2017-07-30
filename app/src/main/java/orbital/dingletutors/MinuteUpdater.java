@@ -5,6 +5,8 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -149,10 +151,13 @@ public class MinuteUpdater extends BroadcastReceiver {
     }
 
     private void createNotification(Lesson lesson, String message, Context context, String extra, int code) {
+        Bitmap bm = BitmapFactory.decodeResource(context.getResources(), R.mipmap.logo);
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(context)
-                        .setSmallIcon(R.drawable.dingle) // have to change this probably
-                        .setContentTitle(lesson.name)
+//                        .setTicker("New Notifications") // Ticker doesnt show on Lollipop onwards not important
+                        .setSmallIcon(R.drawable.ic_notifications_black_24dp) // have to change this probably
+                        .setLargeIcon(bm)
+                        .setContentTitle("Lesson hasn't been confirmed")
                         .setContentText(message);
         Intent resultIntent = new Intent(context, MainActivity.class);
         resultIntent.setAction("android.intent.action.MAIN");
