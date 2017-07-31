@@ -28,6 +28,11 @@ public class LessonRateRV extends RecyclerView.Adapter<LessonRateRV.LessonRateHo
         void onItemClick(LessonRateMap.LessonRate lessonRate);
     }
 
+    public void setOnClickListeners(OnItemClickListener itemClickListener, OnItemClickListener onCloseListener){
+        this.onCloseListener = onCloseListener;
+        this.itemClickListener = itemClickListener;
+    }
+
     @Override
     public LessonRateHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.view_lesson_rate_rv, parent, false);

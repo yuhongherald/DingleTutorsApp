@@ -10,16 +10,16 @@ import java.util.TreeMap;
 
 public class LessonRateMap {
     public static ArrayList<LessonRate> lessonRates = new ArrayList<>();
-    public static TreeMap<String, Integer> lessonRatesMap = new TreeMap<>();
+    public static TreeMap<String, Double> lessonRatesMap = new TreeMap<>();
     public static DecimalFormat format = new DecimalFormat("0.00");
     public static class LessonRate {
 
         public String classLevel;
         public String subjectName;
-        public int feesPerHour;
+        public double feesPerHour;
         public String displayFees;
 
-        public LessonRate(String classLevel, String subjectName, int feesPerHour){
+        public LessonRate(String classLevel, String subjectName, double feesPerHour){
             this.classLevel = classLevel;
             this.subjectName = subjectName;
             this.feesPerHour = feesPerHour;
@@ -27,6 +27,13 @@ public class LessonRateMap {
             lessonRatesMap.put(classLevel + subjectName, feesPerHour);
         }
 
+    }
+    public static boolean isSameRate(LessonRate rate1, String classLevel2, String subjectName2 ){
+        return rate1.classLevel == classLevel2 && rate1.subjectName == subjectName2;
+    }
+
+    public static String getKey(LessonRate rate){
+        return rate.classLevel + rate.subjectName;
     }
     public static int getPosInMap(LessonRate lessonRate){
         if (lessonRatesMap.get(lessonRate.classLevel+lessonRate.subjectName) == null) {
