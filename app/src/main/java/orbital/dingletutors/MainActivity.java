@@ -2,10 +2,16 @@ package orbital.dingletutors;
 
 import android.Manifest;
 import android.app.NotificationManager;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
+import android.os.CountDownTimer;
+import android.provider.Telephony;
+import android.support.design.widget.TextInputEditText;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -14,14 +20,20 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.telephony.SmsManager;
+import android.telephony.SmsMessage;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.mindorks.placeholderview.PlaceHolderView;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Random;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -36,25 +48,34 @@ public class MainActivity extends AppCompatActivity {
     private PlaceHolderView mDrawerView;
     private DrawerLayout mDrawer;
     private DrawerCallBack mCallBack;
-
-    // don't really need this anymore
+    private String tutorNumber;
     private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-//            Log.v("Notification", "attempting update");
-//            int size = MinuteUpdater.getLessons().size();
-//            if (notificationCount != null) {
-//                Log.v("Notification", "attempting update");
-//                notificationCount.setText(size);
-//            }
-//            if (oldNotificationCount != null) {
-//                notificationCount.setText(size);
-//            }
-//            if (popup != null && popup.isVisible()) {
-//                popup.updateList();
-//            }
+            // do nothing here defined later in createVerification
         }
     };
+
+    // hash table of tutor phone number as key and tutor name as val
+    // will use a proper verification after trial period
+    private static HashMap<String, String> tutorPhoneNumbers;
+    static {
+        tutorPhoneNumbers = new HashMap<>(20, 1);
+        tutorPhoneNumbers.put("92342198", "Winnie Chan");
+        tutorPhoneNumbers.put("81833345", "Poh Wei Ming");
+        tutorPhoneNumbers.put("85335202", "Sandra Tan");
+        tutorPhoneNumbers.put("90610061", "Celine Chian");
+        tutorPhoneNumbers.put("96476491", "Randall Wee");
+        tutorPhoneNumbers.put("96538226", "Michelle Tan");
+        tutorPhoneNumbers.put("98630227", "Tan Zhi Hao");
+        tutorPhoneNumbers.put("91786869", "Pinkett Teo");
+        tutorPhoneNumbers.put("81494675", "Krisna Dwipayan");
+        tutorPhoneNumbers.put("86855725", "Ng Kai Yan");
+        tutorPhoneNumbers.put("81815627", "K Muruges");
+        tutorPhoneNumbers.put("97481738", "Yu Hong Herald");
+        tutorPhoneNumbers.put("97881548", "Gao Fei");
+
+    }
 
     @Override
     protected void onResume() {
@@ -91,13 +112,88 @@ public class MainActivity extends AppCompatActivity {
         active = false;
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+    protected void createVerification(){
+        setContentView(R.layout.verification_fragment);
+        final TextInputEditText number = (TextInputEditText) findViewById(R.id.number);
+        final TextInputLayout numberWrapper = ((TextInputLayout) findViewById(R.id.numberWrapper));
+        findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (number.getText().toString().trim().length() == 0){
+                    numberWrapper.setError("This field cannot be empty");
+                    return;
+                } else if (number.getText().toString().trim().length() != 8) {
+                    numberWrapper.setError("Ensure phone number has 8 digits");
+                    return;
+                }
+//                final ProgressDialog progressdialog = ProgressDialog.show(getApplicationContext(),
+//                        "Waiting for SMS", "Please hold on");
+                numberWrapper.setError(null);
+                final String phoneNum = number.getText().toString().trim();
+                if (!checkNumber(phoneNum)){
+                    Toast.makeText(getApplicationContext(), "Phone number of this device not in our database.",
+                            Toast.LENGTH_LONG).show();
+                    return;
+                } else {
+                    Toast.makeText(getApplicationContext(), "Phone verification will be done through SMS and may take up to 2 minutes",
+                            Toast.LENGTH_LONG).show();
+                }
 
-        load();
+                Random random = new Random();
+                final String verificationCode = String.valueOf(100000 + random.nextInt(900000));
+                try {
+                    SmsManager smsManager = SmsManager.getDefault();
+                    smsManager.sendTextMessage(phoneNum, null, "Verification code for Dingletutors app: " + verificationCode, null, null);
+
+                } catch (Exception e) {
+                    Toast.makeText(getApplicationContext(), "Error sending verification message",
+                            Toast.LENGTH_LONG).show();
+//                    progressdialog.dismiss();
+                    return;
+                }
+                final CountDownTimer timer = new CountDownTimer(120000, 1000) {
+                    @Override
+                    public void onTick(long millisUntilFinished) {
+//                        progressdialog.setMessage("Waiting for message. " + millisUntilFinished / 1000 + " seconds left.");
+                    }
+
+                    @Override
+                    public void onFinish() {
+                        unregisterReceiver(receiver);
+//                        progressdialog.dismiss();
+                    }
+                }.start();
+                receiver = new BroadcastReceiver() {
+                    @Override
+                    public void onReceive(Context context, Intent intent) {
+                        Bundle bundle = intent.getExtras();
+                        if (bundle != null){
+                            if (readSMS(intent, verificationCode)){
+                                timer.cancel();
+                                try {
+                                    unregisterReceiver(receiver);
+                                    MinuteUpdater.studentPresetMap.tutorVerified = true;
+                                    String tutorName = tutorPhoneNumbers.get(phoneNum);
+                                    Toast.makeText(getApplicationContext(), "Phone verified. Welcome " + tutorName + "!",
+                                            Toast.LENGTH_LONG).show();
+                                    createMain();
+                                } catch (Exception e) {
+                                }
+                            }
+                        }
+                    }
+                };
+                registerReceiver(receiver, new IntentFilter("android.provider.Telephony.SMS_RECEIVED"));
+
+                // do the verification here right now I'm just changing to true onclick
+            }
+        });
+    }
+
+    protected void createMain(){
+        setContentView(R.layout.activity_main);
         // test();
+
         NotificationFragment.img = ContextCompat.getDrawable(this, R.drawable.notification);
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setDisplayShowCustomEnabled(true);
@@ -157,8 +253,6 @@ public class MainActivity extends AppCompatActivity {
             mCallBack.onHomeMenuSelected();
         }
 
-        // request permission for sms
-        ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.SEND_SMS},1);
 
 //        final ViewPager pager = (ViewPager) findViewById(R.id.viewPager);
 //        pager.setAdapter(new CustomPagerAdapter(getSupportFragmentManager()));
@@ -184,6 +278,62 @@ public class MainActivity extends AppCompatActivity {
         // mark activity is running
         active = true;
 
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // request permission for sms
+        ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.SEND_SMS},1);
+        load();
+        if (MinuteUpdater.studentPresetMap.tutorVerified) {
+            createMain();
+        } else {
+            createVerification();
+        }
+
+    }
+
+    /**
+     * For reading verificaition message sent to a number
+     */
+    private boolean readSMS(Intent intent, String verificationNum) {
+        try{
+            Bundle bundle = intent.getExtras();
+            if (bundle != null) {
+
+                if (Build.VERSION.SDK_INT >= 19) { //KITKAT
+                    SmsMessage[] msgs = Telephony.Sms.Intents.getMessagesFromIntent(intent);
+                    for (SmsMessage smsMessage:msgs){
+                        if (smsMessage.getDisplayMessageBody().contains(verificationNum)){
+                            return true;
+                        }
+                    }
+                } else {
+                    Object[] smsObjects = (Object[]) bundle.get("pdus");
+                    for (int i =0; i < smsObjects.length; i++){
+                        SmsMessage smsMessage = SmsMessage.createFromPdu((byte[]) smsObjects[i]);
+                        if (smsMessage.getDisplayMessageBody().contains(verificationNum)){
+                            return true;
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        return false;
+    }
+
+    /**
+     * check input tutor number against database of tutors
+     * @param phoneNum
+     * @return
+     */
+    private boolean checkNumber(String phoneNum){
+        // check against database of tutor numbers here
+        return tutorPhoneNumbers.get(phoneNum) != null ;
     }
 
     private void setupDrawer(){

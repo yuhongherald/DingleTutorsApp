@@ -365,9 +365,10 @@ public class NewLessonFragment extends Fragment {
         timefrag.setCallBack(ontime);
         timefrag.show(getFragmentManager(), "Time Picker");
     }
-    public static final String[] subjectNames = { "English", "Mathematics", "Science", "Mother Tongue"};
-    public static final String[] educationLevels = { "Primary 1", "Primary 2", "Primary 3", "Primary 4",
-            "Primary 5", "Primary 6", "Secondary 1", "Secondary 2", "Secondary 3", "Secondary 4"};
+    public static final String[] subjectNames = { "Preschool", "English", "Mathematics", "Science", "Mother Tongue",
+            "Higher Mother Tongue", "'A' Maths", "'E' Maths", "Literature", "Biology", "Chemistry", "Physics",
+            "History", "Geography", "Economics", "Music", "Foreign Language", "Programming"};
+    public static final String[] educationLevels = { "Preschool", "Primary", "'O' Level", "'A' Level", "Polytechnic"};
     public static final String[] durations = { "1 Hour", "1.5 Hours", "2 Hours", "2.5 Hours", "3 Hours"};
     public static final String[] repeatDurations = { "1 week", "2 weeks", "3 weeks", "4 weeks", "5 weeks", "6 weeks",
             "7 weeks", "8 weeks", "9 weeks", "10 weeks", "11 weeks", "12 weeks"};

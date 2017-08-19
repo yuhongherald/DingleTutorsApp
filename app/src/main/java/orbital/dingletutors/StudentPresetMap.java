@@ -25,12 +25,14 @@ public class StudentPresetMap implements Serializable {
 
     public TreeMap<Student, Integer> studentMap;// int not used
     public ArrayList<Student> studentList;
+    public boolean tutorVerified; // can change to a new class with more details of tutor in future
 
     public StudentPresetMap(String fileName) {
         //super();
         this.fileName = fileName;
         this.studentMap = new TreeMap<>();
         this.studentList = new ArrayList<>();
+        this.tutorVerified = false;
     }
 
     public static StudentPresetMap init(String fileName) throws Exception {
