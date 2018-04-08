@@ -4,6 +4,8 @@ This is an Android App designed as a companion app for the tutors working with D
 
 Some screenshots:
 
-<img src="https://github.com/CS2103JAN2018-W14-B4/main/blob/master/docs/images/Ui.png" alt="Home Page" style="width: 200px;" />
-
-
+![alt text](./screenshots/screenshot-1.png "Home Page")
+![alt text](./screenshots/screenshot-2.png "Summary Report")
+![alt text](./screenshots/screenshot-3.png "Choosing time for tuition")
+![alt text](./screenshots/screenshot-1.png "Choosing details for tuition")
+![alt text](./screenshots/screenshot-1.png "Sliding Menu")
