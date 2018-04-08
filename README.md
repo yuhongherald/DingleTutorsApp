@@ -4,4 +4,4 @@ This is an Android App designed as a companion app for the tutors working with D
 
 Some screenshots:
 
-![alt text](./screenshots/screenshot-1.png "Home Page")
+<img src="./screenshots/screenshot-1.png" alt="Home Page" style="width: 200px;" />
