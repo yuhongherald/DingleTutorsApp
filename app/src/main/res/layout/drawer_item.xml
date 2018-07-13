@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/mainView"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:orientation="horizontal"
+    android:gravity="center|left"
+    android:paddingLeft="20dp">
+    <ImageView
+        android:id="@+id/itemIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_person_black_20dp"/>
+    <TextView
+        android:id="@+id/itemNameTxt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:text="Menu Item"
+        android:layout_marginLeft="10dp"
+        android:textSize="14sp" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0"
+        android:layout_marginLeft="60dp"
+        android:paddingTop="6dp"
+        android:textColor="@color/white"
+        android:textAlignment="center"
+        android:id="@+id/notification_count"
+        android:visibility="invisible"
+        android:background="@drawable/notification_circle"/>
+</LinearLayout>

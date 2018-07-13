@@ -3,4 +3,14 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="white">#FFFFFF</color>
+    <color name="blue">#0000FF</color>
+    <color name="black">#000000</color>
+    <color name="red">#FF0000</color>
+    <color name="lightBlue">#1782b4</color>
+    <color name="popup">#88222222</color>
+    <!--Bright yellow is for highlight-->
+    <color name="brightYellow">#f4e937</color>
+    <color name="lightYellow">#fcf7ab</color>
+    <color name="darkYellow">#aaa770</color>
 </resources>

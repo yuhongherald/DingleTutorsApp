@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/popup">
+    <!--Put all your text fields here-->
+    <LinearLayout
+        android:id="@+id/textPanel"
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/time"
+            android:text="time"
+            android:textSize="16dp"
+            android:textColor="@color/white"
+            android:layout_margin="4dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/name"
+            android:text="name"
+            android:textColor="@color/white"
+            android:textSize="16dp"
+            android:layout_margin="4dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/level"
+            android:text="level"
+            android:textSize="16dp"
+            android:textColor="@color/white"
+            android:layout_margin="4dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/size"
+            android:text="size"
+            android:textSize="16dp"
+            android:textColor="@color/white"
+            android:layout_margin="4dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <!--Put all your buttons here-->
+    <LinearLayout
+        android:id="@+id/buttonPanel"
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true">
+
+        <Button
+            android:id="@+id/view"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_margin="4dp"
+            android:background="@drawable/view" />
+        <Button
+            android:id="@+id/checkin"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_margin="4dp"
+            android:background="@drawable/right_arrow" />
+    </LinearLayout>
+</RelativeLayout>

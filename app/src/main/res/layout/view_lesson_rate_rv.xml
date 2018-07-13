@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:padding="5dp">
+    <android.support.v7.widget.CardView
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="test"
+                android:textSize="20dp"
+                android:padding="5dp"
+                android:id="@+id/classlevel"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="test"
+                android:textSize="20dp"
+                android:layout_alignLeft="@+id/classlevel"
+                android:padding="5dp"
+                android:layout_below="@+id/classlevel"
+                android:id="@+id/subject"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@+id/close"
+                android:text="$0.00/hr"
+                android:layout_margin="16dp"
+                android:textSize="20dp"
+                android:id="@+id/rate"/>
+            <Button
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:id="@+id/close"
+                android:text="x"
+                android:background="@color/white"
+                android:layout_alignParentRight="true"/>
+
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
+</LinearLayout>

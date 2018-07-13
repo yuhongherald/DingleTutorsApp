@@ -1,0 +1,292 @@
+package orbital.dingletutors;
+
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.graphics.drawable.Drawable;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.telephony.SmsManager;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import net.cachapa.expandablelayout.ExpandableLayout;
+
+import java.util.ArrayList;
+
+/**
+ * Created by Muruges on 2/7/2017.
+ */
+
+public class NotificationFragment extends Fragment {
+    public static ImageView imgNotification;
+    public static Drawable img;
+    private NotificationFragment thisFragment;
+
+    public Lesson upcomingLesson;
+    private TextView upcomingTime;
+    private TextView upcomingLevel;
+    private TextView upcomingName;
+    private TextView upcomingSize;
+    private ExpandableLayout upcomingExpandable;
+    private LayoutInflater inflater;
+    private RelativeLayout upcomingContainer;
+    private View upcomingHeader;
+    private ExpandableLayout summaryExpandable;
+    private RecyclerView rv;
+    private TextView notificationCount;
+
+    @Override
+    public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View v = inflater.inflate(R.layout.notifications_recycler_view, container, false);
+        upcomingExpandable = (ExpandableLayout) v.findViewById(R.id.upcoming_expandable);
+        upcomingHeader = v.findViewById(R.id.upcoming_header);
+        upcomingContainer = (RelativeLayout) v.findViewById(R.id.upcoming_container);
+
+        this.inflater = inflater;
+        upcomingTime = (TextView) v.findViewById(R.id.upcoming_time);
+        upcomingLevel = (TextView) v.findViewById(R.id.upcoming_level);
+        upcomingName = (TextView) v.findViewById(R.id.upcoming_name);
+        upcomingSize = (TextView) v.findViewById(R.id.upcoming_size);
+        imgNotification = (ImageView) v.findViewById(R.id.upcoming_img);
+
+        // Just for testing purpose
+        // can comment and uncomment if want to see how it looks like
+
+//        upcomingLesson = Lesson.init(Calendar.getInstance().getTime());
+//        upcomingLesson.students.add(new Student("Alice", "Mother", "12345678"));
+//        upcomingLesson.students.add(new Student("Bob", "Father", "87654321"));
+//        upcomingLesson.lessonDate = Calendar.getInstance().getTime();
+        // everything above was for testing
+
+        upcomingHeader.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ArrayList<Lesson> lessons = MinuteUpdater.getLessons();
+                if (!lessons.isEmpty()) {
+                    openUpcomingLesson(lessons);
+                    upcomingExpandable.toggle();
+                } else {
+                    upcomingExpandable.collapse();
+                }
+                // if (upcomingLesson != null) upcomingExpandable.toggle();
+            }
+        });
+
+        View summaryHeader = v.findViewById(R.id.summary_header);
+        summaryExpandable = (ExpandableLayout) v.findViewById(R.id.summary_expandable);
+        summaryHeader.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ArrayList<Lesson> lessons = MinuteUpdater.lessonWithoutReports;
+                if (!lessons.isEmpty()) {
+                    openLessonSummary(lessons);
+                    summaryExpandable.toggle();
+                } else {
+                    summaryExpandable.collapse();
+                }
+            }
+        });
+
+        rv = (RecyclerView) v.findViewById(R.id.notifications_rv);
+        LinearLayoutManager llm = new LinearLayoutManager(getContext());
+        rv.setLayoutManager(llm);
+        notificationCount = (TextView) v.findViewById(R.id.summary_count);
+//        ArrayList<Lesson> lessonsWithoutSummary = new ArrayList<>();
+        // populate the arraylist for now we use test lessons
+//        Lesson testLesson1 = Lesson.init(Calendar.getInstance().getTime());
+//        testLesson1.students.add(new Student("Cindy", "Mother", "12345678"));
+//        testLesson1.students.add(new Student("Damien", "Father", "91827364"));
+//        lessonsWithoutSummary.add(testLesson1);
+//        lessonsWithoutSummary.add(testLesson1);
+
+        thisFragment = this;
+        updateSummaryCount();
+        Bundle bundle = getArguments();
+        if (bundle != null && bundle.getString(MainActivity.intent) != null) {
+            String msg = bundle.getString(MainActivity.intent);
+            if (MinuteUpdater.lessonIntent.equals(msg)) {
+                upcomingHeader.callOnClick();
+            } else if (MinuteUpdater.reportIntent.equals(msg)) {
+                summaryHeader.callOnClick();
+            } else {
+                Log.v("bundle", msg);
+            }
+        }
+
+        return v;
+    }
+
+    private void updateSummaryCount() {
+        MinuteUpdater.getLessons();
+        if (notificationCount == null) {
+            return;
+        }
+        if (MinuteUpdater.lessonWithoutReports == null) {
+            MinuteUpdater.loadMap(getContext());
+        }
+        notificationCount.setText(Integer.toString(MinuteUpdater.lessonWithoutReports.size()));
+    }
+
+    private void openLessonSummary(ArrayList<Lesson> lessons) {
+        LessonListRV lessonsWithoutSummaryAdapter = new LessonListRV(true, R.layout.view_lesson_rv, lessons,
+                new LessonListRV.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(final Lesson lesson) {
+                        StudentAdapter adapter = new StudentAdapter(getContext(),
+                                R.layout.view_student, lesson.students);
+                        View dialogLayout = createDialog(inflater, lesson, adapter);
+                        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                        builder.setTitle("Lesson details");
+                        builder.setView(dialogLayout);
+                        builder.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+//                              // dont do anything here
+                            }
+                        });
+                        builder.setPositiveButton("write summary", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                // dont do anything here
+                            }
+                        });
+                        final AlertDialog alert = builder.create();
+                        alert.show();
+                        // this seems to work with drawer rather than notifications container
+                        alert.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                alert.dismiss();
+                                summaryExpandable.toggle();
+                                SummaryReportFragment summaryReportFragment = SummaryReportFragment.newInstance(lesson);
+                                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                                // putting animation for fragment transaction
+                                transaction.setCustomAnimations(R.anim.slide_in_up, android.R.anim.fade_out,
+                                        android.R.anim.fade_in, R.anim.slide_out_down);
+                                transaction.replace(R.id.drawer_container, summaryReportFragment) // carry out the transaction
+                                        .addToBackStack("Writing summary") // add to backstack
+                                        .commit();
+
+                            }
+                        });
+                        alert.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                alert.dismiss();
+                            }
+                        });
+                    }
+                },
+                new LessonListRV.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(Lesson lesson) {
+                        return;
+                    }
+                });
+        rv.setAdapter(lessonsWithoutSummaryAdapter);
+    }
+
+    private void openUpcomingLesson(ArrayList<Lesson> lessons) {
+        upcomingLesson = lessons.get(0);
+        upcomingTime.setText(upcomingLesson.displayTime);
+        upcomingLevel.setText(upcomingLesson.level);
+        upcomingName.setText(upcomingLesson.name);
+        upcomingSize.setText("Size: " + upcomingLesson.students.size());
+
+        final StudentAdapter adapter = new StudentAdapter(getContext(),
+                R.layout.view_student, upcomingLesson.students);
+
+        upcomingContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final View dialogLayout = createDialog(inflater, upcomingLesson, adapter);
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setTitle("Upcoming Lesson details");
+                builder.setView(dialogLayout);
+                builder.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+//                        // dont do anything here
+                    }
+                });
+                builder.setPositiveButton("check in", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // dont do anything here
+                    }
+                });
+                final AlertDialog alert = builder.create();
+                alert.show();
+                alert.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (!upcomingLesson.checkedIn) {
+                            // send sms to eac parent here
+                            for (Student student: upcomingLesson.students) {
+                                String phoneNo = student.clientNo;
+                                String studentName = student.studentName;
+                                String clientName = student.clientName;
+                                String message = "Hi Mr/Ms " + clientName + ". This is confirmation of the lesson with "
+                                        + studentName + " at " + upcomingLesson.displayTime + " today.";
+                                try {
+                                    SmsManager smsManager = SmsManager.getDefault();
+                                    smsManager.sendTextMessage(phoneNo, null, message, null, null);
+                                    Toast.makeText(getContext(), "SMS sent!",
+                                            Toast.LENGTH_LONG).show();
+
+                                } catch (Exception e) {
+                                    Toast.makeText(getContext(), "SMS failed for at least one parent, try again later!",
+                                            Toast.LENGTH_LONG).show();
+                                    e.printStackTrace();
+                                    return;
+                                }
+                            }
+                            upcomingLesson.checkIn(getContext());
+                            // update the box to show new upcoming lesson if any
+                            updateSummaryCount();
+                        } else {
+                            Toast.makeText(getContext(), "Lesson already checked in.",
+                                    Toast.LENGTH_LONG).show();
+                        }
+                        upcomingHeader.callOnClick();
+//                        DrawerMenuItem.mCallBack.onNotificationsSelected();
+                        alert.dismiss();
+                    }
+                });
+                alert.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        alert.dismiss();
+                    }
+                });
+            }
+        });
+    }
+
+    public static View createDialog(LayoutInflater inflater, Lesson lesson, StudentAdapter adapter){
+        View dialogLayout = inflater.inflate(R.layout.upcoming_lesson, null);
+        TextView displayUpcomingDateAndTime = (TextView) dialogLayout.findViewById(R.id.display_upcoming_date_and_time);
+        TextView displayUpcomingLevelAndName = (TextView) dialogLayout.findViewById(R.id.display_upcoming_level_and_name);
+        ListView displayListStudents = (ListView) dialogLayout.findViewById(R.id.display_list_students);
+        displayUpcomingDateAndTime.setText(CalendarFragment.formatter.format(lesson.lessonDate) + ", " +
+                lesson.displayTime);
+        displayUpcomingLevelAndName.setText(lesson.name + " - " + lesson.level);
+        displayListStudents.setAdapter(adapter);
+        return dialogLayout;
+    }
+
+    public static NotificationFragment newInstance(){
+        return new NotificationFragment();
+    }
+}
